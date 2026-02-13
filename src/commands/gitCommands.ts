@@ -426,7 +426,10 @@ export class GitCommandsCommand extends Command {
 				// Manually trigger `onDidChangeValue`, because the InputBox seems to fail to call it properly
 				if (step.value != null) {
 					// HACK: This is fragile!
-					(input as any)._onDidChangeValueEmitter.fire(input.value);
+					const emitter = (input as any)._onDidChangeValueEmitter;
+					if (typeof emitter?.fire === 'function') {
+						emitter.fire(input.value);
+					}
 				}
 			});
 		} finally {
@@ -787,7 +790,10 @@ export class GitCommandsCommand extends Command {
 				// Manually trigger `onDidChangeValue`, because the QuickPick seems to fail to call it properly
 				if (step.value != null) {
 					// HACK: This is fragile!
-					(quickpick as any)._onDidChangeValueEmitter.fire(quickpick.value);
+					const emitter = (quickpick as any)._onDidChangeValueEmitter;
+					if (typeof emitter?.fire === 'function') {
+						emitter.fire(quickpick.value);
+					}
 				}
 			});
 		} finally {

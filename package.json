@@ -10720,7 +10720,7 @@
 				{
 					"id": "gitlensInspect",
 					"title": "%views.inspect.title%",
-					"icon": "images/views/history.svg"
+					"icon": "images/views/inspect.svg"
 				}
 			],
 			"panel": [
