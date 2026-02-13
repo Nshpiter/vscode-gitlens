@@ -273,7 +273,7 @@ GitLens 提供了一系列强大的侧边栏视图，帮助您可视化、导航
 ### “提交 (Commits)”视图 [#](#提交视图- '提交视图')
 
 <p align="center">
-  <img src="./images/docs/view-commits.png" alt="“提交”视图" />
+  <img src="./images/docs/commits-view.png" alt="“提交”视图" />
 </p>
 
 - 可视化、探索和管理 Git 提交
@@ -283,7 +283,7 @@ GitLens 提供了一系列强大的侧边栏视图，帮助您可视化、导航
 ### “仓库 (Repositories)”视图 [#](#仓库视图- '仓库视图')
 
 <p align="center">
-  <img src="./images/docs/view-repositories.png" alt="“仓库”视图" />
+  <img src="./images/docs/repositories-view.png" alt="“仓库”视图" />
 </p>
 
 - 可视化、探索和管理 Git 仓库
@@ -293,7 +293,7 @@ GitLens 提供了一系列强大的侧边栏视图，帮助您可视化、导航
 ### “文件历史 (File History)”视图 [#](#文件历史视图- '文件历史视图')
 
 <p align="center">
-  <img src="./images/docs/view-file-history.png" alt="“文件历史”视图" />
+  <img src="./images/docs/file-history-view.png" alt="“文件历史”视图" />
 </p>
 
 - 可视化、导航和探索当前文件或当前文件所选行的修订历史
@@ -303,7 +303,7 @@ GitLens 提供了一系列强大的侧边栏视图，帮助您可视化、导航
 ### “行历史 (Line History)”视图 [#](#行历史视图- '行历史视图')
 
 <p align="center">
-  <img src="./images/docs/view-line-history.png" alt="“行历史”视图" />
+  <img src="./images/docs/line-history-view.png" alt="“行历史”视图" />
 </p>
 
 - 可视化、导航和探索当前文件所选行的修订历史
@@ -312,7 +312,7 @@ GitLens 提供了一系列强大的侧边栏视图，帮助您可视化、导航
 ### “分支 (Branches)”视图 [#](#分支视图- '分支视图')
 
 <p align="center">
-  <img src="./images/docs/view-branches.png" alt="“分支”视图" />
+  <img src="./images/docs/branches-view.png" alt="“分支”视图" />
 </p>
 
 - 可视化、探索和管理 Git 分支
@@ -322,7 +322,7 @@ GitLens 提供了一系列强大的侧边栏视图，帮助您可视化、导航
 ### “远程 (Remotes)”视图 [#](#远程视图- '远程视图')
 
 <p align="center">
-  <img src="./images/docs/view-remotes.png" alt="“远程”视图" />
+  <img src="./images/docs/remotes-view.png" alt="“远程”视图" />
 </p>
 
 - 可视化、探索和管理 Git 远程仓库和远程分支
@@ -331,7 +331,7 @@ GitLens 提供了一系列强大的侧边栏视图，帮助您可视化、导航
 ### “暂存 (Stashes)”视图 [#](#暂存视图- '暂存视图')
 
 <p align="center">
-  <img src="./images/docs/view-stashes.png" alt="“暂存”视图" />
+  <img src="./images/docs/stashes-view.png" alt="“暂存”视图" />
 </p>
 
 - 可视化、探索和管理 Git 暂存
@@ -340,7 +340,7 @@ GitLens 提供了一系列强大的侧边栏视图，帮助您可视化、导航
 ### “标签 (Tags)”视图 [#](#标签视图- '标签视图')
 
 <p align="center">
-  <img src="./images/docs/view-tags.png" alt="“标签”视图" />
+  <img src="./images/docs/tags-view.png" alt="“标签”视图" />
 </p>
 
 - 可视化、探索和管理 Git 标签
@@ -349,7 +349,7 @@ GitLens 提供了一系列强大的侧边栏视图，帮助您可视化、导航
 ### “贡献者 (Contributors)”视图 [#](#贡献者视图- '贡献者视图')
 
 <p align="center">
-  <img src="./images/docs/view-contributors.png" alt="“贡献者”视图" />
+  <img src="./images/docs/contributors-view.png" alt="“贡献者”视图" />
 </p>
 
 - 可视化、导航和探索贡献者
@@ -358,7 +358,7 @@ GitLens 提供了一系列强大的侧边栏视图，帮助您可视化、导航
 ### “搜索与比较 (Search & Compare)”视图 [#](#搜索与比较视图- '搜索与比较视图')
 
 <p align="center">
-  <img src="./images/docs/view-search-compare.png" alt="“搜索与比较”视图" />
+  <img src="./images/docs/search-and-compare-view.png" alt="“搜索与比较”视图" />
 </p>
 
 - 按消息、作者、文件、ID 等搜索和探索提交历史
@@ -394,7 +394,7 @@ GitLens 提供了一系列强大的侧边栏视图，帮助您可视化、导航
 ## 交互式变基 (Rebase) 编辑器 [#](#交互式变基编辑器- '交互式变基编辑器')
 
 <p align="center">
-  <img src="./images/docs/rebase-editor.png" alt="交互式变基编辑器" />
+  <img src="./images/docs/rebase.gif" alt="交互式变基编辑器" />
 </p>
 
 - 添加用户友好的 **交互式变基编辑器**
@@ -405,7 +405,7 @@ GitLens 提供了一系列强大的侧边栏视图，帮助您可视化、导航
 ## 终端链接 [#](#终端链接- '终端链接')
 
 <p align="center">
-  <img src="./images/docs/terminal-links.png" alt="终端链接" />
+  <img src="./images/docs/terminal-links.gif" alt="终端链接" />
 </p>
 
 - 在集成终端中自动检测并链接提交 SHA、分支、标签等
@@ -445,7 +445,7 @@ GitLens 提供了广泛的设置，允许您根据自己的喜好定制其行为
 要配置 GitLens，请运行 _GitLens: 打开设置_ 命令。
 
 <p align="center">
-  <img src="./images/docs/settings-editor.png" alt="GitLens 设置" />
+  <img src="./images/docs/settings.png" alt="GitLens 设置" />
 </p>
 
 此外，您还可以通过[用户设置](https://code.visualstudio.com/docs/getstarted/settings '打开用户设置')文件配置 GitLens。
