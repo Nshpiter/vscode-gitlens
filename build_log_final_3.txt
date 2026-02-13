@@ -1,0 +1,158 @@
+
+> gitlens@12.0.1 package
+> npx @vscode/vsce package --no-yarn
+
+Executing prepublish script 'npm run vscode:prepublish'...
+
+> gitlens@12.0.1 vscode:prepublish
+> npm run bundle
+
+
+> gitlens@12.0.1 bundle
+> webpack --mode production
+
+    [webpack-cli] Compiler 'extension:node' starting... 
+    [webpack-cli] Compiler 'extension:node' is using config: 'D:\Cyber-Space\github projects\vscode-gitlens\webpack.config.js'
+    [webpack-cli] Compiler 'extension:webworker' starting... 
+    [webpack-cli] Compiler 'extension:webworker' is using config: 'D:\Cyber-Space\github projects\vscode-gitlens\webpack.config.js'
+    [webpack-cli] Compiler 'webviews' starting... 
+    [webpack-cli] Compiler 'webviews' is using config: 'D:\Cyber-Space\github projects\vscode-gitlens\webpack.config.js'
+(node:36420) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+    [webpack-cli] Compiler 'webviews' finished
+    [webpack-cli] Compiler 'extension:webworker' finished
+    [webpack-cli] Compiler 'extension:node' finished
+extension:node:
+  asset [1m[32mgitlens.js[39m[22m 1.85 MiB [1m[33m[compared for emit][39m[22m [1m[32m[minimized][39m[22m (name: extension) 1 related asset
+  asset [1m[32mfeature-github.js[39m[22m 81.8 KiB [1m[33m[compared for emit][39m[22m [1m[32m[minimized][39m[22m (name: github) 1 related asset
+  asset [1m[32mfeature-heatmap-chroma.js[39m[22m 44.4 KiB [1m[33m[compared for emit][39m[22m [1m[32m[minimized][39m[22m (name: heatmap-chroma) 1 related asset
+
+  [1m[33mWARNING[39m[22m in [1mgitlens.js[39m[22m
+  [1m[object Object][39m[22m
+
+  [1mextension:node[39m[22m compiled with [1m[33m1 warning[39m[22m in 16504 ms
+
+extension:webworker:
+  asset [1m[32mgitlens.js[39m[22m 1.86 MiB [1m[33m[compared for emit][39m[22m [1m[32m[minimized][39m[22m (name: extension) 1 related asset
+  asset [1m[32mfeature-heatmap-chroma.js[39m[22m 44.4 KiB [1m[33m[compared for emit][39m[22m [1m[32m[minimized][39m[22m (name: heatmap-chroma) 1 related asset
+
+  [1m[33mWARNING[39m[22m in [1masset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
+  This can impact web performance.
+  Assets: 
+    gitlens.js (1.86 MiB)[39m[22m
+
+  [1m[33mWARNING[39m[22m in [1mentrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB). This can impact web performance.
+  Entrypoints:
+    extension (1.86 MiB)
+        gitlens.js
+  [39m[22m
+
+  [1mextension:webworker[39m[22m compiled with [1m[33m2 warnings[39m[22m in 16136 ms
+
+webviews:
+  asset [1m[32mmedia/gitlens-12-card.png[39m[22m 480 KiB [1m[32m[emitted][39m[22m [from: media/gitlens-12-card.png] [1m[32m[copied][39m[22m
+  asset [1m[32mtimeline.js[39m[22m 464 KiB [1m[33m[compared for emit][39m[22m [1m[32m[minimized][39m[22m (name: timeline) 1 related asset
+  asset [1m[32msettings.html[39m[22m 152 KiB [1m[33m[compared for emit][39m[22m
+  asset [1m[32mhome.js[39m[22m 97.2 KiB [1m[33m[compared for emit][39m[22m [1m[32m[minimized][39m[22m (name: home) 1 related asset
+  asset [1m[32mcodicon.ttf[39m[22m 68.1 KiB [1m[33m[compared for emit][39m[22m [from: ../../../node_modules/@vscode/codicons/dist/codicon.ttf] [1m[32m[copied][39m[22m
+  asset [1m[32mrebase.js[39m[22m 58.5 KiB [1m[33m[compared for emit][39m[22m [1m[32m[minimized][39m[22m (name: rebase) 1 related asset
+  asset [1m[32mmedia/rebase-editor.png[39m[22m 44.9 KiB [1m[32m[emitted][39m[22m [from: media/rebase-editor.png] [1m[32m[copied][39m[22m
+  asset [1m[32mrebase.html[39m[22m 37.2 KiB [1m[33m[compared for emit][39m[22m
+  asset [1m[32mrebase.css[39m[22m 35.4 KiB [1m[33m[compared for emit][39m[22m (name: rebase) 1 related asset
+  asset [1m[32mtimeline.html[39m[22m 33.9 KiB [1m[33m[compared for emit][39m[22m
+  asset [1m[32mmedia/worktrees-view-compare+pr.png[39m[22m 33.6 KiB [1m[32m[emitted][39m[22m [from: media/worktrees-view-compare+pr.png] [1m[32m[copied][39m[22m
+  asset [1m[32mhome.html[39m[22m 33.4 KiB [1m[33m[compared for emit][39m[22m
+  asset [1m[32mwelcome.html[39m[22m 33.4 KiB [1m[33m[compared for emit][39m[22m
+  asset [1m[32mmedia/file-history-view.png[39m[22m 32.6 KiB [1m[32m[emitted][39m[22m [from: media/file-history-view.png] [1m[32m[copied][39m[22m
+  + 89 assets
+
+  [1m[33mWARNING[39m[22m in [1masset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
+  This can impact web performance.
+  Assets: 
+    timeline.js (464 KiB)
+    media/gitlens-12-card.png (480 KiB)[39m[22m
+
+  [1m[33mWARNING[39m[22m in [1mentrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB). This can impact web performance.
+  Entrypoints:
+    timeline (493 KiB)
+        timeline.css
+        timeline.js
+  [39m[22m
+
+  [1m[33mWARNING[39m[22m in [1mwebpack performance recommendations: 
+  You can limit the size of your bundles by using import() or require.ensure to lazy load some parts of your application.
+  For more info visit https://webpack.js.org/guides/code-splitting/[39m[22m
+
+  [1mwebviews[39m[22m compiled with [1m[33m3 warnings[39m[22m in 8342 ms
+ WARNING  This extension consists of 18033 files, out of which 4067 are JavaScript files. For performance reasons, you should bundle your extension: https://aka.ms/vscode-bundle-extension. You should also exclude unnecessary files by adding them to your .vscodeignore: https://aka.ms/vscode-vscodeignore.
+
+ INFO  Files included in the VSIX:
+gitlens-12.0.1.vsix
+├─ [Content_Types].xml 
+├─ extension.vsixmanifest 
+└─ extension/
+   ├─ BACKERS.md [2.49 KB]
+   ├─ LICENSE.plus [2.38 KB]
+   ├─ LICENSE.txt [1.43 KB]
+   ├─ ThirdPartyNotices.txt [36.53 KB]
+   ├─ build_log.txt [1.16 KB]
+   ├─ build_log_2.txt [28.12 KB]
+   ├─ build_log_4.txt [6.11 KB]
+   ├─ build_log_5.txt [1.11 KB]
+   ├─ build_log_final.txt [2.66 KB]
+   ├─ build_log_final_2.txt [5.59 KB]
+   ├─ build_log_final_3.txt [5.73 KB]
+   ├─ changelog.md [286.75 KB]
+   ├─ debug_output.txt [15.18 KB]
+   ├─ debug_tsc.js [1.27 KB]
+   ├─ package.json [360.5 KB]
+   ├─ package.nls.json [2.14 KB]
+   ├─ package.nls.zh-cn.json [2.36 KB]
+   ├─ readme.md [196.92 KB]
+   ├─ validate_json.py [0.43 KB]
+   ├─ yarn.lock.bak [255.88 KB]
+   ├─ %APPDATA%/ (17699 files) [443.17 MB]
+   ├─ dist/ (118 files) [16.69 MB]
+   ├─ images/ (177 files) [3.82 MB]
+   └─ walkthroughs/ (17 files) [12.99 KB]
+
+=> Run vsce ls --tree to see all included files.
+
+ ERROR  Potential security issue detected: Your extension package contains sensitive information that should not be published. Please remove these secrets before packaging.
+	found GitHub Token(GitHub personal access tokens):... [github]
+	%APPDATA%\npm-cache\_cacache\content-v2\sha512\fc\ab\142ca7680a17cd28c38979eb4d6708150cea2476eb2dd11e13efb51fb1f8e7f59094254e57faa7e9d23914cb1b05fbc4a0e01be518358428b843add2be8a#1:2555-1:2595
+
+	found GitHub Token(GitHub personal access tokens):... [github]
+	%APPDATA%\npm-cache\_cacache\content-v2\sha512\fc\ab\142ca7680a17cd28c38979eb4d6708150cea2476eb2dd11e13efb51fb1f8e7f59094254e57faa7e9d23914cb1b05fbc4a0e01be518358428b843add2be8a#1:2679-1:2719
+
+	found GitHub Token(GitHub personal access tokens):... [github]
+	%APPDATA%\npm-cache\_cacache\content-v2\sha512\fc\ab\142ca7680a17cd28c38979eb4d6708150cea2476eb2dd11e13efb51fb1f8e7f59094254e57faa7e9d23914cb1b05fbc4a0e01be518358428b843add2be8a#1:3759-1:3799
+
+	found GitHub Token(GitHub personal access tokens):... [github]
+	%APPDATA%\npm-cache\_cacache\content-v2\sha512\fc\ab\142ca7680a17cd28c38979eb4d6708150cea2476eb2dd11e13efb51fb1f8e7f59094254e57faa7e9d23914cb1b05fbc4a0e01be518358428b843add2be8a#1:3845-1:3885
+
+	found GitHub Token(GitHub server-to-server tokens)... [github]
+	%APPDATA%\npm-cache\_cacache\content-v2\sha512\fc\ab\142ca7680a17cd28c38979eb4d6708150cea2476eb2dd11e13efb51fb1f8e7f59094254e57faa7e9d23914cb1b05fbc4a0e01be518358428b843add2be8a#1:3993-1:4033
+
+	found GitHub Token(GitHub server-to-server tokens)... [github]
+	%APPDATA%\npm-cache\_cacache\content-v2\sha512\fc\ab\142ca7680a17cd28c38979eb4d6708150cea2476eb2dd11e13efb51fb1f8e7f59094254e57faa7e9d23914cb1b05fbc4a0e01be518358428b843add2be8a#1:4079-1:4119
+
+	found GitHub Token(GitHub user-to-server tokens): ... [github]
+	%APPDATA%\npm-cache\_cacache\content-v2\sha512\fc\ab\142ca7680a17cd28c38979eb4d6708150cea2476eb2dd11e13efb51fb1f8e7f59094254e57faa7e9d23914cb1b05fbc4a0e01be518358428b843add2be8a#1:4234-1:4274
+
+	found GitHub Token(GitHub user-to-server tokens): ... [github]
+	%APPDATA%\npm-cache\_cacache\content-v2\sha512\fc\ab\142ca7680a17cd28c38979eb4d6708150cea2476eb2dd11e13efb51fb1f8e7f59094254e57faa7e9d23914cb1b05fbc4a0e01be518358428b843add2be8a#1:4320-1:4360
+
+	found GitHub Token(GitHub personal access tokens):... [github]
+	%APPDATA%\npm-cache\_cacache\content-v2\sha512\fc\ab\142ca7680a17cd28c38979eb4d6708150cea2476eb2dd11e13efb51fb1f8e7f59094254e57faa7e9d23914cb1b05fbc4a0e01be518358428b843add2be8a#1:7057-1:7097
+
+	found GitHub Token(GitHub personal access tokens):... [github]
+	%APPDATA%\npm-cache\_cacache\content-v2\sha512\fc\ab\142ca7680a17cd28c38979eb4d6708150cea2476eb2dd11e13efb51fb1f8e7f59094254e57faa7e9d23914cb1b05fbc4a0e01be518358428b843add2be8a#1:7605-1:7645
+
+	found GitHub Token(GitHub personal access tokens):... [github]
+	%APPDATA%\npm-cache\_cacache\content-v2\sha512\fc\ab\142ca7680a17cd28c38979eb4d6708150cea2476eb2dd11e13efb51fb1f8e7f59094254e57faa7e9d23914cb1b05fbc4a0e01be518358428b843add2be8a#1:8216-1:8256
+
+	found GitHub Token(GitHub personal access tokens):... [github]
+	%APPDATA%\npm-cache\_cacache\content-v2\sha512\fc\ab\142ca7680a17cd28c38979eb4d6708150cea2476eb2dd11e13efb51fb1f8e7f59094254e57faa7e9d23914cb1b05fbc4a0e01be518358428b843add2be8a#1:9051-1:9091
+
+In case of false positives, you can allow specific types of secrets with --allow-package-secrets github or use --allow-package-all-secrets to skip this check entirely (not recommended).

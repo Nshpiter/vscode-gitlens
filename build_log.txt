@@ -1,0 +1,17 @@
+
+> gitlens@12.0.1 bundle
+> webpack --mode production
+
+(node:22456) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[webpack-cli] TypeError: Cannot set property navigator of #<Object> which has only a getter
+    at Object.<anonymous> (D:\Cyber-Space\github projects\vscode-gitlens\node_modules\@squoosh\lib\build\index.js:30:21)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1481:32)
+    at Module._load (node:internal/modules/cjs/loader:1300:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.require (node:internal/modules/cjs/loader:1504:12)
+    at require (node:internal/modules/helpers:152:16)
+    at squooshImagePoolCreate (D:\Cyber-Space\github projects\vscode-gitlens\node_modules\image-minimizer-webpack-plugin\dist\utils.js:639:7)

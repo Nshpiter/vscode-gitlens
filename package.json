@@ -10671,31 +10671,6 @@
 				"view": "gitlens.views.worktrees",
 				"contents": "%views.worktrees.welcome.create%",
 				"when": "gitlens:plus:allowed"
-			},
-			{
-				"view": "gitlens.views.worktrees",
-				"contents": "%views.worktrees.welcome.verifyEmail%",
-				"when": "gitlens:plus:state == -1"
-			},
-			{
-				"view": "gitlens.views.worktrees",
-				"contents": "%views.worktrees.welcome.trial%",
-				"when": "gitlens:plus:state == 0"
-			},
-			{
-				"view": "gitlens.views.worktrees",
-				"contents": "%views.worktrees.welcome.signIn%",
-				"when": "gitlens:plus:state == 2"
-			},
-			{
-				"view": "gitlens.views.worktrees",
-				"contents": "%views.worktrees.welcome.upgrade%",
-				"when": "gitlens:plus:state == 4"
-			},
-			{
-				"view": "gitlens.views.worktrees",
-				"contents": "%views.worktrees.welcome.plus%",
-				"when": "gitlens:plus:state > -1"
 			}
 		],
 		"views": {
@@ -10705,7 +10680,7 @@
 					"id": "gitlens.views.home",
 					"name": "%views.home.title%",
 					"when": "!gitlens:disabled && config.gitlens.plusFeatures.enabled",
-					"contextualTitle": "%views.title%",
+					"contextualTitle": "%views.home.title%",
 					"icon": "images/gitlens-activitybar.svg",
 					"visibility": "visible"
 				}
@@ -10715,10 +10690,10 @@
 					"type": "webview",
 					"id": "gitlens.views.timeline",
 					"name": "%views.timeline.title%",
-					"when": "!gitlens:disabled && config.gitlens.plusFeatures.enabled",
-					"contextualTitle": "%views.title%",
-					"icon": "images/views/history.svg",
-					"visibility": "visible"
+					"when": "!gitlens:disabled && config.gitlens.views.timeline.enabled && config.gitlens.plusFeatures.enabled",
+					"contextualTitle": "%views.timeline.title%",
+					"icon": "images/views/timeline.svg",
+					"visibility": "collapsed"
 				}
 			],
 			"scm": [
@@ -10726,7 +10701,7 @@
 					"id": "gitlens.views.commits",
 					"name": "%views.commits.title%",
 					"when": "!gitlens:disabled",
-					"contextualTitle": "%views.title%",
+					"contextualTitle": "%views.commits.title%",
 					"icon": "images/views/commits.svg",
 					"visibility": "visible"
 				},
@@ -10734,7 +10709,7 @@
 					"id": "gitlens.views.repositories",
 					"name": "%views.repositories.title%",
 					"when": "!gitlens:disabled && !gitlens:hasVirtualFolders",
-					"contextualTitle": "%views.title%",
+					"contextualTitle": "%views.repositories.title%",
 					"icon": "images/views/repositories.svg",
 					"visibility": "hidden"
 				},
@@ -10742,7 +10717,7 @@
 					"id": "gitlens.views.fileHistory",
 					"name": "%views.fileHistory.title%",
 					"when": "!gitlens:disabled",
-					"contextualTitle": "%views.title%",
+					"contextualTitle": "%views.fileHistory.title%",
 					"icon": "images/views/history.svg",
 					"visibility": "visible"
 				},
@@ -10750,7 +10725,7 @@
 					"id": "gitlens.views.lineHistory",
 					"name": "%views.lineHistory.title%",
 					"when": "!gitlens:disabled && !gitlens:hasVirtualFolders",
-					"contextualTitle": "%views.title%",
+					"contextualTitle": "%views.lineHistory.title%",
 					"icon": "images/views/history.svg",
 					"visibility": "hidden"
 				},
@@ -10758,7 +10733,7 @@
 					"id": "gitlens.views.branches",
 					"name": "%views.branches.title%",
 					"when": "!gitlens:disabled",
-					"contextualTitle": "%views.title%",
+					"contextualTitle": "%views.branches.title%",
 					"icon": "images/views/branches.svg",
 					"visibility": "collapsed"
 				},
@@ -10766,7 +10741,7 @@
 					"id": "gitlens.views.remotes",
 					"name": "%views.remotes.title%",
 					"when": "!gitlens:disabled",
-					"contextualTitle": "%views.title%",
+					"contextualTitle": "%views.remotes.title%",
 					"icon": "images/views/remotes.svg",
 					"visibility": "collapsed"
 				},
@@ -10774,7 +10749,7 @@
 					"id": "gitlens.views.stashes",
 					"name": "%views.stashes.title%",
 					"when": "!gitlens:disabled && !gitlens:hasVirtualFolders",
-					"contextualTitle": "%views.title%",
+					"contextualTitle": "%views.stashes.title%",
 					"icon": "images/views/stashes.svg",
 					"visibility": "collapsed"
 				},
@@ -10782,7 +10757,7 @@
 					"id": "gitlens.views.tags",
 					"name": "%views.tags.title%",
 					"when": "!gitlens:disabled",
-					"contextualTitle": "%views.title%",
+					"contextualTitle": "%views.tags.title%",
 					"icon": "images/views/tags.svg",
 					"visibility": "collapsed"
 				},
@@ -10790,7 +10765,7 @@
 					"id": "gitlens.views.worktrees",
 					"name": "%views.worktrees.title%",
 					"when": "!gitlens:disabled && !gitlens:hasVirtualFolders && config.gitlens.plusFeatures.enabled",
-					"contextualTitle": "%views.title%",
+					"contextualTitle": "%views.worktrees.title%",
 					"icon": "images/views/worktrees.svg",
 					"visibility": "collapsed"
 				},
@@ -10798,7 +10773,7 @@
 					"id": "gitlens.views.contributors",
 					"name": "%views.contributors.title%",
 					"when": "!gitlens:disabled",
-					"contextualTitle": "%views.title%",
+					"contextualTitle": "%views.contributors.title%",
 					"icon": "images/views/contributors.svg",
 					"visibility": "hidden"
 				},
@@ -10806,7 +10781,7 @@
 					"id": "gitlens.views.searchAndCompare",
 					"name": "%views.searchAndCompare.title%",
 					"when": "!gitlens:disabled",
-					"contextualTitle": "%views.title%",
+					"contextualTitle": "%views.searchAndCompare.title%",
 					"icon": "images/views/search.svg",
 					"visibility": "collapsed"
 				}
@@ -10905,89 +10880,6 @@
 						"media": {
 							"markdown": "%walkthrough.welcome.terminal.markdown%"
 						}
-					},
-					{
-						"id": "gitlens.welcome.plus",
-						"title": "%walkthrough.welcome.plus.title%",
-						"description": "%walkthrough.welcome.plus.description%",
-						"media": {
-							"markdown": "%walkthrough.welcome.plus.markdown%"
-						}
-					}
-				]
-			},
-			{
-				"id": "gitlens.plus",
-				"title": "%walkthrough.plus.title%",
-				"description": "%walkthrough.plus.description%",
-				"steps": [
-					{
-						"id": "gitlens.plus.intro.tryNow",
-						"title": "%walkthrough.plus.intro.title%",
-						"description": "%walkthrough.plus.intro.tryNow.description%",
-						"media": {
-							"markdown": "%walkthrough.plus.intro.markdown%"
-						},
-						"when": "gitlens:plus:state == 0"
-					},
-					{
-						"id": "gitlens.plus.intro.signIn",
-						"title": "%walkthrough.plus.intro.title%",
-						"description": "%walkthrough.plus.intro.signIn.description%",
-						"media": {
-							"markdown": "%walkthrough.plus.intro.markdown%"
-						},
-						"when": "gitlens:plus:state == 1 || gitlens:plus:state == 2"
-					},
-					{
-						"id": "gitlens.plus.intro",
-						"title": "%walkthrough.plus.intro.title%",
-						"media": {
-							"markdown": "%walkthrough.plus.intro.markdown%"
-						},
-						"when": "gitlens:plus:state > 2"
-					},
-					{
-						"id": "gitlens.plus.visualFileHistory",
-						"title": "%walkthrough.plus.visualFileHistory.title%",
-						"description": "%walkthrough.plus.visualFileHistory.description%",
-						"media": {
-							"markdown": "%walkthrough.plus.visualFileHistory.markdown%"
-						}
-					},
-					{
-						"id": "gitlens.plus.worktrees",
-						"title": "%walkthrough.plus.worktrees.title%",
-						"description": "%walkthrough.plus.worktrees.description%",
-						"media": {
-							"markdown": "%walkthrough.plus.worktrees.markdown%"
-						}
-					},
-					{
-						"id": "gitlens.plus.comingSoon",
-						"title": "%walkthrough.plus.comingSoon.title%",
-						"description": "%walkthrough.plus.comingSoon.description%",
-						"media": {
-							"markdown": "%walkthrough.plus.comingSoon.markdown%"
-						}
-					},
-					{
-						"id": "gitlens.plus.tryNow",
-						"title": "%walkthrough.plus.tryNow.title%",
-						"description": "%walkthrough.plus.tryNow.description%",
-						"media": {
-							"markdown": "%walkthrough.plus.tryNow.markdown%"
-						},
-						"when": "gitlens:plus:state == 0"
-					},
-					{
-						"id": "gitlens.plus.signIn",
-						"title": "%walkthrough.plus.signIn.title%",
-						"description": "%walkthrough.plus.signIn.description%",
-						"media": {
-							"markdown": "%walkthrough.plus.signIn.markdown%"
-						},
-						"when": "gitlens:plus:state == 1 || gitlens:plus:state == 2"
 					}
 				]
 			}
