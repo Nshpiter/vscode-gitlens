@@ -68,8 +68,8 @@ export class StashesViewNode extends RepositoriesSubscribeableNode<StashesView, 
 
 			const stash = await child.repo.getStash();
 			if (stash == null) {
-				this.view.message = 'No stashes could be found.';
-				this.view.title = 'Stashes';
+				this.view.message = '未找到任何贮藏。';
+				this.view.description = undefined;
 
 				void child.ensureSubscription();
 
@@ -77,7 +77,7 @@ export class StashesViewNode extends RepositoriesSubscribeableNode<StashesView, 
 			}
 
 			this.view.message = undefined;
-			this.view.title = `Stashes (${stash?.commits.size ?? 0})`;
+			this.view.description = `(${stash?.commits.size ?? 0})`;
 
 			return child.getChildren();
 		}

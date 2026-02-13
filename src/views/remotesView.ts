@@ -80,8 +80,8 @@ export class RemotesViewNode extends RepositoriesSubscribeableNode<RemotesView, 
 
 			const remotes = await child.repo.getRemotes();
 			if (remotes.length === 0) {
-				this.view.message = 'No remotes could be found.';
-				this.view.title = 'Remotes';
+				this.view.message = '未找到任何远程仓库。';
+				this.view.description = undefined;
 
 				void child.ensureSubscription();
 
@@ -89,7 +89,7 @@ export class RemotesViewNode extends RepositoriesSubscribeableNode<RemotesView, 
 			}
 
 			this.view.message = undefined;
-			this.view.title = `Remotes (${remotes.length})`;
+			this.view.description = `(${remotes.length})`;
 
 			return child.getChildren();
 		}

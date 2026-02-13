@@ -41,7 +41,7 @@ export class FileHistoryTrackerNode extends SubscribeableViewNode<FileHistoryVie
 			if (!this.hasUri) {
 				this.view.description = undefined;
 
-				this.view.message = 'There are no editors open that can provide file history information.';
+				this.view.message = '没有打开可以提供文件历史信息的编辑器。';
 				return [];
 			}
 
@@ -60,9 +60,9 @@ export class FileHistoryTrackerNode extends SubscribeableViewNode<FileHistoryVie
 				if (stat.type === FileType.Directory) {
 					folder = true;
 				}
-			} catch {}
+			} catch { }
 
-			this.view.title = folder ? 'Folder History' : 'File History';
+			this.view.title = folder ? '文件夹历史 (Folder History)' : '文件历史 (File History)';
 
 			let branch;
 			if (!commitish.sha || commitish.sha === 'HEAD') {
@@ -83,7 +83,7 @@ export class FileHistoryTrackerNode extends SubscribeableViewNode<FileHistoryVie
 	getTreeItem(): TreeItem {
 		this.splatted = false;
 
-		const item = new TreeItem('File History', TreeItemCollapsibleState.Expanded);
+		const item = new TreeItem('文件历史 (File History)', TreeItemCollapsibleState.Expanded);
 		item.contextValue = ContextValues.ActiveFileHistory;
 
 		return item;

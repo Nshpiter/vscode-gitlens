@@ -56,7 +56,7 @@ export class WorktreesViewNode extends RepositoriesSubscribeableNode<WorktreesVi
 		if (this.children == null) {
 			const repositories = this.view.container.git.openRepositories;
 			if (repositories.length === 0) {
-				this.view.message = 'No worktrees could be found.';
+				this.view.message = '未找到任何工作树。';
 
 				return [];
 			}
@@ -75,7 +75,7 @@ export class WorktreesViewNode extends RepositoriesSubscribeableNode<WorktreesVi
 			const children = await child.getChildren();
 			if (children.length <= 1) {
 				this.view.message = undefined;
-				this.view.title = 'Worktrees';
+				this.view.description = undefined;
 
 				void child.ensureSubscription();
 
@@ -83,7 +83,7 @@ export class WorktreesViewNode extends RepositoriesSubscribeableNode<WorktreesVi
 			}
 
 			this.view.message = undefined;
-			this.view.title = `Worktrees (${children.length})`;
+			this.view.description = `(${children.length})`;
 
 			return children;
 		}

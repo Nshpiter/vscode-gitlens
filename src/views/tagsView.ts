@@ -68,8 +68,8 @@ export class TagsViewNode extends RepositoriesSubscribeableNode<TagsView, TagsRe
 
 			const tags = await child.repo.getTags();
 			if (tags.values.length === 0) {
-				this.view.message = 'No tags could be found.';
-				this.view.title = 'Tags';
+				this.view.message = '未找到任何标签。';
+				this.view.description = undefined;
 
 				void child.ensureSubscription();
 
@@ -77,7 +77,7 @@ export class TagsViewNode extends RepositoriesSubscribeableNode<TagsView, TagsRe
 			}
 
 			this.view.message = undefined;
-			this.view.title = `Tags (${tags.values.length})`;
+			this.view.description = `(${tags.values.length})`;
 
 			return child.getChildren();
 		}

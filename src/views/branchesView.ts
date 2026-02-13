@@ -86,8 +86,8 @@ export class BranchesViewNode extends RepositoriesSubscribeableNode<BranchesView
 
 			const branches = await child.repo.getBranches({ filter: b => !b.remote });
 			if (branches.values.length === 0) {
-				this.view.message = 'No branches could be found.';
-				this.view.title = 'Branches';
+				this.view.message = '未找到任何分支。';
+				this.view.description = undefined;
 
 				void child.ensureSubscription();
 
@@ -95,7 +95,7 @@ export class BranchesViewNode extends RepositoriesSubscribeableNode<BranchesView
 			}
 
 			this.view.message = undefined;
-			this.view.title = `Branches (${branches.values.length})`;
+			this.view.description = `(${branches.values.length})`;
 
 			return child.getChildren();
 		}
