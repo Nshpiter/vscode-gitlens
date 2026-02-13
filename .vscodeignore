@@ -35,3 +35,12 @@ tsconfig*.json
 tsconfig*.tsbuildinfo
 webpack.config*.js
 yarn.lock
+%APPDATA%/**
+build_log*.txt
+debug_output.txt
+debug_tsc.js
+validate_json.py
+*.vsix
+yarn.lock.bak
+tsconfig.tsbuildinfo
+tsconfig.browser.tsbuildinfo
