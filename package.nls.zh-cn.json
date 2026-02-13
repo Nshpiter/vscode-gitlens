@@ -521,5 +521,20 @@
     "settings.tokens.pullRequestState.label": "Pull Request State",
     "settings.tokens.pullRequestState.description": "<i>引入此提交的 Pull request 的状态 (open, merged, closed) (如果有)</i>",
     "settings.tokens.learnMore": "了解更多",
-    "settings.tokens.aboutFormatting": "关于格式化选项"
+    "settings.tokens.aboutFormatting": "关于格式化选项",
+    "views.home.title": "首页 (Home)",
+    "views.timeline.title": "可视化文件历史 (Visual File History)",
+    "views.lineHistory.title": "行历史 (Line History)",
+    "views.worktrees.title": "工作区 (Worktrees)",
+    "views.searchAndCompare.welcome.searchCommits": "通过 [消息](command:gitlens.views.searchAndCompare.searchCommits?%7B%22search%22%3A%7B%22pattern%22%3A%22message%3A%22%7D%2C%22prefillOnly%22%3Atrue%7D), [作者](command:gitlens.views.searchAndCompare.searchCommits?%7B%22search%22%3A%7B%22pattern%22%3A%22author%3A%22%7D%2C%22prefillOnly%22%3Atrue%7D), [SHA](command:gitlens.views.searchAndCompare.searchCommits?%7B%22search%22%3A%7B%22pattern%22%3A%22commit%3A%22%7D%2C%22prefillOnly%22%3Atrue%7D), [文件](command:gitlens.views.searchAndCompare.searchCommits?%7B%22search%22%3A%7B%22pattern%22%3A%22file%3A%22%7D%2C%22prefillOnly%22%3Atrue%7D), 或 [更改](command:gitlens.views.searchAndCompare.searchCommits?%7B%22search%22%3A%7B%22pattern%22%3A%22change%3A%22%7D%2C%22prefillOnly%22%3Atrue%7D) 搜索提交\n\n[搜索提交...](command:gitlens.views.searchAndCompare.searchCommits)",
+    "views.searchAndCompare.welcome.searchCommits.virtual": "通过 [消息](command:gitlens.views.searchAndCompare.searchCommits?%7B%22search%22%3A%7B%22pattern%22%3A%22message%3A%22%7D%2C%22prefillOnly%22%3Atrue%7D), [作者](command:gitlens.views.searchAndCompare.searchCommits?%7B%22search%22%3A%7B%22pattern%22%3A%22author%3A%22%7D%2C%22prefillOnly%22%3Atrue%7D), 或 [SHA](command:gitlens.views.searchAndCompare.searchCommits?%7B%22search%22%3A%7B%22pattern%22%3A%22commit%3A%22%7D%2C%22prefillOnly%22%3Atrue%7D) 搜索提交\n\n[搜索提交...](command:gitlens.views.searchAndCompare.searchCommits)",
+    "views.searchAndCompare.welcome.compareReferences": "将一个 <分支、标签或引用> 与另一个 <分支、标签或引用> 进行比较\n\n[比较引用...](command:gitlens.views.searchAndCompare.selectForCompare)",
+    "views.worktrees.welcome.content": "工作树允许您轻松地同时处理同一个仓库的不同分支。您可以创建多个工作树，每个工作树都可以在单独的窗口中打开，也可以在同一个工作区中一起打开。",
+    "views.worktrees.welcome.create": "[创建工作树...](command:gitlens.views.createWorktree)",
+    "views.worktrees.welcome.verifyEmail": "请验证您的电子邮箱\n\n要使用工作树，请验证您创建的账户的电子邮箱。\n\n[重新发送验证邮件](command:gitlens.plus.resendVerification)\n\n[刷新验证状态](command:gitlens.plus.validate)",
+    "views.worktrees.welcome.trial": "现在就尝试工作树功能吧，无需账户即可在公共和私有仓库中使用 3 天，或者[登录](command:gitlens.plus.loginOrSignUp \"登录到 GitLens+\")以在公共仓库中使用。\n\n[立即尝试工作树功能](command:gitlens.plus.startPreviewTrial)",
+    "views.worktrees.welcome.signIn": "登录以在公共仓库中使用工作树和其他 GitLens+ 功能，并获得为期 7 天的公共和私有仓库免费试用。\n\n[登录到 GitLens+](command:gitlens.plus.loginOrSignUp)",
+    "views.worktrees.welcome.upgrade": "[升级您的账户](command:gitlens.plus.purchase)",
+    "views.worktrees.welcome.plus": "✨ 工作树是 [GitLens+ 功能](command:gitlens.plus.learn)，通过 [免费账户](command:gitlens.plus.loginOrSignUp) 可以在公共仓库使用，通过 [付费账户](command:gitlens.plus.purchase) 可以在私有仓库使用。\n\n🛈 所有其他 GitLens 功能始终可以在任何仓库中使用，无需账户。",
+    "views.title": "GitLens"
 }

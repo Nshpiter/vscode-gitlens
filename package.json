@@ -10635,14 +10635,14 @@
 			"activitybar": [
 				{
 					"id": "gitlens",
-					"title": "GitLens",
+					"title": "%views.title%",
 					"icon": "images/gitlens-activitybar.svg"
 				}
 			],
 			"panel": [
 				{
 					"id": "gitlensPanel",
-					"title": "GitLens",
+					"title": "%views.title%",
 					"icon": "images/views/history.svg"
 				}
 			]
@@ -10650,51 +10650,51 @@
 		"viewsWelcome": [
 			{
 				"view": "gitlens.views.searchAndCompare",
-				"contents": "Search for commits by [message](command:gitlens.views.searchAndCompare.searchCommits?%7B%22search%22%3A%7B%22pattern%22%3A%22message%3A%22%7D%2C%22prefillOnly%22%3Atrue%7D), [author](command:gitlens.views.searchAndCompare.searchCommits?%7B%22search%22%3A%7B%22pattern%22%3A%22author%3A%22%7D%2C%22prefillOnly%22%3Atrue%7D), [SHA](command:gitlens.views.searchAndCompare.searchCommits?%7B%22search%22%3A%7B%22pattern%22%3A%22commit%3A%22%7D%2C%22prefillOnly%22%3Atrue%7D), [file](command:gitlens.views.searchAndCompare.searchCommits?%7B%22search%22%3A%7B%22pattern%22%3A%22file%3A%22%7D%2C%22prefillOnly%22%3Atrue%7D), or [changes](command:gitlens.views.searchAndCompare.searchCommits?%7B%22search%22%3A%7B%22pattern%22%3A%22change%3A%22%7D%2C%22prefillOnly%22%3Atrue%7D)\n\n[Search Commits...](command:gitlens.views.searchAndCompare.searchCommits)",
+				"contents": "%views.searchAndCompare.welcome.searchCommits%",
 				"when": "!gitlens:hasVirtualFolders"
 			},
 			{
 				"view": "gitlens.views.searchAndCompare",
-				"contents": "Search for commits by [message](command:gitlens.views.searchAndCompare.searchCommits?%7B%22search%22%3A%7B%22pattern%22%3A%22message%3A%22%7D%2C%22prefillOnly%22%3Atrue%7D), [author](command:gitlens.views.searchAndCompare.searchCommits?%7B%22search%22%3A%7B%22pattern%22%3A%22author%3A%22%7D%2C%22prefillOnly%22%3Atrue%7D), or [SHA](command:gitlens.views.searchAndCompare.searchCommits?%7B%22search%22%3A%7B%22pattern%22%3A%22commit%3A%22%7D%2C%22prefillOnly%22%3Atrue%7D)\n\n[Search Commits...](command:gitlens.views.searchAndCompare.searchCommits)",
+				"contents": "%views.searchAndCompare.welcome.searchCommits.virtual%",
 				"when": "gitlens:hasVirtualFolders"
 			},
 			{
 				"view": "gitlens.views.searchAndCompare",
-				"contents": "Compare a <branch, tag, or ref> with another <branch, tag, or ref>\n\n[Compare References...](command:gitlens.views.searchAndCompare.selectForCompare)",
+				"contents": "%views.searchAndCompare.welcome.compareReferences%",
 				"when": "!gitlens:hasVirtualFolders"
 			},
 			{
 				"view": "gitlens.views.worktrees",
-				"contents": "Worktrees allow you to easily work on different branches of a repository simultaneously. You can create multiple working trees, each of which can be opened in individual windows or all together in a single workspace."
+				"contents": "%views.worktrees.welcome.content%"
 			},
 			{
 				"view": "gitlens.views.worktrees",
-				"contents": "[Create Worktree...](command:gitlens.views.createWorktree)",
+				"contents": "%views.worktrees.welcome.create%",
 				"when": "gitlens:plus:allowed"
 			},
 			{
 				"view": "gitlens.views.worktrees",
-				"contents": "Please verify your email\n\nTo use Worktrees, please verify the email for the account you created.\n\n[Resend verification email](command:gitlens.plus.resendVerification)\n\n[Refresh verification status](command:gitlens.plus.validate)",
+				"contents": "%views.worktrees.welcome.verifyEmail%",
 				"when": "gitlens:plus:state == -1"
 			},
 			{
 				"view": "gitlens.views.worktrees",
-				"contents": "Try worktrees now, without an account, for 3 days on public and private repos, or [sign in](command:gitlens.plus.loginOrSignUp \"Sign in to GitLens+\") for use on public repos.\n\n[Try worktrees now](command:gitlens.plus.startPreviewTrial)",
+				"contents": "%views.worktrees.welcome.trial%",
 				"when": "gitlens:plus:state == 0"
 			},
 			{
 				"view": "gitlens.views.worktrees",
-				"contents": "Sign in to use worktrees and other GitLens+ features on public repos and get a free 7-day trial for both public and private repos.\n\n[Sign in to GitLens+](command:gitlens.plus.loginOrSignUp)",
+				"contents": "%views.worktrees.welcome.signIn%",
 				"when": "gitlens:plus:state == 2"
 			},
 			{
 				"view": "gitlens.views.worktrees",
-				"contents": "[Upgrade your account](command:gitlens.plus.purchase)",
+				"contents": "%views.worktrees.welcome.upgrade%",
 				"when": "gitlens:plus:state == 4"
 			},
 			{
 				"view": "gitlens.views.worktrees",
-				"contents": "✨ Worktrees are a [GitLens+ feature](command:gitlens.plus.learn) which can be used on public repos with a [free account](command:gitlens.plus.loginOrSignUp) and private repos with a [paid account](command:gitlens.plus.purchase).\n\n🛈 All other GitLens features can always be used on any repo, without an account.",
+				"contents": "%views.worktrees.welcome.plus%",
 				"when": "gitlens:plus:state > -1"
 			}
 		],
@@ -10703,9 +10703,9 @@
 				{
 					"type": "webview",
 					"id": "gitlens.views.home",
-					"name": "Home",
+					"name": "%views.home.title%",
 					"when": "!gitlens:disabled && config.gitlens.plusFeatures.enabled",
-					"contextualTitle": "GitLens",
+					"contextualTitle": "%views.title%",
 					"icon": "images/gitlens-activitybar.svg",
 					"visibility": "visible"
 				}
@@ -10714,9 +10714,9 @@
 				{
 					"type": "webview",
 					"id": "gitlens.views.timeline",
-					"name": "Visual File History",
+					"name": "%views.timeline.title%",
 					"when": "!gitlens:disabled && config.gitlens.plusFeatures.enabled",
-					"contextualTitle": "GitLens",
+					"contextualTitle": "%views.title%",
 					"icon": "images/views/history.svg",
 					"visibility": "visible"
 				}
@@ -10726,7 +10726,7 @@
 					"id": "gitlens.views.commits",
 					"name": "%views.commits.title%",
 					"when": "!gitlens:disabled",
-					"contextualTitle": "GitLens",
+					"contextualTitle": "%views.title%",
 					"icon": "images/views/commits.svg",
 					"visibility": "visible"
 				},
@@ -10734,7 +10734,7 @@
 					"id": "gitlens.views.repositories",
 					"name": "%views.repositories.title%",
 					"when": "!gitlens:disabled && !gitlens:hasVirtualFolders",
-					"contextualTitle": "GitLens",
+					"contextualTitle": "%views.title%",
 					"icon": "images/views/repositories.svg",
 					"visibility": "hidden"
 				},
@@ -10742,15 +10742,15 @@
 					"id": "gitlens.views.fileHistory",
 					"name": "%views.fileHistory.title%",
 					"when": "!gitlens:disabled",
-					"contextualTitle": "GitLens",
+					"contextualTitle": "%views.title%",
 					"icon": "images/views/history.svg",
 					"visibility": "visible"
 				},
 				{
 					"id": "gitlens.views.lineHistory",
-					"name": "Line History",
+					"name": "%views.lineHistory.title%",
 					"when": "!gitlens:disabled && !gitlens:hasVirtualFolders",
-					"contextualTitle": "GitLens",
+					"contextualTitle": "%views.title%",
 					"icon": "images/views/history.svg",
 					"visibility": "hidden"
 				},
@@ -10758,7 +10758,7 @@
 					"id": "gitlens.views.branches",
 					"name": "%views.branches.title%",
 					"when": "!gitlens:disabled",
-					"contextualTitle": "GitLens",
+					"contextualTitle": "%views.title%",
 					"icon": "images/views/branches.svg",
 					"visibility": "collapsed"
 				},
@@ -10766,7 +10766,7 @@
 					"id": "gitlens.views.remotes",
 					"name": "%views.remotes.title%",
 					"when": "!gitlens:disabled",
-					"contextualTitle": "GitLens",
+					"contextualTitle": "%views.title%",
 					"icon": "images/views/remotes.svg",
 					"visibility": "collapsed"
 				},
@@ -10774,7 +10774,7 @@
 					"id": "gitlens.views.stashes",
 					"name": "%views.stashes.title%",
 					"when": "!gitlens:disabled && !gitlens:hasVirtualFolders",
-					"contextualTitle": "GitLens",
+					"contextualTitle": "%views.title%",
 					"icon": "images/views/stashes.svg",
 					"visibility": "collapsed"
 				},
@@ -10782,15 +10782,15 @@
 					"id": "gitlens.views.tags",
 					"name": "%views.tags.title%",
 					"when": "!gitlens:disabled",
-					"contextualTitle": "GitLens",
+					"contextualTitle": "%views.title%",
 					"icon": "images/views/tags.svg",
 					"visibility": "collapsed"
 				},
 				{
 					"id": "gitlens.views.worktrees",
-					"name": "Worktrees",
+					"name": "%views.worktrees.title%",
 					"when": "!gitlens:disabled && !gitlens:hasVirtualFolders && config.gitlens.plusFeatures.enabled",
-					"contextualTitle": "GitLens",
+					"contextualTitle": "%views.title%",
 					"icon": "images/views/worktrees.svg",
 					"visibility": "collapsed"
 				},
@@ -10798,15 +10798,15 @@
 					"id": "gitlens.views.contributors",
 					"name": "%views.contributors.title%",
 					"when": "!gitlens:disabled",
-					"contextualTitle": "GitLens",
+					"contextualTitle": "%views.title%",
 					"icon": "images/views/contributors.svg",
 					"visibility": "hidden"
 				},
 				{
 					"id": "gitlens.views.searchAndCompare",
-					"name": "Search & Compare",
+					"name": "%views.searchAndCompare.title%",
 					"when": "!gitlens:disabled",
-					"contextualTitle": "GitLens",
+					"contextualTitle": "%views.title%",
 					"icon": "images/views/search.svg",
 					"visibility": "collapsed"
 				}
