@@ -1,14 +1,11 @@
 import {
-	authentication,
 	AuthenticationProviderAuthenticationSessionsChangeEvent,
 	AuthenticationSession,
-	version as codeVersion,
 	commands,
 	Disposable,
 	env,
 	Event,
 	EventEmitter,
-	MarkdownString,
 	MessageItem,
 	StatusBarAlignment,
 	StatusBarItem,
@@ -16,30 +13,22 @@ import {
 	Uri,
 	window,
 } from 'vscode';
-import { fetch } from '@env/fetch';
-import { getPlatform } from '@env/platform';
-import { configuration } from '../../configuration';
 import { Commands, ContextKeys } from '../../constants';
 import type { Container } from '../../container';
 import { setContext } from '../../context';
-import { AccountValidationError } from '../../errors';
 import { RepositoriesChangeEvent } from '../../git/gitProviderService';
-import { Logger } from '../../logger';
-import { StorageKeys } from '../../storage';
 import {
-	computeSubscriptionState,
 	getSubscriptionPlan,
-	getSubscriptionPlanName,
 	getSubscriptionPlanPriority,
 	getSubscriptionTimeRemaining,
-	getTimeRemaining,
-	isSubscriptionExpired,
 	isSubscriptionPaidPlan,
 	isSubscriptionTrial,
 	Subscription,
 	SubscriptionPlanId,
 	SubscriptionState,
 } from '../../subscription';
+import { configuration } from '../../configuration';
+import { StorageKeys } from '../../storage';
 import { executeCommand } from '../../system/command';
 import { createFromDateDelta } from '../../system/date';
 import { gate } from '../../system/decorators/gate';
@@ -76,7 +65,7 @@ export class SubscriptionService implements Disposable {
 		this._disposable = Disposable.from(
 			once(container.onReady)(this.onReady, this),
 			this.container.subscriptionAuthentication.onDidChangeSessions(
-				e => setTimeout(() => this.onAuthenticationChanged(e), 0),
+				(e: AuthenticationProviderAuthenticationSessionsChangeEvent) => setTimeout(() => this.onAuthenticationChanged(e), 0),
 				this,
 			),
 		);
@@ -97,7 +86,7 @@ export class SubscriptionService implements Disposable {
 			session = await this._sessionPromise;
 		}
 
-		if (session != null && e.removed?.some(s => s.id === session!.id)) {
+		if (session != null && e.removed?.some((s: AuthenticationSession) => s.id === session!.id)) {
 			this._session = undefined;
 			this._sessionPromise = undefined;
 			void this.logout();
@@ -179,7 +168,7 @@ export class SubscriptionService implements Disposable {
 		void this.container.viewCommands;
 
 		return [
-			commands.registerCommand(Commands.PlusLearn, openToSide => this.learn(openToSide)),
+			commands.registerCommand(Commands.PlusLearn, (openToSide: boolean) => this.learn(openToSide)),
 			commands.registerCommand(Commands.PlusLoginOrSignUp, () => this.loginOrSignUp()),
 			commands.registerCommand(Commands.PlusLogout, () => this.logout()),
 
@@ -216,54 +205,8 @@ export class SubscriptionService implements Disposable {
 	@gate()
 	@log()
 	async loginOrSignUp(): Promise<boolean> {
-		if (!(await ensurePlusFeaturesEnabled())) return false;
-
-		void this.showHomeView();
-
-		const session = await this.ensureSession(true);
-		const loggedIn = Boolean(session);
-		if (loggedIn) {
-			const {
-				account,
-				plan: { actual, effective },
-			} = this._subscription;
-
-			if (account?.verified === false) {
-				const confirm: MessageItem = { title: 'Resend Verification', isCloseAffordance: true };
-				const cancel: MessageItem = { title: 'Cancel' };
-				const result = await window.showInformationMessage(
-					`Before you can access your ${actual.name} account, you must verify your email address.`,
-					confirm,
-					cancel,
-				);
-
-				if (result === confirm) {
-					void this.resendVerification();
-				}
-			} else if (isSubscriptionTrial(this._subscription)) {
-				const remaining = getSubscriptionTimeRemaining(this._subscription, 'days');
-
-				const confirm: MessageItem = { title: 'OK', isCloseAffordance: true };
-				const learn: MessageItem = { title: 'Learn More' };
-				const result = await window.showInformationMessage(
-					`You are now signed in to your ${
-						actual.name
-					} account which gives you access to GitLens+ features on public repos.\n\nYou were also granted a trial of ${
-						effective.name
-					} for both public and private repos for ${pluralize('more day', remaining ?? 0)}.`,
-					{ modal: true },
-					confirm,
-					learn,
-				);
-
-				if (result === learn) {
-					void this.learn();
-				}
-			} else {
-				void window.showInformationMessage(`You are now signed in to your ${actual.name} account.`, 'OK');
-			}
-		}
-		return loggedIn;
+		await Promise.resolve();
+		return true;
 	}
 
 	@gate()
@@ -313,51 +256,7 @@ export class SubscriptionService implements Disposable {
 	@gate()
 	@log()
 	async resendVerification(): Promise<void> {
-		if (this._subscription.account?.verified) return;
-
-		const cc = Logger.getCorrelationContext();
-
-		void this.showHomeView(true);
-
-		const session = await this.ensureSession(false);
-		if (session == null) return;
-
-		try {
-			const rsp = await fetch(Uri.joinPath(this.baseApiUri, 'resend-email').toString(), {
-				method: 'POST',
-				headers: {
-					Authorization: `Bearer ${session.accessToken}`,
-					'User-Agent': userAgent,
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ id: session.account.id }),
-			});
-
-			if (!rsp.ok) {
-				debugger;
-				Logger.error('', cc, `Unable to resend verification email; status=(${rsp.status}): ${rsp.statusText}`);
-
-				void window.showErrorMessage(`Unable to resend verification email; Status: ${rsp.statusText}`, 'OK');
-
-				return;
-			}
-
-			const confirm = { title: 'Recheck' };
-			const cancel = { title: 'Cancel' };
-			const result = await window.showInformationMessage(
-				"Once you have verified your email address, click 'Recheck'.",
-				confirm,
-				cancel,
-			);
-			if (result === confirm) {
-				await this.validate();
-			}
-		} catch (ex) {
-			Logger.error(ex, cc);
-			debugger;
-
-			void window.showErrorMessage('Unable to resend verification email', 'OK');
-		}
+		// Do nothing
 	}
 
 	@log()
@@ -444,65 +343,15 @@ export class SubscriptionService implements Disposable {
 	@gate()
 	@log()
 	async validate(): Promise<void> {
-		const cc = Logger.getCorrelationContext();
-
-		const session = await this.ensureSession(false);
-		if (session == null) {
-			this.changeSubscription(this._subscription);
-			return;
-		}
-
-		try {
-			await this.checkInAndValidate(session);
-		} catch (ex) {
-			Logger.error(ex, cc);
-			debugger;
-		}
+		await Promise.resolve();
+		this.changeSubscription(this._subscription);
 	}
 
 	private _lastCheckInDate: Date | undefined;
 	@debug<SubscriptionService['checkInAndValidate']>({ args: { 0: s => s?.account.label } })
-	private async checkInAndValidate(session: AuthenticationSession): Promise<void> {
-		const cc = Logger.getCorrelationContext();
-
-		try {
-			const checkInData = {
-				id: session.account.id,
-				platform: getPlatform(),
-				gitlensVersion: this.container.version,
-				vscodeEdition: env.appName,
-				vscodeHost: env.appHost,
-				vscodeVersion: codeVersion,
-				previewStartedOn: this._subscription.previewTrial?.startedOn,
-				previewExpiresOn: this._subscription.previewTrial?.expiresOn,
-			};
-
-			const rsp = await fetch(Uri.joinPath(this.baseApiUri, 'gitlens/checkin').toString(), {
-				method: 'POST',
-				headers: {
-					Authorization: `Bearer ${session.accessToken}`,
-					'User-Agent': userAgent,
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(checkInData),
-			});
-
-			if (!rsp.ok) {
-				throw new AccountValidationError('Unable to validate account', undefined, rsp.status, rsp.statusText);
-			}
-
-			const data: GKLicenseInfo = await rsp.json();
-			this.validateSubscription(data);
-			this._lastCheckInDate = new Date();
-		} catch (ex) {
-			Logger.error(ex, cc);
-			debugger;
-			if (ex instanceof AccountValidationError) throw ex;
-
-			throw new AccountValidationError('Unable to validate account', ex);
-		} finally {
-			this.startDailyCheckInTimer();
-		}
+	private async checkInAndValidate(_session: AuthenticationSession): Promise<void> {
+		await Promise.resolve();
+		this.startDailyCheckInTimer();
 	}
 
 	private _dailyCheckInTimer: ReturnType<typeof setInterval> | undefined;
@@ -537,7 +386,7 @@ export class SubscriptionService implements Disposable {
 				(a, b) =>
 					licenseStatusPriority(b[1].latestStatus) - licenseStatusPriority(a[1].latestStatus) ||
 					getSubscriptionPlanPriority(convertLicenseTypeToPlanId(b[0])) -
-						getSubscriptionPlanPriority(convertLicenseTypeToPlanId(a[0])),
+					getSubscriptionPlanPriority(convertLicenseTypeToPlanId(a[0])),
 			);
 
 			const [licenseType, license] = paidLicenses[0];
@@ -561,7 +410,7 @@ export class SubscriptionService implements Disposable {
 				(a, b) =>
 					licenseStatusPriority(b[1].latestStatus) - licenseStatusPriority(a[1].latestStatus) ||
 					getSubscriptionPlanPriority(convertLicenseTypeToPlanId(b[0])) -
-						getSubscriptionPlanPriority(convertLicenseTypeToPlanId(a[0])),
+					getSubscriptionPlanPriority(convertLicenseTypeToPlanId(a[0])),
 			);
 
 			const [licenseType, license] = effectiveLicenses[0];
@@ -591,131 +440,44 @@ export class SubscriptionService implements Disposable {
 
 	@gate()
 	@debug()
-	private async ensureSession(createIfNeeded: boolean, force?: boolean): Promise<AuthenticationSession | undefined> {
-		if (this._sessionPromise != null && this._session === undefined) {
-			void (await this._sessionPromise);
-		}
-
-		if (!force && this._session != null) return this._session;
-		if (this._session === null && !createIfNeeded) return undefined;
-
-		if (this._sessionPromise === undefined) {
-			this._sessionPromise = this.getOrCreateSession(createIfNeeded).then(
-				s => {
-					this._session = s;
-					this._sessionPromise = undefined;
-					return this._session;
-				},
-				() => {
-					this._session = null;
-					this._sessionPromise = undefined;
-					return this._session;
-				},
-			);
-		}
-
-		const session = await this._sessionPromise;
-		return session ?? undefined;
+	private async ensureSession(_createIfNeeded: boolean, _force?: boolean): Promise<AuthenticationSession | undefined> {
+		await Promise.resolve();
+		return {
+			id: 'unlocked-session',
+			accessToken: 'unlocked-token',
+			account: {
+				id: 'unlocked',
+				label: 'GitLens Unlocked',
+			},
+			scopes: ['gitlens'],
+		};
 	}
 
 	@debug()
-	private async getOrCreateSession(createIfNeeded: boolean): Promise<AuthenticationSession | null> {
-		const cc = Logger.getCorrelationContext();
-
-		let session: AuthenticationSession | null | undefined;
-
-		try {
-			session = await authentication.getSession(
-				SubscriptionService.authenticationProviderId,
-				SubscriptionService.authenticationScopes,
-				{
-					createIfNone: createIfNeeded,
-					silent: !createIfNeeded,
-				},
-			);
-		} catch (ex) {
-			session = null;
-
-			if (ex instanceof Error && ex.message.includes('User did not consent')) {
-				this.logout();
-				return null;
-			}
-
-			Logger.error(ex, cc);
-		}
-
-		// If we didn't find a session, check if we could migrate one from the GK auth provider
-		if (session === undefined) {
-			session = await this.container.subscriptionAuthentication.tryMigrateSession();
-		}
-
-		if (session == null) {
-			this.logout();
-			return session ?? null;
-		}
-
-		try {
-			await this.checkInAndValidate(session);
-		} catch (ex) {
-			Logger.error(ex, cc);
-			debugger;
-
-			const name = session.account.label;
-			session = null;
-			if (ex instanceof AccountValidationError) {
-				this.logout();
-
-				if (createIfNeeded) {
-					void window.showErrorMessage(
-						`Unable to sign in to your GitLens+ account. Please try again. If this issue persists, please contact support. Account=${name} Error=${ex.message}`,
-						'OK',
-					);
-				}
-			}
-		}
-
-		return session;
+	private async getOrCreateSession(_createIfNeeded: boolean): Promise<AuthenticationSession | null> {
+		return this.ensureSession(true) as Promise<AuthenticationSession>;
 	}
 
 	@debug()
 	private changeSubscription(
-		subscription: Optional<Subscription, 'state'> | undefined,
+		_subscription: Optional<Subscription, 'state'> | undefined,
 		silent: boolean = false,
 	): void {
-		if (subscription == null) {
-			subscription = {
-				plan: {
-					actual: getSubscriptionPlan(SubscriptionPlanId.Free),
-					effective: getSubscriptionPlan(SubscriptionPlanId.Free),
-				},
-				account: undefined,
-				state: SubscriptionState.Free,
-			};
-		}
+		const subscription: Subscription = {
+			plan: {
+				actual: getSubscriptionPlan(SubscriptionPlanId.Enterprise),
+				effective: getSubscriptionPlan(SubscriptionPlanId.Enterprise),
+			},
+			account: {
+				id: 'unlocked',
+				name: 'GitLens Unlocked',
+				email: 'unlocked@example.com',
+				verified: true,
+			},
+			state: SubscriptionState.Paid,
+		};
 
-		// If the effective plan is Free, then check if the preview has expired, if not apply it
-		if (
-			subscription.plan.effective.id === SubscriptionPlanId.Free &&
-			subscription.previewTrial != null &&
-			(getTimeRemaining(subscription.previewTrial.expiresOn) ?? 0) > 0
-		) {
-			(subscription.plan as PickMutable<Subscription['plan'], 'effective'>).effective = getSubscriptionPlan(
-				SubscriptionPlanId.Pro,
-				new Date(subscription.previewTrial.startedOn),
-				new Date(subscription.previewTrial.expiresOn),
-			);
-		}
-
-		// If the effective plan has expired, then replace it with the actual plan
-		if (isSubscriptionExpired(subscription)) {
-			(subscription.plan as PickMutable<Subscription['plan'], 'effective'>).effective = subscription.plan.actual;
-		}
-
-		subscription.state = computeSubscriptionState(subscription);
-		assertSubscriptionState(subscription);
-		void this.storeSubscription(subscription);
-
-		const previous = this._subscription; // Can be undefined here, since we call this in the constructor
+		const previous = this._subscription;
 		this._subscription = subscription;
 
 		this._etag = Date.now();
@@ -727,20 +489,19 @@ export class SubscriptionService implements Disposable {
 	}
 
 	private getStoredSubscription(): Subscription | undefined {
-		const storedSubscription = this.container.storage.get<Stored<Subscription>>(StorageKeys.Subscription);
-
-		const subscription = storedSubscription?.data;
-		if (subscription != null) {
-			// Migrate the plan names to the latest names
-			(subscription.plan.actual as Mutable<Subscription['plan']['actual']>).name = getSubscriptionPlanName(
-				subscription.plan.actual.id,
-			);
-			(subscription.plan.effective as Mutable<Subscription['plan']['effective']>).name = getSubscriptionPlanName(
-				subscription.plan.effective.id,
-			);
-		}
-
-		return subscription;
+		return {
+			plan: {
+				actual: getSubscriptionPlan(SubscriptionPlanId.Enterprise),
+				effective: getSubscriptionPlan(SubscriptionPlanId.Enterprise),
+			},
+			account: {
+				id: 'unlocked',
+				name: 'GitLens Unlocked',
+				email: 'unlocked@example.com',
+				verified: true,
+			},
+			state: SubscriptionState.Paid,
+		};
 	}
 
 	private async storeSubscription(subscription: Subscription): Promise<void> {
@@ -753,85 +514,20 @@ export class SubscriptionService implements Disposable {
 	private updateContext(): void {
 		void this.updateStatusBar();
 
-		queueMicrotask(async () => {
-			const { allowed, subscription } = await this.container.git.access();
-			const required = allowed
-				? false
-				: subscription.required != null && isSubscriptionPaidPlan(subscription.required)
-				? 'paid'
-				: 'free+';
-			void setContext(ContextKeys.PlusAllowed, allowed);
-			void setContext(ContextKeys.PlusRequired, required);
-		});
+		void setContext(ContextKeys.PlusAllowed, true);
+		void setContext(ContextKeys.PlusRequired, false);
 
-		const {
-			plan: { actual },
-			state,
-		} = this._subscription;
-
-		void setContext(ContextKeys.Plus, actual.id != SubscriptionPlanId.Free ? actual.id : undefined);
-		void setContext(ContextKeys.PlusState, state);
+		void setContext(ContextKeys.Plus, SubscriptionPlanId.Enterprise);
+		void setContext(ContextKeys.PlusState, SubscriptionState.Paid);
 	}
 
 	private updateStatusBar(): void {
-		const {
-			account,
-			plan: { effective },
-		} = this._subscription;
-
-		if (effective.id === SubscriptionPlanId.Free) {
-			this._statusBarSubscription?.dispose();
-			this._statusBarSubscription = undefined;
-			return;
-		}
-
-		const trial = isSubscriptionTrial(this._subscription);
-		if (!trial && account?.verified !== false) {
-			this._statusBarSubscription?.dispose();
-			this._statusBarSubscription = undefined;
-			return;
-		}
-
-		if (this._statusBarSubscription == null) {
-			this._statusBarSubscription = window.createStatusBarItem(
-				'gitlens.plus.subscription',
-				StatusBarAlignment.Left,
-				1,
-			);
-		}
-
-		this._statusBarSubscription.name = 'GitLens+ Subscription';
-		this._statusBarSubscription.command = Commands.ShowHomeView;
-
-		if (account?.verified === false) {
-			this._statusBarSubscription.text = `$(warning) ${effective.name} (Unverified)`;
-			this._statusBarSubscription.backgroundColor = new ThemeColor('statusBarItem.warningBackground');
-			this._statusBarSubscription.tooltip = new MarkdownString(
-				trial
-					? `**Please verify your email**\n\nBefore you can start your **${effective.name}** trial, please verify the email for the account you created.\n\nClick for details`
-					: `**Please verify your email**\n\nBefore you can use GitLens+ features, please verify the email for the account you created.\n\nClick for details`,
-				true,
-			);
-		} else {
-			const remaining = getSubscriptionTimeRemaining(this._subscription, 'days');
-
-			this._statusBarSubscription.text = `${effective.name} (Trial)`;
-			this._statusBarSubscription.tooltip = new MarkdownString(
-				`You are currently trialing **${
-					effective.name
-				}**, which gives you access to GitLens+ features on both public and private repos. You have ${pluralize(
-					'day',
-					remaining ?? 0,
-				)} remaining in your trial.\n\nClick for details`,
-				true,
-			);
-		}
-
-		this._statusBarSubscription.show();
+		this._statusBarSubscription?.dispose();
+		this._statusBarSubscription = undefined;
 	}
 }
 
-function assertSubscriptionState(subscription: Optional<Subscription, 'state'>): asserts subscription is Subscription {}
+function assertSubscriptionState(subscription: Optional<Subscription, 'state'>): asserts subscription is Subscription { }
 
 interface GKLicenseInfo {
 	user: GKUser;

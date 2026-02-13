@@ -34,7 +34,7 @@ module.exports =
 			analyzeBundle: false,
 			analyzeDeps: false,
 			esbuild: true,
-			squoosh: true,
+			squoosh: false,
 			...env,
 		};
 
@@ -120,44 +120,44 @@ function getExtensionConfig(target, mode, env) {
 				new TerserPlugin(
 					env.esbuild
 						? {
-								minify: TerserPlugin.esbuildMinify,
-								terserOptions: {
-									// @ts-ignore
-									drop: ['debugger'],
-									format: 'cjs',
-									minify: true,
-									treeShaking: true,
-									// Keep the class names otherwise @log won't provide a useful name
-									keepNames: true,
-									target: 'es2020',
-								},
-						  }
+							minify: TerserPlugin.esbuildMinify,
+							terserOptions: {
+								// @ts-ignore
+								drop: ['debugger'],
+								format: 'cjs',
+								minify: true,
+								treeShaking: true,
+								// Keep the class names otherwise @log won't provide a useful name
+								keepNames: true,
+								target: 'es2020',
+							},
+						}
 						: {
-								compress: {
-									drop_debugger: true,
-								},
-								extractComments: false,
-								parallel: true,
-								terserOptions: {
-									ecma: 2020,
-									// Keep the class names otherwise @log won't provide a useful name
-									keep_classnames: true,
-									module: true,
-								},
-						  },
+							compress: {
+								drop_debugger: true,
+							},
+							extractComments: false,
+							parallel: true,
+							terserOptions: {
+								ecma: 2020,
+								// Keep the class names otherwise @log won't provide a useful name
+								keep_classnames: true,
+								module: true,
+							},
+						},
 				),
 			],
 			splitChunks:
 				target === 'webworker'
 					? false
 					: {
-							// Disable all non-async code splitting
-							chunks: () => false,
-							cacheGroups: {
-								default: false,
-								vendors: false,
-							},
-					  },
+						// Disable all non-async code splitting
+						chunks: () => false,
+						cacheGroups: {
+							default: false,
+							vendors: false,
+						},
+					},
 		},
 		externals: {
 			vscode: 'commonjs vscode',
@@ -170,30 +170,30 @@ function getExtensionConfig(target, mode, env) {
 					test: /\.tsx?$/,
 					use: env.esbuild
 						? {
-								loader: 'esbuild-loader',
-								options: {
-									implementation: esbuild,
-									loader: 'ts',
-									target: ['es2020', 'chrome91', 'node14.16'],
-									tsconfigRaw: resolveTSConfig(
-										path.join(
-											__dirname,
-											target === 'webworker' ? 'tsconfig.browser.json' : 'tsconfig.json',
-										),
-									),
-								},
-						  }
-						: {
-								loader: 'ts-loader',
-								options: {
-									configFile: path.join(
+							loader: 'esbuild-loader',
+							options: {
+								implementation: esbuild,
+								loader: 'ts',
+								target: ['es2020', 'chrome91', 'node14.16'],
+								tsconfigRaw: resolveTSConfig(
+									path.join(
 										__dirname,
 										target === 'webworker' ? 'tsconfig.browser.json' : 'tsconfig.json',
 									),
-									experimentalWatchApi: true,
-									transpileOnly: true,
-								},
-						  },
+								),
+							},
+						}
+						: {
+							loader: 'ts-loader',
+							options: {
+								configFile: path.join(
+									__dirname,
+									target === 'webworker' ? 'tsconfig.browser.json' : 'tsconfig.json',
+								),
+								experimentalWatchApi: true,
+								transpileOnly: true,
+							},
+						},
 				},
 			],
 		},
@@ -236,12 +236,12 @@ function getWebviewsConfig(mode, env) {
 		new CleanPlugin(
 			mode === 'production'
 				? {
-						cleanOnceBeforeBuildPatterns: [
-							path.posix.join(__dirname.replace(/\\/g, '/'), 'dist', 'webviews', 'media', '**'),
-						],
-						dangerouslyAllowCleanPatternsOutsideProject: true,
-						dry: false,
-				  }
+					cleanOnceBeforeBuildPatterns: [
+						path.posix.join(__dirname.replace(/\\/g, '/'), 'dist', 'webviews', 'media', '**'),
+					],
+					dangerouslyAllowCleanPatternsOutsideProject: true,
+					dry: false,
+				}
 				: undefined,
 		),
 		new ForkTsCheckerPlugin({
@@ -319,40 +319,37 @@ function getWebviewsConfig(mode, env) {
 				new TerserPlugin(
 					env.esbuild
 						? {
-								minify: TerserPlugin.esbuildMinify,
-								terserOptions: {
-									// @ts-ignore
-									drop: ['debugger', 'console'],
-									// @ts-ignore
-									format: 'esm',
-									minify: true,
-									treeShaking: true,
-									// // Keep the class names otherwise @log won't provide a useful name
-									// keepNames: true,
-									target: 'es2020',
-								},
-						  }
-						: {
-								compress: {
-									drop_debugger: true,
-									drop_console: true,
-								},
-								extractComments: false,
-								parallel: true,
+							minify: TerserPlugin.esbuildMinify,
+							terserOptions: {
 								// @ts-ignore
-								terserOptions: {
-									ecma: 2020,
-									// // Keep the class names otherwise @log won't provide a useful name
-									// keep_classnames: true,
-									module: true,
-								},
-						  },
+								drop: ['debugger', 'console'],
+								// @ts-ignore
+								format: 'esm',
+								minify: true,
+								treeShaking: true,
+								// // Keep the class names otherwise @log won't provide a useful name
+								// keepNames: true,
+								target: 'es2020',
+							},
+						}
+						: {
+							compress: {
+								drop_debugger: true,
+								drop_console: true,
+							},
+							extractComments: false,
+							parallel: true,
+							// @ts-ignore
+							terserOptions: {
+								ecma: 2020,
+								// // Keep the class names otherwise @log won't provide a useful name
+								// keep_classnames: true,
+								module: true,
+							},
+						},
 				),
-				new ImageMinimizerPlugin({
-					deleteOriginalAssets: true,
-					generator: [imageGeneratorConfig],
-				}),
 			],
+
 		},
 		module: {
 			rules: [
@@ -362,22 +359,22 @@ function getWebviewsConfig(mode, env) {
 					test: /\.tsx?$/,
 					use: env.esbuild
 						? {
-								loader: 'esbuild-loader',
-								options: {
-									implementation: esbuild,
-									loader: 'ts',
-									target: 'es2020',
-									tsconfigRaw: resolveTSConfig(path.join(basePath, 'tsconfig.json')),
-								},
-						  }
+							loader: 'esbuild-loader',
+							options: {
+								implementation: esbuild,
+								loader: 'ts',
+								target: 'es2020',
+								tsconfigRaw: resolveTSConfig(path.join(basePath, 'tsconfig.json')),
+							},
+						}
 						: {
-								loader: 'ts-loader',
-								options: {
-									configFile: path.join(basePath, 'tsconfig.json'),
-									experimentalWatchApi: true,
-									transpileOnly: true,
-								},
-						  },
+							loader: 'ts-loader',
+							options: {
+								configFile: path.join(basePath, 'tsconfig.json'),
+								experimentalWatchApi: true,
+								transpileOnly: true,
+							},
+						},
 				},
 				{
 					test: /\.scss$/,
@@ -470,34 +467,34 @@ function getImageMinimizerConfig(mode, env) {
 	// @ts-ignore
 	return env.squoosh
 		? {
-				type: 'asset',
-				implementation: ImageMinimizerPlugin.squooshGenerate,
-				options: {
-					encodeOptions: {
-						webp: {
-							// quality: 90,
-							lossless: 1,
-						},
+			type: 'asset',
+			implementation: ImageMinimizerPlugin.squooshGenerate,
+			options: {
+				encodeOptions: {
+					webp: {
+						// quality: 90,
+						lossless: 1,
 					},
 				},
-		  }
+			},
+		}
 		: {
-				type: 'asset',
-				implementation: ImageMinimizerPlugin.imageminGenerate,
-				options: {
-					plugins: [
-						[
-							'imagemin-webp',
-							{
-								lossless: true,
-								nearLossless: 0,
-								quality: 100,
-								method: mode === 'production' ? 4 : 0,
-							},
-						],
+			type: 'asset',
+			implementation: ImageMinimizerPlugin.imageminGenerate,
+			options: {
+				plugins: [
+					[
+						'imagemin-webp',
+						{
+							lossless: true,
+							nearLossless: 0,
+							quality: 100,
+							method: mode === 'production' ? 4 : 0,
+						},
 					],
-				},
-		  };
+				],
+			},
+		};
 }
 
 /**
@@ -518,15 +515,15 @@ function getHtmlPlugin(name, plus, mode, env) {
 		minify:
 			mode === 'production'
 				? {
-						removeComments: true,
-						collapseWhitespace: true,
-						removeRedundantAttributes: false,
-						useShortDoctype: true,
-						removeEmptyAttributes: true,
-						removeStyleLinkTypeAttributes: true,
-						keepClosingSlash: true,
-						minifyCSS: true,
-				  }
+					removeComments: true,
+					collapseWhitespace: true,
+					removeRedundantAttributes: false,
+					useShortDoctype: true,
+					removeEmptyAttributes: true,
+					removeStyleLinkTypeAttributes: true,
+					keepClosingSlash: true,
+					minifyCSS: true,
+				}
 				: false,
 	});
 }
@@ -583,7 +580,7 @@ class InlineChunkHtmlPlugin {
  * @returns { string }
  */
 function resolveTSConfig(configFile) {
-	const result = spawnSync('yarn', ['tsc', `-p ${configFile}`, '--showConfig'], {
+	const result = spawnSync(`"${path.join(__dirname, 'node_modules', '.bin', 'tsc.cmd')}"`, ['-p', `"${configFile}"`, '--showConfig'], {
 		cwd: __dirname,
 		encoding: 'utf8',
 		shell: true,

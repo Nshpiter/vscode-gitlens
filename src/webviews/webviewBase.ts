@@ -1,6 +1,7 @@
 import {
 	commands,
 	Disposable,
+	env,
 	Uri,
 	ViewColumn,
 	Webview,
@@ -186,13 +187,14 @@ export abstract class WebviewBase<State> implements Disposable {
 	private async getHtml(webview: Webview): Promise<string> {
 		const webRootUri = Uri.joinPath(this.container.context.extensionUri, 'dist', 'webviews');
 		const uri = Uri.joinPath(webRootUri, this.fileName);
-		const content = new TextDecoder('utf8').decode(await workspace.fs.readFile(uri));
+		const content = new TextDecoder('utf8').decode(await (workspace as any).fs.readFile(uri));
 
-		const [bootstrap, head, body, endOfBody] = await Promise.all([
+		const [bootstrap, head, body, endOfBody, nls] = await Promise.all([
 			this.includeBootstrap?.(),
 			this.includeHead?.(),
 			this.includeBody?.(),
 			this.includeEndOfBody?.(),
+			this.getLocalization(),
 		]);
 
 		const cspSource = webview.cspSource;
@@ -201,8 +203,8 @@ export abstract class WebviewBase<State> implements Disposable {
 		const root = webview.asWebviewUri(this.container.context.extensionUri).toString();
 		const webRoot = webview.asWebviewUri(webRootUri).toString();
 
-		const html = content
-			.replace(/#{(head|body|endOfBody)}/i, (_substring, token) => {
+		let html = content
+			.replace(/#{(head|body|endOfBody)}/i, (_substring: string, token: string) => {
 				switch (token) {
 					case 'head':
 						return head ?? '';
@@ -211,14 +213,14 @@ export abstract class WebviewBase<State> implements Disposable {
 					case 'endOfBody':
 						return bootstrap != null
 							? `<script type="text/javascript" nonce="#{cspNonce}">window.bootstrap = ${JSON.stringify(
-									bootstrap,
-							  )};</script>${endOfBody ?? ''}`
+								bootstrap,
+							)};</script>${endOfBody ?? ''}`
 							: endOfBody ?? '';
 					default:
 						return '';
 				}
 			})
-			.replace(/#{(cspSource|cspNonce|root|webroot)}/g, (substring, token) => {
+			.replace(/#{(cspSource|cspNonce|root|webroot)}/g, (_substring: string, token: string) => {
 				switch (token) {
 					case 'cspSource':
 						return cspSource;
@@ -232,12 +234,67 @@ export abstract class WebviewBase<State> implements Disposable {
 						return '';
 				}
 			});
+		html = this.applyLocalization(html, nls);
 
 		return html;
 	}
 
-	protected notify<T extends IpcNotificationType<any>>(type: T, params: IpcMessageParams<T>): Thenable<boolean> {
-		return this.postMessage({ id: nextIpcId(), method: type.method, params: params });
+	private applyLocalization(html: string, nls: Record<string, string>): string {
+		const regex = /%\{([^%|]+)(?:\|([^%]*))?\}%/g;
+		let iteration = 0;
+		let hasMatches = true;
+
+		while (hasMatches && iteration < 5) {
+			hasMatches = false;
+			// eslint-disable-next-line no-loop-func
+			html = html.replace(regex, (substring: string, key: string, defaultValue: string | undefined) => {
+				let value = nls[key] ?? nls[`gitlens.${key}`] ?? defaultValue;
+				if (value == null && key === 'plan') {
+					value = 'GitLens+ Enterprise';
+				}
+
+				if (value != null && value !== substring) {
+					hasMatches = true;
+					return value;
+				}
+				return substring;
+			});
+			iteration++;
+		}
+		return html;
+	}
+
+	private _nls: Record<string, string> | undefined;
+	protected async getLocalization(): Promise<Record<string, string>> {
+		if (this._nls != null) return this._nls;
+
+		const nls: Record<string, string> = {};
+		try {
+			const rootUri = this.container.context.extensionUri;
+			const defaultNlsUri = Uri.joinPath(rootUri, 'package.nls.json');
+			const defaultNlsContent = await workspace.fs.readFile(defaultNlsUri);
+			Object.assign(nls, JSON.parse(new TextDecoder('utf8').decode(defaultNlsContent)));
+
+			const lang = env.language;
+			if (lang !== 'en') {
+				const localizedNlsUri = Uri.joinPath(rootUri, `package.nls.${lang}.json`);
+				try {
+					const localizedNlsContent = await workspace.fs.readFile(localizedNlsUri);
+					Object.assign(nls, JSON.parse(new TextDecoder('utf8').decode(localizedNlsContent)));
+				} catch {
+					// Localized NLS not found, fallback to default
+				}
+			}
+		} catch (ex) {
+			Logger.error(ex, 'WebviewBase.getLocalization');
+		}
+
+		this._nls = nls;
+		return nls;
+	}
+
+	protected notify<T extends IpcNotificationType<any>>(type: T, params: IpcMessageParams<T>): Promise<boolean> {
+		return Promise.resolve(this.postMessage({ id: nextIpcId(), method: type.method, params: params }));
 	}
 
 	private postMessage(message: IpcMessage) {
