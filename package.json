@@ -3174,7 +3174,7 @@
 					},
 					"gitlens.advanced.useSymmetricDifferenceNotation": {
 						"deprecationMessage": "Deprecated. This setting is no longer used",
-						"markdownDescription": "Deprecated. This setting is no longer used"
+						"markdownDeprecationMessage": "Deprecated. This setting is no longer used"
 					}
 				}
 			},
@@ -3660,8 +3660,14 @@
 			},
 			{
 				"command": "gitlens.getStarted",
-				"title": "Get Started",
+				"title": "%command.getStarted.title%",
 				"category": "GitLens"
+			},
+			{
+				"command": "gitlens.openSettings",
+				"title": "%command.openSettings.title%",
+				"category": "GitLens",
+				"icon": "$(gear)"
 			},
 			{
 				"command": "gitlens.showSettingsPage",
@@ -3743,7 +3749,7 @@
 			},
 			{
 				"command": "gitlens.showTimelinePage",
-				"title": "Open Visual File History of Active File",
+				"title": "%command.showTimelinePage.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-history.svg",
@@ -3758,72 +3764,72 @@
 			},
 			{
 				"command": "gitlens.showWelcomePage",
-				"title": "Welcome (Quick Setup)",
+				"title": "%command.showWelcomePage.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.showBranchesView",
-				"title": "Show Branches View",
+				"title": "%command.showBranchesView.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.showCommitsView",
-				"title": "Show Commits View",
+				"title": "%command.showCommitsView.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.showContributorsView",
-				"title": "Show Contributors View",
+				"title": "%command.showContributorsView.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.showFileHistoryView",
-				"title": "Show File History View",
+				"title": "%command.showFileHistoryView.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.showHomeView",
-				"title": "Show Home View",
+				"title": "%command.showHomeView.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.showLineHistoryView",
-				"title": "Show Line History View",
+				"title": "%command.showLineHistoryView.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.showRemotesView",
-				"title": "Show Remotes View",
+				"title": "%command.showRemotesView.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.showRepositoriesView",
-				"title": "Show Repositories View",
+				"title": "%command.showRepositoriesView.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.showSearchAndCompareView",
-				"title": "Show Search And Compare Commits View",
+				"title": "%command.showSearchAndCompareView.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.showStashesView",
-				"title": "Show Stashes View",
+				"title": "%command.showStashesView.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.showTagsView",
-				"title": "Show Tags View",
+				"title": "%command.showTagsView.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.showTimelineView",
-				"title": "Show Visual File History View",
+				"title": "%command.showTimelineView.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.showWorktreesView",
-				"title": "Show Worktrees View",
+				"title": "%command.showWorktreesView.title%",
 				"category": "GitLens"
 			},
 			{
@@ -3856,7 +3862,7 @@
 			},
 			{
 				"command": "gitlens.diffWithNext",
-				"title": "Open Changes with Next Revision",
+				"title": "%command.diffWithNext.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-next-commit.svg",
@@ -3866,7 +3872,7 @@
 			},
 			{
 				"command": "gitlens.diffWithNextInDiffLeft",
-				"title": "Open Changes with Next Revision",
+				"title": "%command.diffWithNext.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-next-commit.svg",
@@ -3876,7 +3882,7 @@
 			},
 			{
 				"command": "gitlens.diffWithNextInDiffRight",
-				"title": "Open Changes with Next Revision",
+				"title": "%command.diffWithNext.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-next-commit.svg",
@@ -3886,7 +3892,7 @@
 			},
 			{
 				"command": "gitlens.diffWithPrevious",
-				"title": "Open Changes with Previous Revision",
+				"title": "%command.diffWithPrevious.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-prev-commit.svg",
@@ -3895,7 +3901,7 @@
 			},
 			{
 				"command": "gitlens.diffWithPreviousInDiffLeft",
-				"title": "Open Changes with Previous Revision",
+				"title": "%command.diffWithPrevious.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-prev-commit.svg",
@@ -3904,7 +3910,7 @@
 			},
 			{
 				"command": "gitlens.diffWithPreviousInDiffRight",
-				"title": "Open Changes with Previous Revision",
+				"title": "%command.diffWithPrevious.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-prev-commit.svg",
@@ -3913,12 +3919,12 @@
 			},
 			{
 				"command": "gitlens.diffLineWithPrevious",
-				"title": "Open Line Changes with Previous Revision",
+				"title": "%command.diffLineWithPrevious.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.diffWithRevision",
-				"title": "Open Changes with Revision...",
+				"title": "%command.diffWithRevision.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-prev-commit-menu.svg",
@@ -3927,12 +3933,12 @@
 			},
 			{
 				"command": "gitlens.diffWithRevisionFrom",
-				"title": "Open Changes with Branch or Tag...",
+				"title": "%command.diffWithRevisionFrom.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.diffWithWorking",
-				"title": "Open Changes with Working File",
+				"title": "%command.diffWithWorking.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-compare-ref-working.svg",
@@ -3941,7 +3947,7 @@
 			},
 			{
 				"command": "gitlens.diffWithWorkingInDiffLeft",
-				"title": "Open Changes with Working File",
+				"title": "%command.diffWithWorking.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-compare-ref-working.svg",
@@ -3950,7 +3956,7 @@
 			},
 			{
 				"command": "gitlens.diffWithWorkingInDiffRight",
-				"title": "Open Changes with Working File",
+				"title": "%command.diffWithWorking.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-compare-ref-working.svg",
@@ -3959,7 +3965,7 @@
 			},
 			{
 				"command": "gitlens.diffLineWithWorking",
-				"title": "Open Line Changes with Working File",
+				"title": "%command.diffLineWithWorking.title%",
 				"category": "GitLens"
 			},
 			{
@@ -3974,7 +3980,7 @@
 			},
 			{
 				"command": "gitlens.toggleFileBlame",
-				"title": "Toggle File Blame",
+				"title": "%command.toggleFileBlame.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-git.svg",
@@ -3983,7 +3989,7 @@
 			},
 			{
 				"command": "gitlens.toggleFileBlameInDiffLeft",
-				"title": "Toggle File Blame",
+				"title": "%command.toggleFileBlame.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-git.svg",
@@ -3992,7 +3998,7 @@
 			},
 			{
 				"command": "gitlens.toggleFileBlameInDiffRight",
-				"title": "Toggle File Blame",
+				"title": "%command.toggleFileBlame.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-git.svg",
@@ -4001,7 +4007,7 @@
 			},
 			{
 				"command": "gitlens.clearFileAnnotations",
-				"title": "Clear File Annotations",
+				"title": "%command.clearFileAnnotations.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-git-orange.svg",
@@ -4019,7 +4025,7 @@
 			},
 			{
 				"command": "gitlens.toggleFileHeatmap",
-				"title": "Toggle File Heatmap",
+				"title": "%command.toggleFileHeatmap.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-git.svg",
@@ -4028,7 +4034,7 @@
 			},
 			{
 				"command": "gitlens.toggleFileHeatmapInDiffLeft",
-				"title": "Toggle File Heatmap",
+				"title": "%command.toggleFileHeatmap.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-git.svg",
@@ -4037,7 +4043,7 @@
 			},
 			{
 				"command": "gitlens.toggleFileHeatmapInDiffRight",
-				"title": "Toggle File Heatmap",
+				"title": "%command.toggleFileHeatmap.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-git.svg",
@@ -4046,7 +4052,7 @@
 			},
 			{
 				"command": "gitlens.toggleFileChanges",
-				"title": "Toggle File Changes",
+				"title": "%command.toggleFileChanges.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-git.svg",
@@ -4055,7 +4061,7 @@
 			},
 			{
 				"command": "gitlens.toggleFileChangesOnly",
-				"title": "Toggle File Changes",
+				"title": "%command.toggleFileChanges.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-git.svg",
@@ -4064,67 +4070,67 @@
 			},
 			{
 				"command": "gitlens.toggleLineBlame",
-				"title": "Toggle Line Blame",
+				"title": "%command.toggleLineBlame.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.toggleCodeLens",
-				"title": "Toggle Git CodeLens",
+				"title": "%command.toggleCodeLens.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.gitCommands",
-				"title": "Git Command Palette",
+				"title": "%command.gitCommands.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.gitCommands.branch",
-				"title": "Git Branch...",
+				"title": "%command.gitCommands.branch.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.gitCommands.cherryPick",
-				"title": "Git Cherry Pick...",
+				"title": "%command.gitCommands.cherryPick.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.gitCommands.merge",
-				"title": "Git Merge...",
+				"title": "%command.gitCommands.merge.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.gitCommands.rebase",
-				"title": "Git Rebase...",
+				"title": "%command.gitCommands.rebase.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.gitCommands.reset",
-				"title": "Git Reset...",
+				"title": "%command.gitCommands.reset.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.gitCommands.revert",
-				"title": "Git Revert...",
+				"title": "%command.gitCommands.revert.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.gitCommands.switch",
-				"title": "Git Switch...",
+				"title": "%command.gitCommands.switch.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.gitCommands.tag",
-				"title": "Git Tag...",
+				"title": "%command.gitCommands.tag.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.gitCommands.worktree",
-				"title": "Git Worktree...",
+				"title": "%command.gitCommands.worktree.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.switchMode",
-				"title": "Switch Mode",
+				"title": "%command.switchMode.title%",
 				"category": "GitLens"
 			},
 			{
@@ -4144,7 +4150,7 @@
 			},
 			{
 				"command": "gitlens.showCommitSearch",
-				"title": "Search Commits",
+				"title": "%command.showCommitSearch.title%",
 				"category": "GitLens",
 				"icon": "$(search)"
 			},
@@ -4170,22 +4176,22 @@
 			},
 			{
 				"command": "gitlens.showFileHistoryInView",
-				"title": "Open File History",
+				"title": "%command.openFileHistory.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.openFileHistory",
-				"title": "Open File History",
+				"title": "%command.openFileHistory.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.openFolderHistory",
-				"title": "Open Folder History",
+				"title": "%command.openFolderHistory.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.showQuickCommitDetails",
-				"title": "Show Commit",
+				"title": "%command.showCommit.title%",
 				"category": "GitLens"
 			},
 			{
@@ -4225,7 +4231,7 @@
 			},
 			{
 				"command": "gitlens.showQuickFileHistory",
-				"title": "Show File History",
+				"title": "%command.showQuickFileHistory.title%",
 				"category": "GitLens"
 			},
 			{
@@ -4235,22 +4241,27 @@
 			},
 			{
 				"command": "gitlens.showQuickBranchHistory",
-				"title": "Show Branch History",
+				"title": "%command.showQuickBranchHistory.title%",
+				"category": "GitLens"
+			},
+			{
+				"command": "gitlens.showQuickKeyboardShortcuts",
+				"title": "%command.keyboardShortcuts.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.showQuickRepoHistory",
-				"title": "Show Current Branch History",
+				"title": "%command.showQuickRepoHistory.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.showQuickRepoStatus",
-				"title": "Show Repository Status",
+				"title": "%command.showQuickRepoStatus.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.showQuickStashList",
-				"title": "Show Stashes",
+				"title": "%command.showStashes.title%",
 				"category": "GitLens"
 			},
 			{
@@ -4288,7 +4299,7 @@
 			},
 			{
 				"command": "gitlens.copyShaToClipboard",
-				"title": "Copy SHA",
+				"title": "%command.copyShaToClipboard.title%",
 				"category": "GitLens",
 				"icon": "$(copy)"
 			},
@@ -4299,101 +4310,101 @@
 			},
 			{
 				"command": "gitlens.openChangedFiles",
-				"title": "Open Changed Files",
+				"title": "%command.openChangedFiles.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.openBranchesOnRemote",
-				"title": "Open Branches on Remote",
+				"title": "%command.openBranchesOnRemote.title%",
 				"category": "GitLens",
 				"icon": "$(globe)"
 			},
 			{
 				"command": "gitlens.copyRemoteBranchesUrl",
-				"title": "Copy Remote Branches Url",
+				"title": "%command.copyRemoteBranchesUrl.title%",
 				"category": "GitLens",
 				"icon": "$(copy)"
 			},
 			{
 				"command": "gitlens.openBranchOnRemote",
-				"title": "Open Branch on Remote",
+				"title": "%command.openBranchOnRemote.title%",
 				"category": "GitLens",
 				"icon": "$(globe)"
 			},
 			{
 				"command": "gitlens.copyRemoteBranchUrl",
-				"title": "Copy Remote Branch Url",
+				"title": "%command.copyRemoteBranchUrl.title%",
 				"category": "GitLens",
 				"icon": "$(copy)"
 			},
 			{
 				"command": "gitlens.openCommitOnRemote",
-				"title": "Open Commit on Remote",
+				"title": "%command.openCommitOnRemote.title%",
 				"category": "GitLens",
 				"icon": "$(globe)"
 			},
 			{
 				"command": "gitlens.copyRemoteCommitUrl",
-				"title": "Copy Remote Commit Url",
+				"title": "%command.copyRemoteCommitUrl.title%",
 				"category": "GitLens",
 				"icon": "$(copy)"
 			},
 			{
 				"command": "gitlens.openComparisonOnRemote",
-				"title": "Open Comparison on Remote",
+				"title": "%command.openComparisonOnRemote.title%",
 				"category": "GitLens",
 				"icon": "$(globe)"
 			},
 			{
 				"command": "gitlens.copyRemoteComparisonUrl",
-				"title": "Copy Remote Comparison Url",
+				"title": "%command.copyRemoteComparisonUrl.title%",
 				"category": "GitLens",
 				"icon": "$(copy)"
 			},
 			{
 				"command": "gitlens.openFileFromRemote",
-				"title": "Open File from Remote",
+				"title": "%command.openFileFromRemote.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.openFileOnRemote",
-				"title": "Open File on Remote",
+				"title": "%command.openFileOnRemote.title%",
 				"category": "GitLens",
 				"icon": "$(globe)"
 			},
 			{
 				"command": "gitlens.copyRemoteFileUrlToClipboard",
-				"title": "Copy Remote File Url",
+				"title": "%command.copyRemoteFileUrl.title%",
 				"category": "GitLens",
 				"icon": "$(copy)"
 			},
 			{
 				"command": "gitlens.copyRemoteFileUrlWithoutRange",
-				"title": "Copy Remote File Url",
+				"title": "%command.copyRemoteFileUrl.title%",
 				"category": "GitLens",
 				"icon": "$(copy)"
 			},
 			{
 				"command": "gitlens.openFileOnRemoteFrom",
-				"title": "Open File on Remote From...",
+				"title": "%command.openFileOnRemoteFrom.title%",
 				"category": "GitLens",
 				"icon": "$(globe)"
 			},
 			{
 				"command": "gitlens.copyRemoteFileUrlFrom",
-				"title": "Copy Remote File Url From...",
+				"title": "%command.copyRemoteFileUrlFrom.title%",
 				"category": "GitLens",
 				"icon": "$(copy)"
 			},
 			{
 				"command": "gitlens.openBlamePriorToChange",
-				"title": "Open Blame Prior to Change",
+				"title": "%command.openBlamePriorToChange.title%",
 				"icon": "$(versions)",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.openFileRevision",
-				"title": "Open File at Revision...",
+				"title": "%command.openFileRevision.title%",
 				"icon": {
 					"dark": "images/dark/icon-open-revision.svg",
 					"light": "images/light/icon-open-revision.svg"
@@ -4483,7 +4494,7 @@
 			},
 			{
 				"command": "gitlens.openWorkingFile",
-				"title": "Open File",
+				"title": "%command.openFile.title%",
 				"category": "GitLens",
 				"icon": "$(go-to-file)"
 			},
@@ -4500,8 +4511,8 @@
 				"icon": "$(go-to-file)"
 			},
 			{
-				"command": "gitlens.stashApply",
-				"title": "Apply Stash",
+				"command": "gitlens.applyStash",
+				"title": "%command.applyStash.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-stash-pop.svg",
@@ -4517,6 +4528,15 @@
 			{
 				"command": "gitlens.stashSave",
 				"title": "Stash All Changes",
+				"category": "GitLens",
+				"icon": {
+					"dark": "images/dark/icon-stash-save.svg",
+					"light": "images/light/icon-stash-save.svg"
+				}
+			},
+			{
+				"command": "gitlens.stashChanges",
+				"title": "%command.stashChanges.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-stash-save.svg",
@@ -4629,6 +4649,12 @@
 				"icon": "$(arrow-up)"
 			},
 			{
+				"command": "gitlens.addRemote",
+				"title": "%command.addRemote.title%",
+				"category": "GitLens",
+				"icon": "$(add)"
+			},
+			{
 				"command": "gitlens.views.addRemote",
 				"title": "Add Remote",
 				"category": "GitLens",
@@ -4707,8 +4733,20 @@
 				"icon": "$(sync)"
 			},
 			{
+				"command": "gitlens.publishBranch",
+				"title": "%command.publishBranch.title%",
+				"category": "GitLens",
+				"icon": "$(cloud-upload)"
+			},
+			{
 				"command": "gitlens.views.publishBranch",
 				"title": "Publish Branch",
+				"category": "GitLens",
+				"icon": "$(cloud-upload)"
+			},
+			{
+				"command": "gitlens.publishRepository",
+				"title": "%command.publishRepository.title%",
 				"category": "GitLens",
 				"icon": "$(cloud-upload)"
 			},
@@ -4773,6 +4811,12 @@
 				"icon": "$(remove)"
 			},
 			{
+				"command": "gitlens.unstageChanges",
+				"title": "%command.unstageChanges.title%",
+				"category": "GitLens",
+				"icon": "$(remove)"
+			},
+			{
 				"command": "gitlens.views.unstageFile",
 				"title": "Unstage Changes",
 				"category": "GitLens",
@@ -4802,13 +4846,13 @@
 			},
 			{
 				"command": "gitlens.views.openChanges",
-				"title": "Open Changes",
+				"title": "%command.openChanges.title%",
 				"category": "GitLens",
 				"icon": "$(compare-changes)"
 			},
 			{
 				"command": "gitlens.views.openChangesWithWorking",
-				"title": "Open Changes with Working File",
+				"title": "%command.diffWithWorking.title%",
 				"category": "GitLens",
 				"icon": {
 					"dark": "images/dark/icon-compare-ref-working.svg",
@@ -4856,8 +4900,28 @@
 				"category": "GitLens"
 			},
 			{
+				"command": "gitlens.showGutterBlame",
+				"title": "%command.gutterBlame.title%",
+				"category": "GitLens"
+			},
+			{
+				"command": "gitlens.showGutterHeatmap",
+				"title": "%command.gutterHeatmap.title%",
+				"category": "GitLens"
+			},
+			{
+				"command": "gitlens.showGutterChanges",
+				"title": "%command.gutterChanges.title%",
+				"category": "GitLens"
+			},
+			{
 				"command": "gitlens.views.applyChanges",
 				"title": "Apply Changes",
+				"category": "GitLens"
+			},
+			{
+				"command": "gitlens.closeRepository",
+				"title": "%command.closeRepository.title%",
 				"category": "GitLens"
 			},
 			{

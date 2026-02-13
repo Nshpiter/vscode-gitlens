@@ -8,3 +8,10 @@ node_modules
 images/settings
 gitlens-*.vsix
 tsconfig*.tsbuildinfo
+
+# Build logs and temporary files
+*.log
+build*.txt
+debug*.txt
+compile*.txt
+placeholders.txt
