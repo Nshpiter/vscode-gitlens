@@ -53,20 +53,20 @@ export class GitHubApi {
 
 		interface QueryResult {
 			repository:
+			| {
+				object:
 				| {
-						object:
-							| {
-									author?: {
-										name: string | null;
-										email: string | null;
-										avatarUrl: string;
-									};
-							  }
-							| null
-							| undefined;
-				  }
+					author?: {
+						name: string | null;
+						email: string | null;
+						avatarUrl: string;
+					};
+				}
 				| null
 				| undefined;
+			}
+			| null
+			| undefined;
 		}
 
 		try {
@@ -127,18 +127,18 @@ export class GitHubApi {
 
 		interface QueryResult {
 			search:
+			| {
+				nodes:
 				| {
-						nodes:
-							| {
-									name: string | null;
-									email: string | null;
-									avatarUrl: string;
-							  }[]
-							| null
-							| undefined;
-				  }
+					name: string | null;
+					email: string | null;
+					avatarUrl: string;
+				}[]
 				| null
 				| undefined;
+			}
+			| null
+			| undefined;
 		}
 
 		try {
@@ -193,11 +193,11 @@ export class GitHubApi {
 
 		interface QueryResult {
 			repository:
-				| {
-						defaultBranchRef: { name: string } | null | undefined;
-				  }
-				| null
-				| undefined;
+			| {
+				defaultBranchRef: { name: string } | null | undefined;
+			}
+			| null
+			| undefined;
 		}
 
 		try {
@@ -318,17 +318,17 @@ export class GitHubApi {
 
 		interface QueryResult {
 			repository:
-				| {
-						refs: {
-							nodes: {
-								associatedPullRequests?: {
-									nodes?: GitHubPullRequest[];
-								};
-							}[];
+			| {
+				refs: {
+					nodes: {
+						associatedPullRequests?: {
+							nodes?: GitHubPullRequest[];
 						};
-				  }
-				| null
-				| undefined;
+					}[];
+				};
+			}
+			| null
+			| undefined;
 		}
 
 		try {
@@ -417,15 +417,15 @@ export class GitHubApi {
 
 		interface QueryResult {
 			repository:
-				| {
-						object?: {
-							associatedPullRequests?: {
-								nodes?: GitHubPullRequest[];
-							};
-						};
-				  }
-				| null
-				| undefined;
+			| {
+				object?: {
+					associatedPullRequests?: {
+						nodes?: GitHubPullRequest[];
+					};
+				};
+			}
+			| null
+			| undefined;
 		}
 
 		try {
@@ -501,15 +501,15 @@ export class GitHubApi {
 		interface QueryResult {
 			viewer: { name: string };
 			repository:
-				| {
-						object: {
-							blame: {
-								ranges: GitHubBlameRange[];
-							};
-						};
-				  }
-				| null
-				| undefined;
+			| {
+				object: {
+					blame: {
+						ranges: GitHubBlameRange[];
+					};
+				};
+			}
+			| null
+			| undefined;
 		}
 
 		try {
@@ -581,17 +581,17 @@ export class GitHubApi {
 
 		interface QueryResult {
 			repository:
-				| {
-						refs: {
-							pageInfo: {
-								endCursor: string;
-								hasNextPage: boolean;
-							};
-							nodes: GitHubBranch[];
-						};
-				  }
-				| null
-				| undefined;
+			| {
+				refs: {
+					pageInfo: {
+						endCursor: string;
+						hasNextPage: boolean;
+					};
+					nodes: GitHubBranch[];
+				};
+			}
+			| null
+			| undefined;
 		}
 
 		try {
@@ -713,8 +713,10 @@ export class GitHubApi {
 		const results = await this.getCommits(token, owner, repo, ref, { limit: 1, path: path });
 		if (results.values.length === 0) return undefined;
 
-		const commit = await this.getCommit(token, owner, repo, results.values[0].oid);
-		return { ...(commit ?? results.values[0]), viewer: results.viewer };
+		// If we already have the commit details from GraphQL, skip' the second REST call
+		// unless we specifically need the full file list (which getCommits doesn't provide)
+		// For getCommitForFile, we usually just need the commit info for the specific file
+		return { ...results.values[0], viewer: results.viewer };
 	}
 
 	@debug<GitHubApi['getCommitBranches']>({ args: { 0: '<token>' } })
@@ -928,19 +930,19 @@ export class GitHubApi {
 		interface QueryResult {
 			viewer: { name: string };
 			repository:
+			| {
+				object:
 				| {
-						object:
-							| {
-									history: {
-										pageInfo: GitHubPageInfo;
-										nodes: GitHubCommit[];
-									};
-							  }
-							| null
-							| undefined;
-				  }
+					history: {
+						pageInfo: GitHubPageInfo;
+						nodes: GitHubCommit[];
+					};
+				}
 				| null
 				| undefined;
+			}
+			| null
+			| undefined;
 		}
 
 		try {
@@ -1027,9 +1029,9 @@ export class GitHubApi {
 				paging:
 					history.pageInfo.endCursor != null
 						? {
-								cursor: history.pageInfo.endCursor ?? undefined,
-								more: history.pageInfo.hasNextPage,
-						  }
+							cursor: history.pageInfo.endCursor ?? undefined,
+							more: history.pageInfo.hasNextPage,
+						}
 						: undefined,
 				values: history.nodes,
 				viewer: rsp?.viewer.name,
@@ -1120,20 +1122,20 @@ export class GitHubApi {
 
 		interface QueryResult {
 			repository:
+			| {
+				object:
 				| {
-						object:
-							| {
-									history: {
-										pageInfo: GitHubPageInfo;
-										totalCount: number;
-										nodes: GitHubCommitRef[];
-									};
-							  }
-							| null
-							| undefined;
-				  }
+					history: {
+						pageInfo: GitHubPageInfo;
+						totalCount: number;
+						nodes: GitHubCommitRef[];
+					};
+				}
 				| null
 				| undefined;
+			}
+			| null
+			| undefined;
 		}
 
 		try {
@@ -1233,11 +1235,11 @@ export class GitHubApi {
 
 		interface QueryResult {
 			repository:
-				| {
-						object: { committer: { date: string } } | null | undefined;
-				  }
-				| null
-				| undefined;
+			| {
+				object: { committer: { date: string } } | null | undefined;
+			}
+			| null
+			| undefined;
 		}
 
 		try {
@@ -1295,11 +1297,11 @@ export class GitHubApi {
 
 		interface QueryResult {
 			repository:
-				| {
-						defaultBranchRef: { name: string } | null | undefined;
-				  }
-				| null
-				| undefined;
+			| {
+				defaultBranchRef: { name: string } | null | undefined;
+			}
+			| null
+			| undefined;
 		}
 
 		try {
@@ -1378,11 +1380,11 @@ export class GitHubApi {
 
 		interface QueryResult {
 			repository:
-				| {
-						visibility: 'PUBLIC' | 'PRIVATE' | 'INTERNAL';
-				  }
-				| null
-				| undefined;
+			| {
+				visibility: 'PUBLIC' | 'PRIVATE' | 'INTERNAL';
+			}
+			| null
+			| undefined;
 		}
 
 		try {
@@ -1419,17 +1421,17 @@ export class GitHubApi {
 
 		interface QueryResult {
 			repository:
-				| {
-						refs: {
-							pageInfo: {
-								endCursor: string;
-								hasNextPage: boolean;
-							};
-							nodes: GitHubTag[];
-						};
-				  }
-				| null
-				| undefined;
+			| {
+				refs: {
+					pageInfo: {
+						endCursor: string;
+						hasNextPage: boolean;
+					};
+					nodes: GitHubTag[];
+				};
+			}
+			| null
+			| undefined;
 		}
 
 		try {
@@ -1529,15 +1531,15 @@ export class GitHubApi {
 
 			interface QueryResult {
 				repository:
-					| {
-							object: {
-								history: {
-									nodes: GitHubCommitRef[];
-								};
-							};
-					  }
-					| null
-					| undefined;
+				| {
+					object: {
+						history: {
+							nodes: GitHubCommitRef[];
+						};
+					};
+				}
+				| null
+				| undefined;
 			}
 
 			const query = `query resolveReference(
@@ -1688,7 +1690,7 @@ export class GitHubApi {
 								const match = /(^[^({\n]+)/.exec(options.query);
 								message = ` ${match?.[1].trim() ?? options.query}`;
 							}
-						} catch {}
+						} catch { }
 						stopwatch.stop({ message: message });
 					}
 				});
@@ -1792,8 +1794,7 @@ export class GitHubApi {
 		if (ex.reason === AuthenticationErrorReason.Unauthorized || ex.reason === AuthenticationErrorReason.Forbidden) {
 			const confirm = 'Reauthenticate';
 			const result = await window.showErrorMessage(
-				`${ex.message}. Would you like to try reauthenticating${
-					ex.reason === AuthenticationErrorReason.Forbidden ? ' to provide additional access' : ''
+				`${ex.message}. Would you like to try reauthenticating${ex.reason === AuthenticationErrorReason.Forbidden ? ' to provide additional access' : ''
 				}?`,
 				confirm,
 			);
@@ -1916,8 +1917,8 @@ export namespace GitHubPullRequest {
 		return state === 'MERGED'
 			? PullRequestState.Merged
 			: state === 'CLOSED'
-			? PullRequestState.Closed
-			: PullRequestState.Open;
+				? PullRequestState.Closed
+				: PullRequestState.Open;
 	}
 
 	export function toState(state: PullRequestState): GitHubPullRequestState {

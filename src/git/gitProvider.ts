@@ -259,6 +259,7 @@ export interface GitProvider extends Disposable {
 		editorLine: number,
 		ref1: string | undefined,
 		ref2?: string,
+		document?: TextDocument,
 	): Promise<GitDiffHunkLine | undefined>;
 	getDiffStatus(
 		repoPath: string,
@@ -381,8 +382,8 @@ export interface GitProvider extends Disposable {
 		repoPath: string | undefined,
 		options?: {
 			filter?:
-				| { branches?: ((b: GitBranch) => boolean) | undefined; tags?: ((t: GitTag) => boolean) | undefined }
-				| undefined;
+			| { branches?: ((b: GitBranch) => boolean) | undefined; tags?: ((t: GitTag) => boolean) | undefined }
+			| undefined;
 		},
 	): Promise<boolean>;
 

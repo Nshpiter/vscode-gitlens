@@ -3146,7 +3146,7 @@
 					},
 					"gitlens.advanced.maxListItems": {
 						"type": "number",
-						"default": 200,
+						"default": 500,
 						"markdownDescription": "Specifies the maximum number of items to show in a list. Use 0 to specify no maximum",
 						"scope": "window",
 						"order": 80
@@ -3615,48 +3615,48 @@
 		"commands": [
 			{
 				"command": "gitlens.plus.learn",
-				"title": "Learn about GitLens+ Features",
-				"category": "GitLens+"
+				"title": "%command.plus.learn.title%",
+				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.plus.loginOrSignUp",
-				"title": "Sign In to GitLens+...",
-				"category": "GitLens+"
+				"title": "%command.plus.loginOrSignUp.title%",
+				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.plus.logout",
-				"title": "Sign out of GitLens+",
-				"category": "GitLens+"
+				"title": "%command.plus.logout.title%",
+				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.plus.startPreviewTrial",
-				"title": "Try GitLens+ Features Now",
-				"category": "GitLens+"
+				"title": "%command.plus.startPreviewTrial.title%",
+				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.plus.manage",
-				"title": "Manage Your GitLens+ Account...",
-				"category": "GitLens+"
+				"title": "%command.plus.manage.title%",
+				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.plus.purchase",
-				"title": "Upgrade Your GitLens+ Account...",
-				"category": "GitLens+"
+				"title": "%command.plus.purchase.title%",
+				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.plus.hide",
-				"title": "Hide GitLens+ Features...",
-				"category": "GitLens+"
+				"title": "%command.plus.hide.title%",
+				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.plus.restore",
-				"title": "Restore GitLens+ Features...",
-				"category": "GitLens+"
+				"title": "%command.plus.restore.title%",
+				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.plus.reset",
-				"title": "Reset...",
-				"category": "GitLens+"
+				"title": "%command.plus.reset.title%",
+				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.getStarted",
@@ -10637,6 +10637,11 @@
 					"id": "gitlens",
 					"title": "%views.title%",
 					"icon": "images/gitlens-activitybar.svg"
+				},
+				{
+					"id": "gitlensInspect",
+					"title": "%views.inspect.title%",
+					"icon": "images/views/history.svg"
 				}
 			],
 			"panel": [
@@ -10698,22 +10703,6 @@
 			],
 			"scm": [
 				{
-					"id": "gitlens.views.commits",
-					"name": "%views.commits.title%",
-					"when": "!gitlens:disabled",
-					"contextualTitle": "%views.commits.title%",
-					"icon": "images/views/commits.svg",
-					"visibility": "visible"
-				},
-				{
-					"id": "gitlens.views.repositories",
-					"name": "%views.repositories.title%",
-					"when": "!gitlens:disabled && !gitlens:hasVirtualFolders",
-					"contextualTitle": "%views.repositories.title%",
-					"icon": "images/views/repositories.svg",
-					"visibility": "hidden"
-				},
-				{
 					"id": "gitlens.views.fileHistory",
 					"name": "%views.fileHistory.title%",
 					"when": "!gitlens:disabled",
@@ -10728,6 +10717,24 @@
 					"contextualTitle": "%views.lineHistory.title%",
 					"icon": "images/views/history.svg",
 					"visibility": "hidden"
+				}
+			],
+			"gitlensInspect": [
+				{
+					"id": "gitlens.views.commits",
+					"name": "%views.commits.title%",
+					"when": "!gitlens:disabled",
+					"contextualTitle": "%views.commits.title%",
+					"icon": "images/views/commits.svg",
+					"visibility": "visible"
+				},
+				{
+					"id": "gitlens.views.repositories",
+					"name": "%views.repositories.title%",
+					"when": "!gitlens:disabled && !gitlens:hasVirtualFolders",
+					"contextualTitle": "%views.repositories.title%",
+					"icon": "images/views/repositories.svg",
+					"visibility": "visible"
 				},
 				{
 					"id": "gitlens.views.branches",
@@ -10775,7 +10782,7 @@
 					"when": "!gitlens:disabled",
 					"contextualTitle": "%views.contributors.title%",
 					"icon": "images/views/contributors.svg",
-					"visibility": "hidden"
+					"visibility": "collapsed"
 				},
 				{
 					"id": "gitlens.views.searchAndCompare",

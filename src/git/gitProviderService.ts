@@ -518,8 +518,7 @@ export class GitProviderService implements Disposable {
 
 			Logger.error(
 				ex,
-				`${provider.descriptor.name} Provider(${
-					provider.descriptor.id
+				`${provider.descriptor.name} Provider(${provider.descriptor.id
 				}) failed discovering repositories in ${folder.uri.toString(true)}`,
 			);
 
@@ -551,83 +550,7 @@ export class GitProviderService implements Disposable {
 	@debug()
 	private async accessCore(feature?: PlusFeatures, repoPath?: string | Uri): Promise<FeatureAccess> {
 		const subscription = await this.getSubscription();
-		if (subscription.account?.verified === false) {
-			return { allowed: false, subscription: { current: subscription } };
-		}
-
-		const plan = subscription.plan.effective.id;
-		if (isSubscriptionPaidPlan(plan) || GitProviderService.previewFeatures?.get(feature)) {
-			return { allowed: true, subscription: { current: subscription } };
-		}
-
-		function getRepoAccess(
-			this: GitProviderService,
-			repoPath: string | Uri,
-			plan: FreeSubscriptionPlans,
-		): Promise<FeatureAccess> {
-			const { path: cacheKey } = this.getProvider(repoPath);
-
-			let access = this._accessCache.get(cacheKey);
-			if (access == null) {
-				access = this.visibility(repoPath).then(visibility => {
-					if (visibility === RepositoryVisibility.Public) {
-						switch (plan) {
-							case SubscriptionPlanId.Free:
-								return {
-									allowed: false,
-									subscription: { current: subscription, required: SubscriptionPlanId.FreePlus },
-								};
-							case SubscriptionPlanId.FreePlus:
-								return { allowed: true, subscription: { current: subscription } };
-						}
-					}
-
-					return {
-						allowed: false,
-						subscription: { current: subscription, required: SubscriptionPlanId.Pro },
-					};
-				});
-
-				this._accessCache.set(cacheKey, access);
-			}
-
-			return access;
-		}
-
-		if (repoPath == null) {
-			const repositories = this.openRepositories;
-			if (repositories.length === 0) {
-				return { allowed: false, subscription: { current: subscription } };
-			}
-
-			if (repositories.length === 1) {
-				return getRepoAccess.call(this, repositories[0].path, plan);
-			}
-
-			let allowed = true;
-			let requiredPlan: RequiredSubscriptionPlans | undefined;
-			let requiredPriority = -1;
-
-			const results = await Promise.allSettled(repositories.map(r => getRepoAccess.call(this, r.path, plan)));
-			for (const result of results) {
-				if (result.status !== 'fulfilled') continue;
-
-				if (result.value.allowed) continue;
-
-				allowed = false;
-				const priority = getSubscriptionPlanPriority(result.value.subscription.required);
-				if (requiredPriority < priority) {
-					requiredPriority = priority;
-					requiredPlan = result.value.subscription.required;
-				}
-			}
-
-			return allowed
-				? { allowed: true, subscription: { current: subscription } }
-				: { allowed: false, subscription: { current: subscription, required: requiredPlan } };
-		}
-
-		return getRepoAccess.call(this, repoPath, plan);
+		return { allowed: true, subscription: { current: subscription } };
 	}
 
 	async ensureAccess(feature: PlusFeatures, repoPath?: string): Promise<void> {
@@ -1252,16 +1175,14 @@ export class GitProviderService implements Disposable {
 
 			if (branchesAndTags.length > 1) {
 				const [bt] = branchesAndTags;
-				return `${options?.icons ? `${bt.type === 'tag' ? '$(tag)' : '$(git-branch)'} ` : ''}${
-					bt.compactName ?? bt.name
-				}, ${GlyphChars.Ellipsis}`;
+				return `${options?.icons ? `${bt.type === 'tag' ? '$(tag)' : '$(git-branch)'} ` : ''}${bt.compactName ?? bt.name
+					}, ${GlyphChars.Ellipsis}`;
 			}
 
 			return branchesAndTags
 				.map(
 					bt =>
-						`${options?.icons ? `${bt.type === 'tag' ? '$(tag)' : '$(git-branch)'} ` : ''}${
-							bt.compactName ?? bt.name
+						`${options?.icons ? `${bt.type === 'tag' ? '$(tag)' : '$(git-branch)'} ` : ''}${bt.compactName ?? bt.name
 						}`,
 				)
 				.join(', ');
@@ -1377,9 +1298,20 @@ export class GitProviderService implements Disposable {
 		editorLine: number,
 		ref1: string | undefined,
 		ref2?: string,
+		_document?: TextDocument,
 	): Promise<GitDiffHunkLine | undefined> {
-		const { provider } = this.getProvider(uri);
-		return provider.getDiffForLine(uri, editorLine, ref1, ref2);
+		try {
+			const diff = await this.getDiffForFile(uri, ref1, ref2);
+			if (diff == null) return undefined;
+
+			const line = editorLine + 1;
+			const hunk = diff.hunks.find(c => c.current.position.start <= line && c.current.position.end >= line);
+			if (hunk == null) return undefined;
+
+			return hunk.lines[line - Math.min(hunk.current.position.start, hunk.previous.position.start)];
+		} catch (ex) {
+			return undefined;
+		}
 	}
 
 	@log()
@@ -1551,9 +1483,8 @@ export class GitProviderService implements Disposable {
 	): Promise<PullRequest | undefined>;
 	@gate<GitProviderService['getPullRequestForBranch']>((branch, remoteOrProvider, options) => {
 		const provider = GitRemote.is(remoteOrProvider) ? remoteOrProvider.provider : remoteOrProvider;
-		return `${branch}${
-			provider != null ? `|${provider.id}:${provider.domain}/${provider.path}` : ''
-		}|${JSON.stringify(options)}`;
+		return `${branch}${provider != null ? `|${provider.id}:${provider.domain}/${provider.path}` : ''
+			}|${JSON.stringify(options)}`;
 	})
 	@debug<GitProviderService['getPullRequestForBranch']>({ args: { 1: remoteOrProvider => remoteOrProvider.name } })
 	async getPullRequestForBranch(
@@ -1604,9 +1535,8 @@ export class GitProviderService implements Disposable {
 	): Promise<PullRequest | undefined>;
 	@gate<GitProviderService['getPullRequestForCommit']>((ref, remoteOrProvider, options) => {
 		const provider = GitRemote.is(remoteOrProvider) ? remoteOrProvider.provider : remoteOrProvider;
-		return `${ref}${provider != null ? `|${provider.id}:${provider.domain}/${provider.path}` : ''}|${
-			options?.timeout
-		}`;
+		return `${ref}${provider != null ? `|${provider.id}:${provider.domain}/${provider.path}` : ''}|${options?.timeout
+			}`;
 	})
 	@debug<GitProviderService['getPullRequestForCommit']>({ args: { 1: remoteOrProvider => remoteOrProvider.name } })
 	async getPullRequestForCommit(
@@ -1661,10 +1591,9 @@ export class GitProviderService implements Disposable {
 	): Promise<GitRemote<RichRemoteProvider> | undefined>;
 	@gate<GitProviderService['getRichRemoteProvider']>(
 		(remotesOrRepoPath, options) =>
-			`${
-				remotesOrRepoPath == null || typeof remotesOrRepoPath === 'string'
-					? remotesOrRepoPath
-					: remotesOrRepoPath instanceof Uri
+			`${remotesOrRepoPath == null || typeof remotesOrRepoPath === 'string'
+				? remotesOrRepoPath
+				: remotesOrRepoPath instanceof Uri
 					? remotesOrRepoPath.toString()
 					: `${remotesOrRepoPath[0]?.repoPath}|${remotesOrRepoPath?.map(r => r.id).join(',') ?? ''}`
 			}|${options?.includeDisconnected ?? false}`,

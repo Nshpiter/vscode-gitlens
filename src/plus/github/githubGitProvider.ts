@@ -129,7 +129,7 @@ export class GitHubGitProvider implements GitProvider, Disposable {
 
 	private readonly _disposables: Disposable[] = [];
 
-	constructor(private readonly container: Container) {}
+	constructor(private readonly container: Container) { }
 
 	dispose() {
 		this._disposables.forEach(d => d.dispose());
@@ -281,8 +281,7 @@ export class GitHubGitProvider implements GitProvider, Disposable {
 			} else {
 				debugger;
 				void window.showErrorMessage(
-					`Unable to get absolute uri between ${
-						typeof pathOrUri === 'string' ? pathOrUri : pathOrUri.toString(false)
+					`Unable to get absolute uri between ${typeof pathOrUri === 'string' ? pathOrUri : pathOrUri.toString(false)
 					} and ${base}; Base path '${base}' must be a uri`,
 				);
 				throw new Error(`Base path '${base}' must be a uri`);
@@ -311,8 +310,7 @@ export class GitHubGitProvider implements GitProvider, Disposable {
 			} else {
 				debugger;
 				void window.showErrorMessage(
-					`Unable to get relative path between ${
-						typeof pathOrUri === 'string' ? pathOrUri : pathOrUri.toString(false)
+					`Unable to get relative path between ${typeof pathOrUri === 'string' ? pathOrUri : pathOrUri.toString(false)
 					} and ${base}; Base path '${base}' must be a uri`,
 				);
 				throw new Error(`Base path '${base}' must be a uri`);
@@ -353,13 +351,13 @@ export class GitHubGitProvider implements GitProvider, Disposable {
 	}
 
 	@log()
-	async addRemote(_repoPath: string, _name: string, _url: string): Promise<void> {}
+	async addRemote(_repoPath: string, _name: string, _url: string): Promise<void> { }
 
 	@log()
-	async pruneRemote(_repoPath: string, _remoteName: string): Promise<void> {}
+	async pruneRemote(_repoPath: string, _remoteName: string): Promise<void> { }
 
 	@log()
-	async applyChangesToWorkingFile(_uri: GitUri, _ref1?: string, _ref2?: string): Promise<void> {}
+	async applyChangesToWorkingFile(_uri: GitUri, _ref1?: string, _ref2?: string): Promise<void> { }
 
 	@log()
 	async branchContainsCommit(_repoPath: string, _name: string, _ref: string): Promise<boolean> {
@@ -371,7 +369,7 @@ export class GitHubGitProvider implements GitProvider, Disposable {
 		_repoPath: string,
 		_ref: string,
 		_options?: { createBranch?: string } | { path?: string },
-	): Promise<void> {}
+	): Promise<void> { }
 
 	@log()
 	resetCaches(
@@ -400,7 +398,7 @@ export class GitHubGitProvider implements GitProvider, Disposable {
 	async fetch(
 		_repoPath: string,
 		_options?: { all?: boolean; branch?: GitBranchReference; prune?: boolean; pull?: boolean; remote?: string },
-	): Promise<void> {}
+	): Promise<void> { }
 
 	@gate()
 	@debug()
@@ -1181,12 +1179,24 @@ export class GitHubGitProvider implements GitProvider, Disposable {
 
 	@log()
 	async getDiffForLine(
-		_uri: GitUri,
-		_editorLine: number, // 0-based, Git is 1-based
-		_ref1: string | undefined,
-		_ref2?: string,
+		uri: GitUri,
+		editorLine: number,
+		ref1: string | undefined,
+		ref2?: string,
+		_document?: TextDocument,
 	): Promise<GitDiffHunkLine | undefined> {
-		return undefined;
+		try {
+			const diff = await this.getDiffForFile(uri, ref1, ref2);
+			if (diff == null) return undefined;
+
+			const line = editorLine + 1;
+			const hunk = diff.hunks.find(c => c.current.position.start <= line && c.current.position.end >= line);
+			if (hunk == null) return undefined;
+
+			return hunk.lines[line - Math.min(hunk.current.position.start, hunk.previous.position.start)];
+		} catch (ex) {
+			return undefined;
+		}
 	}
 
 	@log()
@@ -1479,8 +1489,8 @@ export class GitHubGitProvider implements GitProvider, Disposable {
 						options?.ordering === 'date'
 							? 'committer-date'
 							: options?.ordering === 'author-date'
-							? 'author-date'
-							: undefined,
+								? 'author-date'
+								: undefined,
 				},
 			);
 			if (result == null) return undefined;
@@ -1823,16 +1833,16 @@ export class GitHubGitProvider implements GitProvider, Disposable {
 					const foundFile = isFolderGlob(relativePath)
 						? undefined
 						: files?.find(f => f.path === relativePath) ??
-						  new GitFileChange(
-								repoPath,
-								relativePath,
-								GitFileIndexStatus.Modified,
-								undefined,
-								undefined,
-								commit.changedFiles === 1
-									? { additions: commit.additions ?? 0, deletions: commit.deletions ?? 0, changes: 0 }
-									: undefined,
-						  );
+						new GitFileChange(
+							repoPath,
+							relativePath,
+							GitFileIndexStatus.Modified,
+							undefined,
+							undefined,
+							commit.changedFiles === 1
+								? { additions: commit.additions ?? 0, deletions: commit.deletions ?? 0, changes: 0 }
+								: undefined,
+						);
 
 					c = new GitCommit(
 						this.container,
@@ -2071,12 +2081,12 @@ export class GitHubGitProvider implements GitProvider, Disposable {
 				skip === 0
 					? GitUri.fromFile(relativePath, repoPath, ref)
 					: new GitUri(
-							await this.getBestRevisionUri(
-								repoPath,
-								relativePath,
-								result.values[offset + skip - 1]?.oid ?? GitRevision.deletedOrMissing,
-							),
-					  );
+						await this.getBestRevisionUri(
+							repoPath,
+							relativePath,
+							result.values[offset + skip - 1]?.oid ?? GitRevision.deletedOrMissing,
+						),
+					);
 			if (current == null || current.sha === GitRevision.deletedOrMissing) return undefined;
 
 			return {
@@ -2412,10 +2422,10 @@ export class GitHubGitProvider implements GitProvider, Disposable {
 		_repoPath: string,
 		_uri: Uri,
 		_options?: { ref1?: string; ref2?: string; staged?: boolean; tool?: string },
-	): Promise<void> {}
+	): Promise<void> { }
 
 	@log()
-	async openDirectoryCompare(_repoPath: string, _ref1: string, _ref2?: string, _tool?: string): Promise<void> {}
+	async openDirectoryCompare(_repoPath: string, _ref1: string, _ref2?: string, _tool?: string): Promise<void> { }
 
 	@log()
 	async resolveReference(repoPath: string, ref: string, pathOrUri?: string | Uri, _options?: { timeout?: number }) {
@@ -2465,22 +2475,22 @@ export class GitHubGitProvider implements GitProvider, Disposable {
 	}
 
 	@log()
-	async stageFile(_repoPath: string, _pathOrUri: string | Uri): Promise<void> {}
+	async stageFile(_repoPath: string, _pathOrUri: string | Uri): Promise<void> { }
 
 	@log()
-	async stageDirectory(_repoPath: string, _directoryOrUri: string | Uri): Promise<void> {}
+	async stageDirectory(_repoPath: string, _directoryOrUri: string | Uri): Promise<void> { }
 
 	@log()
-	async unStageFile(_repoPath: string, _pathOrUri: string | Uri): Promise<void> {}
+	async unStageFile(_repoPath: string, _pathOrUri: string | Uri): Promise<void> { }
 
 	@log()
-	async unStageDirectory(_repoPath: string, _directoryOrUri: string | Uri): Promise<void> {}
+	async unStageDirectory(_repoPath: string, _directoryOrUri: string | Uri): Promise<void> { }
 
 	@log()
-	async stashApply(_repoPath: string, _stashName: string, _options?: { deleteAfter?: boolean }): Promise<void> {}
+	async stashApply(_repoPath: string, _stashName: string, _options?: { deleteAfter?: boolean }): Promise<void> { }
 
 	@log()
-	async stashDelete(_repoPath: string, _stashName: string, _ref?: string): Promise<void> {}
+	async stashDelete(_repoPath: string, _stashName: string, _ref?: string): Promise<void> { }
 
 	@log<GitHubGitProvider['stashSave']>({ args: { 2: uris => uris?.length } })
 	async stashSave(
@@ -2488,7 +2498,7 @@ export class GitHubGitProvider implements GitProvider, Disposable {
 		_message?: string,
 		_uris?: Uri[],
 		_options?: { includeUntracked?: boolean; keepIndex?: boolean },
-	): Promise<void> {}
+	): Promise<void> { }
 
 	@gate()
 	private async ensureRepositoryContext(

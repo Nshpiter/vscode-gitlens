@@ -2,9 +2,18 @@
 @import '../shared/buttons';
 @import '../shared/icons';
 
+:root {
+	--premium-purple: hsl(280, 50%, 50%);
+	--premium-purple-hover: hsl(280, 60%, 60%);
+	--premium-glass: rgba(255, 255, 255, 0.05);
+	--premium-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+	--transition-speed: 0.3s;
+}
+
 body {
 	&.vscode-light {
 		background-color: var(--color-background--darken-05);
+		--premium-glass: rgba(0, 0, 0, 0.05);
 	}
 }
 
@@ -16,6 +25,12 @@ header {
 	align-items: center;
 	justify-items: center;
 	margin: 0 2em;
+	padding: 2rem 0;
+	transition: transform var(--transition-speed);
+
+	&:hover {
+		transform: translateY(-2px);
+	}
 }
 
 .blurb {
@@ -140,16 +155,22 @@ header {
 }
 
 .hero__area--sticky {
-	background: var(--color-background);
+	background: var(--premium-glass);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 	margin: 0 0 0 0;
-	padding: 0 0 0.5rem 0;
+	padding: 1rem 1.5rem;
 	position: sticky;
 	top: -1px;
-	z-index: 1;
+	z-index: 10;
 	grid-column: span 1;
+	border-radius: 0 0 12px 12px;
+	box-shadow: var(--premium-shadow);
 
 	.vscode-light & {
-		background: var(--color-background--darken-05);
+		background: var(--premium-glass);
+		border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 	}
 }
 
@@ -263,13 +284,19 @@ section {
 
 .section--settings {
 	flex: 0 1 auto;
-
 	display: flex;
 	flex-wrap: wrap;
+	border-radius: 12px;
+	margin: 1.5em;
+	padding: 1.5em;
+	transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+	border: 1px solid transparent;
 
-	border-radius: 6px;
-	margin: 1em;
-	padding: 1em;
+	&:hover {
+		transform: scale(1.01);
+		box-shadow: var(--premium-shadow);
+		border-color: var(--premium-purple);
+	}
 
 	.vscode-dark & {
 		background: var(--color-background--lighten-075);
@@ -345,7 +372,7 @@ section {
 	display: flex;
 	flex-flow: wrap-reverse;
 
-	& + .section__group {
+	&+.section__group {
 		margin-top: 1em;
 	}
 
@@ -378,6 +405,7 @@ section {
 	}
 
 	&:hover {
+
 		.link__configure,
 		.link__learn-more {
 			visibility: visible;
@@ -474,7 +502,7 @@ section {
 		width: 32px;
 	}
 
-	& + .settings {
+	&+.settings {
 		display: none;
 	}
 
@@ -483,7 +511,7 @@ section {
 			transform: translate(-4px, 0);
 		}
 
-		& + .settings {
+		&+.settings {
 			display: unset;
 		}
 	}
@@ -500,8 +528,8 @@ section {
 	select {
 		flex-grow: 1;
 
-		& + .link__configure,
-		& + .link__learn-more {
+		&+.link__configure,
+		&+.link__learn-more {
 			margin-left: 0;
 		}
 	}
@@ -514,7 +542,7 @@ section {
 	label {
 		flex-grow: 0;
 
-		> select {
+		>select {
 			margin-top: 0.25em;
 		}
 	}
@@ -531,6 +559,7 @@ section {
 	}
 
 	&:hover {
+
 		.link__learn-more,
 		.link__configure {
 			visibility: visible;
@@ -614,10 +643,16 @@ section {
 	align-self: flex-start;
 	font-size: 1.3rem;
 	position: sticky;
-	top: 0;
+	top: 100px;
 	margin-right: -2rem;
-	min-width: 160px;
+	min-width: 180px;
 	z-index: 2;
+	padding: 1.5rem;
+	background: var(--premium-glass);
+	backdrop-filter: blur(5px);
+	-webkit-backdrop-filter: blur(5px);
+	border-radius: 12px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
 
 	@media all and (max-width: 925px) {
 		display: none;
@@ -625,6 +660,7 @@ section {
 
 	li {
 		white-space: nowrap;
+		margin-bottom: 0.5rem;
 	}
 
 	.button {

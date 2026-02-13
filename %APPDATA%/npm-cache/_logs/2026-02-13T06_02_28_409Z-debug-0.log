@@ -8,8 +8,8 @@
 7 silly config load:file:C:\Users\piter\AppData\Roaming\npm\etc\npmrc
 8 verbose title npm list
 9 verbose argv "list" "--production" "--parseable" "--depth" "99999" "--loglevel" "error"
-10 verbose logfile logs-max:10 dir:D:\Cyber-Space\github projects\vscode-gitlens\%APPDATA%\npm-cache\_logs\2026-02-13T05_37_45_342Z-
-11 verbose logfile D:\Cyber-Space\github projects\vscode-gitlens\%APPDATA%\npm-cache\_logs\2026-02-13T05_37_45_342Z-debug-0.log
+10 verbose logfile logs-max:10 dir:D:\Cyber-Space\github projects\vscode-gitlens\%APPDATA%\npm-cache\_logs\2026-02-13T06_02_28_409Z-
+11 verbose logfile D:\Cyber-Space\github projects\vscode-gitlens\%APPDATA%\npm-cache\_logs\2026-02-13T06_02_28_409Z-debug-0.log
 12 silly logfile start cleaning logs, removing 1 files
 13 silly logfile done cleaning log files
 14 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736

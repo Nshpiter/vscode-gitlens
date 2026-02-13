@@ -51,7 +51,7 @@ export namespace Hovers {
 
 			editorLine = commitLine.line - 1;
 			// TODO: Doesn't work with dirty files -- pass in editor? or contents?
-			let hunkLine = await Container.instance.git.getDiffForLine(uri, editorLine, ref, documentRef);
+			let hunkLine = await Container.instance.git.getDiffForLine(uri, editorLine, ref, documentRef, document);
 
 			// If we didn't find a diff & ref is undefined (meaning uncommitted), check for a staged diff
 			if (hunkLine == null && ref == null && documentRef !== GitRevision.uncommittedStaged) {
@@ -60,6 +60,7 @@ export namespace Hovers {
 					editorLine,
 					undefined,
 					GitRevision.uncommittedStaged,
+					document,
 				);
 			}
 
@@ -92,26 +93,26 @@ export namespace Hovers {
 			previous =
 				compareUris.previous.sha == null || compareUris.previous.isUncommitted
 					? `  &nbsp;_${GitRevision.shorten(compareUris.previous.sha, {
-							strings: { working: 'Working Tree' },
-					  })}_ &nbsp;${GlyphChars.ArrowLeftRightLong}&nbsp; `
+						strings: { working: 'Working Tree' },
+					})}_ &nbsp;${GlyphChars.ArrowLeftRightLong}&nbsp; `
 					: `  &nbsp;[$(git-commit) ${GitRevision.shorten(
-							compareUris.previous.sha || '',
-					  )}](${ShowQuickCommitCommand.getMarkdownCommandArgs(
-							compareUris.previous.sha || '',
-					  )} "Show Commit") &nbsp;${GlyphChars.ArrowLeftRightLong}&nbsp; `;
+						compareUris.previous.sha || '',
+					)}](${ShowQuickCommitCommand.getMarkdownCommandArgs(
+						compareUris.previous.sha || '',
+					)} "Show Commit") &nbsp;${GlyphChars.ArrowLeftRightLong}&nbsp; `;
 
 			current =
 				compareUris.current.sha == null || compareUris.current.isUncommitted
 					? `_${GitRevision.shorten(compareUris.current.sha, {
-							strings: {
-								working: 'Working Tree',
-							},
-					  })}_`
+						strings: {
+							working: 'Working Tree',
+						},
+					})}_`
 					: `[$(git-commit) ${GitRevision.shorten(
-							compareUris.current.sha || '',
-					  )}](${ShowQuickCommitCommand.getMarkdownCommandArgs(
-							compareUris.current.sha || '',
-					  )} "Show Commit")`;
+						compareUris.current.sha || '',
+					)}](${ShowQuickCommitCommand.getMarkdownCommandArgs(
+						compareUris.current.sha || '',
+					)} "Show Commit")`;
 		} else {
 			message = `[$(compare-changes)](${DiffWithCommand.getMarkdownCommandArgs(
 				commit,
@@ -124,9 +125,8 @@ export namespace Hovers {
 			if (previousSha) {
 				previous = `  &nbsp;[$(git-commit) ${GitRevision.shorten(
 					previousSha,
-				)}](${ShowQuickCommitCommand.getMarkdownCommandArgs(previousSha)} "Show Commit") &nbsp;${
-					GlyphChars.ArrowLeftRightLong
-				}&nbsp;`;
+				)}](${ShowQuickCommitCommand.getMarkdownCommandArgs(previousSha)} "Show Commit") &nbsp;${GlyphChars.ArrowLeftRightLong
+					}&nbsp;`;
 			}
 
 			current = `[$(git-commit) ${commit.shortSha}](${ShowQuickCommitCommand.getMarkdownCommandArgs(
@@ -179,9 +179,8 @@ export namespace Hovers {
 
 			current = '_Working Tree_';
 		}
-		message = `${diff}\n---\n\nLocal Changes  &nbsp;${previous} &nbsp;${
-			GlyphChars.ArrowLeftRightLong
-		}&nbsp; ${current}${message == null ? '' : ` &nbsp;&nbsp;|&nbsp;&nbsp; ${message}`}`;
+		message = `${diff}\n---\n\nLocal Changes  &nbsp;${previous} &nbsp;${GlyphChars.ArrowLeftRightLong
+			}&nbsp; ${current}${message == null ? '' : ` &nbsp;&nbsp;|&nbsp;&nbsp; ${message}`}`;
 
 		const markdown = new MarkdownString(message, true);
 		markdown.supportHtml = true;
@@ -228,18 +227,18 @@ export namespace Hovers {
 			commit.isUncommitted ? commit.getPreviousComparisonUrisForLine(editorLine, uri.sha) : undefined,
 			getAutoLinkedIssuesOrPullRequests(message, remotes),
 			options?.pullRequests?.pr ??
-				getPullRequestForCommit(commit.ref, remotes, {
-					pullRequests:
-						options?.pullRequests?.enabled ||
-						CommitFormatter.has(
-							format,
-							'pullRequest',
-							'pullRequestAgo',
-							'pullRequestAgoOrDate',
-							'pullRequestDate',
-							'pullRequestState',
-						),
-				}),
+			getPullRequestForCommit(commit.ref, remotes, {
+				pullRequests:
+					options?.pullRequests?.enabled ||
+					CommitFormatter.has(
+						format,
+						'pullRequest',
+						'pullRequestAgo',
+						'pullRequestAgoOrDate',
+						'pullRequestDate',
+						'pullRequestState',
+					),
+			}),
 			Container.instance.vsls.maybeGetPresence(commit.author.email),
 		]);
 
@@ -276,9 +275,8 @@ export namespace Hovers {
 			return getDiffFromHunk(hunkLine.hunk);
 		}
 
-		return `\`\`\`diff${hunkLine.previous == null ? '' : `\n- ${hunkLine.previous.line.trim()}`}${
-			hunkLine.current == null ? '' : `\n+ ${hunkLine.current.line.trim()}`
-		}\n\`\`\``;
+		return `\`\`\`diff${hunkLine.previous == null ? '' : `\n- ${hunkLine.previous.line.trim()}`}${hunkLine.current == null ? '' : `\n+ ${hunkLine.current.line.trim()}`
+			}\n\`\`\``;
 	}
 
 	async function getAutoLinkedIssuesOrPullRequests(message: string, remotes: GitRemote[]) {
@@ -318,10 +316,8 @@ export namespace Hovers {
 				if (prCount !== 0) {
 					Logger.debug(
 						cc,
-						`timed out ${
-							GlyphChars.Dash
-						} ${prCount} issue/pull request queries took too long (over ${timeout} ms) ${
-							GlyphChars.Dot
+						`timed out ${GlyphChars.Dash
+						} ${prCount} issue/pull request queries took too long (over ${timeout} ms) ${GlyphChars.Dot
 						} ${getDurationMilliseconds(start)} ms`,
 					);
 
