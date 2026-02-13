@@ -1,8 +1,9 @@
 <template id="state:verify-email">
 	<section>
-		<h3>Please verify your email</h3>
-		<p>To use GitLens+ features, please verify the email for the account you created.</p>
-		<vscode-button data-action="command:gitlens.plus.resendVerification">Resend verification email</vscode-button>
-		<vscode-button data-action="command:gitlens.plus.validate">Refresh verification status</vscode-button>
+		<h3>%{home.verify.title}%</h3>
+		<p>%{home.verify.description}%</p>
+		<vscode-button
+			data-action="command:gitlens.plus.resendVerification">%{home.verify.resendButton}%</vscode-button>
+		<vscode-button data-action="command:gitlens.plus.validate">%{home.verify.refreshButton}%</vscode-button>
 	</section>
 </template>

@@ -1,22 +1,15 @@
 <section id="tags-view" class="section--settings section--collapsible">
 	<div class="section__header">
 		<h2>
-			Tags view
-			<a
-				class="link__learn-more"
-				title="Learn more"
-				href="https://github.com/gitkraken/vscode-gitlens/#tags-view-"
-			>
+			%{settings.views.tags.title}%
+			<a class="link__learn-more" title="Learn more"
+				href="https://github.com/gitkraken/vscode-gitlens/#tags-view-">
 				<i class="icon icon__info"></i>
 			</a>
 		</h2>
 
 		<p class="section__header-hint">
-			Adds a
-			<a class="command command--show-view" title="Show View in Side Bar" href="command:gitlens.showTagsView"
-				>Tags view</a
-			>
-			to visualize, explore, and manage Git tags
+			%{settings.views.tags.hint}%
 		</p>
 	</div>
 
@@ -26,11 +19,11 @@
 				<div class="settings settings--fixed ml-1">
 					<div class="setting">
 						<div class="setting__input">
-							<label for="views.tags.branches.layout">Layout tags</label>
+							<label for="views.tags.branches.layout">%{settings.views.tags.layout.label}%</label>
 							<div class="select-container">
 								<select id="views.tags.branches.layout" name="views.tags.branches.layout" data-setting>
-									<option value="list">as a list</option>
-									<option value="tree">as a tree</option>
+									<option value="list">%{settings.views.common.files.layout.list}%</option>
+									<option value="tree">%{settings.views.common.files.layout.tree}%</option>
 								</select>
 							</div>
 						</div>
@@ -38,13 +31,13 @@
 
 					<div class="setting">
 						<div class="setting__input">
-							<label for="sortTagsBy">Sort tags</label>
+							<label for="sortTagsBy">%{settings.views.tags.sort.label}%</label>
 							<div class="select-container">
 								<select id="sortTagsBy" name="sortTagsBy" data-setting>
-									<option value="date:desc">by recent commit date, descending</option>
-									<option value="date:asc">by recent commit date, ascending</option>
-									<option value="name:asc">by name, ascending</option>
-									<option value="name:desc">by name, descending</option>
+									<option value="date:desc">%{settings.views.common.sort.date.desc}%</option>
+									<option value="date:asc">%{settings.views.common.sort.date.asc}%</option>
+									<option value="name:asc">%{settings.views.common.sort.name.asc}%</option>
+									<option value="name:desc">%{settings.views.common.sort.name.desc}%</option>
 								</select>
 							</div>
 						</div>
@@ -52,68 +45,53 @@
 
 					<div class="setting">
 						<div class="setting__input">
-							<label for="views.tags.files.layout">Layout files</label>
+							<label for="views.tags.files.layout">%{settings.views.common.files.layout.label}%</label>
 							<div class="select-container">
 								<select id="views.tags.files.layout" name="views.tags.files.layout" data-setting>
-									<option value="auto">automatically</option>
-									<option value="list">as a list</option>
-									<option value="tree">as a tree</option>
+									<option value="auto">%{settings.views.common.files.layout.auto}%</option>
+									<option value="list">%{settings.views.common.files.layout.list}%</option>
+									<option value="tree">%{settings.views.common.files.layout.tree}%</option>
 								</select>
 							</div>
 						</div>
 						<p class="setting__hint" data-visibility="views.tags.files.layout =auto">
-							Chooses the best layout based on the number of files at each nesting level
+							%{settings.views.common.files.layout.auto.hint}%
 						</p>
 					</div>
 
 					<div class="setting">
 						<div class="setting__input">
-							<input
-								id="views.tags.files.compact"
-								name="views.tags.files.compact"
-								type="checkbox"
-								data-setting
-							/>
-							<label for="views.tags.files.compact">Use compact file layout</label>
+							<input id="views.tags.files.compact" name="views.tags.files.compact" type="checkbox"
+								data-setting />
+							<label for="views.tags.files.compact">%{settings.views.common.files.compact.label}%</label>
 						</div>
-						<p class="setting__hint">Compacts (flattens) unnecessary nesting when using a tree layouts</p>
+						<p class="setting__hint">%{settings.views.common.files.compact.hint}%</p>
 					</div>
 
 					<div class="setting">
 						<div class="setting__input">
 							<input id="views.tags.avatars" name="views.tags.avatars" type="checkbox" data-setting />
-							<label for="views.tags.avatars">Use author avatars</label>
+							<label for="views.tags.avatars">%{settings.views.common.avatars.label}%</label>
 						</div>
 					</div>
 				</div>
 			</div>
 
 			<div class="section__preview">
-				<img
-					class="image__preview hidden"
-					src="#{webroot}/media/tags-view-list.webp"
-					data-visibility="views.tags.branches.layout !tree"
-					loading="lazy"
-				/>
-				<img
-					class="image__preview hidden"
-					src="#{webroot}/media/tags-view-tree.webp"
-					data-visibility="views.tags.branches.layout =tree"
-					loading="lazy"
-				/>
+				<img class="image__preview hidden" src="#{webroot}/media/tags-view-list.webp"
+					data-visibility="views.tags.branches.layout !tree" loading="lazy" />
+				<img class="image__preview hidden" src="#{webroot}/media/tags-view-tree.webp"
+					data-visibility="views.tags.branches.layout =tree" loading="lazy" />
 			</div>
 		</div>
 
 		<div class="section__group">
 			<p class="section__hint">
-				<i class="icon icon__info"></i> For more options, open
-				<a
-					class="command"
-					title="Open Settings"
-					href="command:workbench.action.openSettings?%22gitlens.views.tags%22"
-					>Settings</a
-				>
-				and search for <b><i>gitlens.views.tags</i></b> or
+				<i class="icon icon__info"></i> %{settings.common.moreOptions.open}%
+				<a class="command" title="Open Settings"
+					href="command:workbench.action.openSettings?%22gitlens.views.tags%22">%{settings.common.settings}%</a>
+				%{settings.common.moreOptions.search}% <b><i>gitlens.views.tags</i></b>
+				%{settings.common.moreOptions.or}%
 				<b><i>gitlens.views</i></b>
 			</p>
 		</div>

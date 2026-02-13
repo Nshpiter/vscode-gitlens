@@ -1,13 +1,13 @@
 {
 	"name": "gitlens",
-	"displayName": "GitLens — Git supercharged",
-	"description": "Supercharge Git within VS Code — Visualize code authorship at a glance via Git blame annotations and CodeLens, seamlessly navigate and explore Git repositories, gain valuable insights via rich visualizations and powerful comparison commands, and so much more",
+	"displayName": "%gitlens.displayName%",
+	"description": "%gitlens.description%",
 	"version": "12.0.1",
 	"engines": {
 		"vscode": "^1.64.0"
 	},
 	"license": "SEE LICENSE IN LICENSE",
-	"publisher": "eamodio",
+	"publisher": "piter",
 	"author": {
 		"name": "Eric Amodio",
 		"email": "eamodio@gmail.com"
@@ -225,7 +225,7 @@
 					"gitlens.currentLine.enabled": {
 						"type": "boolean",
 						"default": true,
-						"markdownDescription": "Specifies whether to provide a blame annotation for the current line, by default. Use the `Toggle Line Blame Annotations` command (`gitlens.toggleLineBlame`) to toggle the annotations on and off for the current window",
+						"markdownDescription": "%config.gitlens.currentLine.enabled%",
 						"scope": "window",
 						"order": 10
 					},
@@ -270,7 +270,7 @@
 					"gitlens.codeLens.enabled": {
 						"type": "boolean",
 						"default": true,
-						"markdownDescription": "Specifies whether to provide any Git CodeLens, by default. Use the `Toggle Git CodeLens` command (`gitlens.toggleCodeLens`) to toggle the Git CodeLens on and off for the current window",
+						"markdownDescription": "%config.gitlens.codeLens.enabled%",
 						"scope": "window",
 						"order": 10
 					},
@@ -4998,7 +4998,7 @@
 			},
 			{
 				"command": "gitlens.views.rebaseOntoBranch",
-				"title": "Rebase Current Branch onto Branch...",
+				"title": "%command.rebaseOntoBranch.title%",
 				"category": "GitLens"
 			},
 			{
@@ -5013,7 +5013,7 @@
 			},
 			{
 				"command": "gitlens.views.resetCommit",
-				"title": "Reset Current Branch to Previous Commit...",
+				"title": "%command.resetCommit.title%",
 				"category": "GitLens"
 			},
 			{
@@ -5023,12 +5023,12 @@
 			},
 			{
 				"command": "gitlens.views.revert",
-				"title": "Revert Commit...",
+				"title": "%command.revert.title%",
 				"category": "GitLens"
 			},
 			{
 				"command": "gitlens.views.undoCommit",
-				"title": "Undo Commit",
+				"title": "%command.undoCommit.title%",
 				"category": "GitLens",
 				"icon": "$(discard)"
 			},
@@ -5051,13 +5051,13 @@
 			},
 			{
 				"command": "gitlens.views.createPullRequest",
-				"title": "Create Pull Request...",
+				"title": "%command.createPullRequest.title%",
 				"category": "GitLens",
 				"icon": "$(git-pull-request-create)"
 			},
 			{
 				"command": "gitlens.views.openPullRequest",
-				"title": "Open Pull Request",
+				"title": "%command.openPullRequest.title%",
 				"category": "GitLens",
 				"icon": "$(git-pull-request)"
 			},
@@ -5708,13 +5708,13 @@
 			},
 			{
 				"command": "gitlens.views.searchAndCompare.searchCommits",
-				"title": "Search Commits...",
+				"title": "%command.searchCommits.title%",
 				"category": "GitLens",
 				"icon": "$(search)"
 			},
 			{
 				"command": "gitlens.views.searchAndCompare.selectForCompare",
-				"title": "Compare References...",
+				"title": "%command.compareReferences.title%",
 				"category": "GitLens",
 				"icon": "$(compare-changes)"
 			},
@@ -5791,7 +5791,7 @@
 			},
 			{
 				"command": "gitlens.views.stashes.refresh",
-				"title": "Refresh",
+				"title": "%command.refresh.title%",
 				"category": "GitLens",
 				"icon": "$(refresh)"
 			},
@@ -10257,15 +10257,15 @@
 		"submenus": [
 			{
 				"id": "gitlens/commit/browse",
-				"label": "Browse"
+				"label": "%menus.browse.label%"
 			},
 			{
 				"id": "gitlens/commit/copy",
-				"label": "Copy As"
+				"label": "%menus.copyAs.label%"
 			},
 			{
 				"id": "gitlens/commit/changes",
-				"label": "Open Changes"
+				"label": "%menus.openChanges.label%"
 			},
 			{
 				"id": "gitlens/commit/file/copy",
@@ -10273,7 +10273,7 @@
 			},
 			{
 				"id": "gitlens/commit/file/commit",
-				"label": "Commit"
+				"label": "%menus.commit.label%"
 			},
 			{
 				"id": "gitlens/commit/file/changes",
@@ -10281,7 +10281,7 @@
 			},
 			{
 				"id": "gitlens/editor/annotations",
-				"label": "File Annotations",
+				"label": "%menus.fileAnnotations.label%",
 				"icon": {
 					"dark": "images/dark/icon-git.svg",
 					"light": "images/light/icon-git.svg"
@@ -10289,7 +10289,7 @@
 			},
 			{
 				"id": "gitlens/editor/context/changes",
-				"label": "Commit Changes"
+				"label": "%menus.commitChanges.label%"
 			},
 			{
 				"id": "gitlens/editor/changes",
@@ -10309,16 +10309,16 @@
 			},
 			{
 				"id": "gitlens/view/repositories/sections",
-				"label": "Sections"
+				"label": "%menus.sections.label%"
 			},
 			{
 				"id": "gitlens/view/searchAndCompare/new",
-				"label": "New Search or Compare",
+				"label": "%menus.newSearchOrCompare.label%",
 				"icon": "$(add)"
 			},
 			{
 				"id": "gitlens/view/searchAndCompare/comparison/filter",
-				"label": "Filter",
+				"label": "%menus.filter.label%",
 				"icon": "$(filter)"
 			}
 		],
@@ -10724,7 +10724,7 @@
 			"scm": [
 				{
 					"id": "gitlens.views.commits",
-					"name": "Commits",
+					"name": "%views.commits.title%",
 					"when": "!gitlens:disabled",
 					"contextualTitle": "GitLens",
 					"icon": "images/views/commits.svg",
@@ -10732,7 +10732,7 @@
 				},
 				{
 					"id": "gitlens.views.repositories",
-					"name": "Repositories",
+					"name": "%views.repositories.title%",
 					"when": "!gitlens:disabled && !gitlens:hasVirtualFolders",
 					"contextualTitle": "GitLens",
 					"icon": "images/views/repositories.svg",
@@ -10740,7 +10740,7 @@
 				},
 				{
 					"id": "gitlens.views.fileHistory",
-					"name": "File History",
+					"name": "%views.fileHistory.title%",
 					"when": "!gitlens:disabled",
 					"contextualTitle": "GitLens",
 					"icon": "images/views/history.svg",
@@ -10756,7 +10756,7 @@
 				},
 				{
 					"id": "gitlens.views.branches",
-					"name": "Branches",
+					"name": "%views.branches.title%",
 					"when": "!gitlens:disabled",
 					"contextualTitle": "GitLens",
 					"icon": "images/views/branches.svg",
@@ -10764,7 +10764,7 @@
 				},
 				{
 					"id": "gitlens.views.remotes",
-					"name": "Remotes",
+					"name": "%views.remotes.title%",
 					"when": "!gitlens:disabled",
 					"contextualTitle": "GitLens",
 					"icon": "images/views/remotes.svg",
@@ -10772,7 +10772,7 @@
 				},
 				{
 					"id": "gitlens.views.stashes",
-					"name": "Stashes",
+					"name": "%views.stashes.title%",
 					"when": "!gitlens:disabled && !gitlens:hasVirtualFolders",
 					"contextualTitle": "GitLens",
 					"icon": "images/views/stashes.svg",
@@ -10780,7 +10780,7 @@
 				},
 				{
 					"id": "gitlens.views.tags",
-					"name": "Tags",
+					"name": "%views.tags.title%",
 					"when": "!gitlens:disabled",
 					"contextualTitle": "GitLens",
 					"icon": "images/views/tags.svg",
@@ -10796,7 +10796,7 @@
 				},
 				{
 					"id": "gitlens.views.contributors",
-					"name": "Contributors",
+					"name": "%views.contributors.title%",
 					"when": "!gitlens:disabled",
 					"contextualTitle": "GitLens",
 					"icon": "images/views/contributors.svg",
@@ -10815,177 +10815,177 @@
 		"walkthroughs": [
 			{
 				"id": "gitlens.welcome",
-				"title": "Get Started with GitLens",
-				"description": "Discover and personalize features that supercharge your Git experience",
+				"title": "%walkthrough.welcome.title%",
+				"description": "%walkthrough.welcome.description%",
 				"steps": [
 					{
 						"id": "gitlens.welcome.experience",
-						"title": "Get setup quickly",
-						"description": "Use the Quick Setup to easily configure frequently used GitLens features.\n\n[Open Quick Setup](command:gitlens.showWelcomePage?%22quick-setup%22 \"Opens the GitLens Quick Setup\")",
+						"title": "%walkthrough.welcome.experience.title%",
+						"description": "%walkthrough.welcome.experience.description%",
 						"media": {
-							"markdown": "walkthroughs/getting-started/1-setup.md"
+							"markdown": "%walkthrough.welcome.experience.markdown%"
 						}
 					},
 					{
 						"id": "gitlens.welcome.settings",
-						"title": "Easily customize every aspect of GitLens",
-						"description": "A rich, interactive settings editor enables seemingly endless customization possibilities.\n\n[Open Settings](command:gitlens.showSettingsPage \"Opens the GitLens Interactive Settings\")",
+						"title": "%walkthrough.welcome.settings.title%",
+						"description": "%walkthrough.welcome.settings.description%",
 						"media": {
-							"markdown": "walkthroughs/getting-started/2-customize.md"
+							"markdown": "%walkthrough.welcome.settings.markdown%"
 						}
 					},
 					{
 						"id": "gitlens.welcome.currentLineBlame",
-						"title": "See who made what changes at a glance",
-						"description": "Current line and status bar blame provide historical context about line changes.",
+						"title": "%walkthrough.welcome.currentLineBlame.title%",
+						"description": "%walkthrough.welcome.currentLineBlame.description%",
 						"media": {
-							"markdown": "walkthroughs/getting-started/3-current-line-blame.md"
+							"markdown": "%walkthrough.welcome.currentLineBlame.markdown%"
 						}
 					},
 					{
 						"id": "gitlens.welcome.gitCodeLens",
-						"title": "View Git authorship via CodeLens",
-						"description": "CodeLens adds contextual authorship information and links at the top of each file and at the beginning of each block of code.",
+						"title": "%walkthrough.welcome.gitCodeLens.title%",
+						"description": "%walkthrough.welcome.gitCodeLens.description%",
 						"media": {
-							"markdown": "walkthroughs/getting-started/4-git-codelens.md"
+							"markdown": "%walkthrough.welcome.gitCodeLens.markdown%"
 						}
 					},
 					{
 						"id": "gitlens.welcome.revisionHistory",
-						"title": "Easily navigate revision history",
-						"description": "",
+						"title": "%walkthrough.welcome.revisionHistory.title%",
+						"description": "%walkthrough.welcome.revisionHistory.description%",
 						"media": {
-							"markdown": "walkthroughs/getting-started/5-revision-history.md"
+							"markdown": "%walkthrough.welcome.revisionHistory.markdown%"
 						}
 					},
 					{
 						"id": "gitlens.welcome.fileAnnotations",
-						"title": "See more context with file annotations",
-						"description": "Whole file annotations place visual indicators in the gutter and scroll bar that provide additional context about changes.",
+						"title": "%walkthrough.welcome.fileAnnotations.title%",
+						"description": "%walkthrough.welcome.fileAnnotations.description%",
 						"media": {
-							"markdown": "walkthroughs/getting-started/6-file-annotations.md"
+							"markdown": "%walkthrough.welcome.fileAnnotations.markdown%"
 						}
 					},
 					{
 						"id": "gitlens.welcome.gitSideBarViews",
-						"title": "Explore repositories from the side bar",
-						"description": "Rich views expose even more Git functionality in your side bar.\n\n[Set Views Layout](command:gitlens.setViewsLayout)",
+						"title": "%walkthrough.welcome.gitSideBarViews.title%",
+						"description": "%walkthrough.welcome.gitSideBarViews.description%",
 						"media": {
-							"markdown": "walkthroughs/getting-started/7-git-side-bar-views.md"
+							"markdown": "%walkthrough.welcome.gitSideBarViews.markdown%"
 						}
 					},
 					{
 						"id": "gitlens.welcome.hostingServiceIntegrations",
-						"title": "Integrate with Git hosting services",
-						"description": "Quickly gain insights from pull requests and issues without leaving your editor.",
+						"title": "%walkthrough.welcome.hostingServiceIntegrations.title%",
+						"description": "%walkthrough.welcome.hostingServiceIntegrations.description%",
 						"media": {
-							"markdown": "walkthroughs/getting-started/8-hosting-service-integrations.md"
+							"markdown": "%walkthrough.welcome.hostingServiceIntegrations.markdown%"
 						}
 					},
 					{
 						"id": "gitlens.welcome.gitCommandPalette",
-						"title": "Work faster with Git Command Palette",
-						"description": "Now you don't have to remember all those Git commands.\n\n[Open Git Command Palette](command:gitlens.gitCommands)",
+						"title": "%walkthrough.welcome.gitCommandPalette.title%",
+						"description": "%walkthrough.welcome.gitCommandPalette.description%",
 						"media": {
-							"markdown": "walkthroughs/getting-started/9-git-command-palette.md"
+							"markdown": "%walkthrough.welcome.gitCommandPalette.markdown%"
 						}
 					},
 					{
 						"id": "gitlens.welcome.interactiveRebaseEditor",
-						"title": "Visualize interactive rebase operations",
-						"description": "A user-friendly interactive rebase editor to easily configure an interactive rebase session",
+						"title": "%walkthrough.welcome.interactiveRebaseEditor.title%",
+						"description": "%walkthrough.welcome.interactiveRebaseEditor.description%",
 						"media": {
-							"markdown": "walkthroughs/getting-started/10-interactive-rebase-editor.md"
+							"markdown": "%walkthrough.welcome.interactiveRebaseEditor.markdown%"
 						}
 					},
 					{
 						"id": "gitlens.welcome.terminal",
-						"title": "Jump to git details from the terminal",
-						"description": "Using ctrl/cmd+click on autolinks in the integrated terminal will quickly jump to more details for commits, branches, tags, and more.",
+						"title": "%walkthrough.welcome.terminal.title%",
+						"description": "%walkthrough.welcome.terminal.description%",
 						"media": {
-							"markdown": "walkthroughs/getting-started/11-terminal.md"
+							"markdown": "%walkthrough.welcome.terminal.markdown%"
 						}
 					},
 					{
 						"id": "gitlens.welcome.plus",
-						"title": "Introducing GitLens+",
-						"description": "Check out the all-new, completely optional, GitLens+ features.\n\n[Learn about GitLens+ features](command:gitlens.plus.learn?false \"Open the GitLens+ features walkthrough\")",
+						"title": "%walkthrough.welcome.plus.title%",
+						"description": "%walkthrough.welcome.plus.description%",
 						"media": {
-							"markdown": "walkthroughs/getting-started/12-plus.md"
+							"markdown": "%walkthrough.welcome.plus.markdown%"
 						}
 					}
 				]
 			},
 			{
 				"id": "gitlens.plus",
-				"title": "Introducing GitLens+",
-				"description": "Get even more out of GitLens in VS Code!",
+				"title": "%walkthrough.plus.title%",
+				"description": "%walkthrough.plus.description%",
 				"steps": [
 					{
 						"id": "gitlens.plus.intro.tryNow",
-						"title": "Introducing GitLens+",
-						"description": "Try GitLens+ features now, without an account, for 3 days.\n\n[Try GitLens+ features now](command:gitlens.plus.startPreviewTrial)",
+						"title": "%walkthrough.plus.intro.title%",
+						"description": "%walkthrough.plus.intro.tryNow.description%",
 						"media": {
-							"markdown": "walkthroughs/plus/1-intro.md"
+							"markdown": "%walkthrough.plus.intro.markdown%"
 						},
 						"when": "gitlens:plus:state == 0"
 					},
 					{
 						"id": "gitlens.plus.intro.signIn",
-						"title": "Introducing GitLens+",
-						"description": "Sign in for use on public repos and get an additional 7 day trial for private repos.\n\n[Sign in to GitLens+](command:gitlens.plus.loginOrSignUp)",
+						"title": "%walkthrough.plus.intro.title%",
+						"description": "%walkthrough.plus.intro.signIn.description%",
 						"media": {
-							"markdown": "walkthroughs/plus/1-intro.md"
+							"markdown": "%walkthrough.plus.intro.markdown%"
 						},
 						"when": "gitlens:plus:state == 1 || gitlens:plus:state == 2"
 					},
 					{
 						"id": "gitlens.plus.intro",
-						"title": "Introducing GitLens+",
+						"title": "%walkthrough.plus.intro.title%",
 						"media": {
-							"markdown": "walkthroughs/plus/1-intro.md"
+							"markdown": "%walkthrough.plus.intro.markdown%"
 						},
 						"when": "gitlens:plus:state > 2"
 					},
 					{
 						"id": "gitlens.plus.visualFileHistory",
-						"title": "Visualize file history",
-						"description": "A more visual way to analyze and explore changes made to a file.\n\n[Open Visual File History view](command:gitlens.showTimelineView)",
+						"title": "%walkthrough.plus.visualFileHistory.title%",
+						"description": "%walkthrough.plus.visualFileHistory.description%",
 						"media": {
-							"markdown": "walkthroughs/plus/3-visual-file-history.md"
+							"markdown": "%walkthrough.plus.visualFileHistory.markdown%"
 						}
 					},
 					{
 						"id": "gitlens.plus.worktrees",
-						"title": "Do more with Worktrees",
-						"description": "Create worktrees to allow multiple branches to be checked-out at once on the same repository.\n\n[Open Worktrees view](command:gitlens.showWorktreesView)",
+						"title": "%walkthrough.plus.worktrees.title%",
+						"description": "%walkthrough.plus.worktrees.description%",
 						"media": {
-							"markdown": "walkthroughs/plus/2-worktrees.md"
+							"markdown": "%walkthrough.plus.worktrees.markdown%"
 						}
 					},
 					{
 						"id": "gitlens.plus.comingSoon",
-						"title": "More coming soon",
-						"description": "Stay tuned!",
+						"title": "%walkthrough.plus.comingSoon.title%",
+						"description": "%walkthrough.plus.comingSoon.description%",
 						"media": {
-							"markdown": "walkthroughs/plus/4-coming-soon.md"
+							"markdown": "%walkthrough.plus.comingSoon.markdown%"
 						}
 					},
 					{
 						"id": "gitlens.plus.tryNow",
-						"title": "Try GitLens+ now",
-						"description": "Try GitLens+ features now, without an account, for 3 days.\n\n[Try GitLens+ features now](command:gitlens.plus.startPreviewTrial)",
+						"title": "%walkthrough.plus.tryNow.title%",
+						"description": "%walkthrough.plus.tryNow.description%",
 						"media": {
-							"markdown": "walkthroughs/plus/5-try-now.md"
+							"markdown": "%walkthrough.plus.tryNow.markdown%"
 						},
 						"when": "gitlens:plus:state == 0"
 					},
 					{
 						"id": "gitlens.plus.signIn",
-						"title": "Get access to GitLens+ features on public repos",
-						"description": "Sign in for use on public repos and get an additional 7 day trial for private repos.\n\n[Sign in to GitLens+](command:gitlens.plus.loginOrSignUp)",
+						"title": "%walkthrough.plus.signIn.title%",
+						"description": "%walkthrough.plus.signIn.description%",
 						"media": {
-							"markdown": "walkthroughs/plus/5-try-now.md"
+							"markdown": "%walkthrough.plus.signIn.markdown%"
 						},
 						"when": "gitlens:plus:state == 1 || gitlens:plus:state == 2"
 					}
@@ -11005,13 +11005,13 @@
 		"clean": "npx rimraf dist out .vscode-test .vscode-test-web .eslintcache* tsconfig*.tsbuildinfo",
 		"copy:images": "webpack --config webpack.config.images.js",
 		"lint": "eslint src/**/*.ts --fix",
-		"package": "vsce package --yarn",
-		"package-insiders": "yarn run patch-insiders && yarn run package",
+		"package": "npx @vscode/vsce package --no-yarn --allow-package-all-secrets",
+		"package-insiders": "npm run patch-insiders && npm run package",
 		"patch-insiders": "node ./scripts/applyPatchForInsiders.js",
 		"pretty": "prettier --config .prettierrc --loglevel warn --write .",
-		"pub": "vsce publish --yarn",
-		"rebuild": "yarn run reset && yarn run build",
-		"reset": "yarn run clean && yarn --frozen-lockfile",
+		"pub": "vsce publish --no-yarn",
+		"rebuild": "npm run reset && npm run build",
+		"reset": "npm run clean && npm install",
 		"test": "node ./out/test/runTest.js",
 		"watch": "webpack --watch --mode development",
 		"watch:extension": "webpack --watch --mode development --config-name extension",
@@ -11025,8 +11025,8 @@
 		"update-dts:master": "pushd \"src/@types\" && npx vscode-dts master && popd",
 		"update-emoji": "node ./scripts/generateEmojiShortcodeMap.js",
 		"update-licenses": "node ./scripts/generateLicenses.mjs",
-		"-pretest": "yarn run build:tests",
-		"vscode:prepublish": "yarn run bundle"
+		"-pretest": "npm run build:tests",
+		"vscode:prepublish": "npm run bundle"
 	},
 	"dependencies": {
 		"@octokit/core": "3.5.1",
@@ -11040,6 +11040,8 @@
 		"md5.js": "1.3.5",
 		"node-fetch": "2.6.7",
 		"path-browserify": "1.0.1",
+		"react": "^19.2.4",
+		"react-dom": "^19.2.4",
 		"sortablejs": "1.14.0",
 		"uuid": "8.3.2"
 	},

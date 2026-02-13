@@ -1,6 +1,6 @@
 <section id="shortcuts" class="section--settings section--collapsible">
 	<div class="section__header">
-		<h2>Keyboard Shortcuts</h2>
+		<h2>%{settings.shortcuts.title}%</h2>
 	</div>
 
 	<div class="section__collapsible">
@@ -8,34 +8,24 @@
 			<div class="section__content">
 				<div class="setting">
 					<div class="setting__input">
-						<label for="keymap">Use</label>
+						<label for="keymap">%{settings.shortcuts.keymap.label}%</label>
 						<div class="select-container">
 							<select id="keymap" name="keymap" data-setting>
-								<option value="alternate">alt-based</option>
-								<option value="chorded">chorded (default)</option>
-								<option value="none">user-defined</option>
+								<option value="alternate">%{settings.shortcuts.keymap.alternate}%</option>
+								<option value="chorded">%{settings.shortcuts.keymap.chorded}%</option>
+								<option value="none">%{settings.shortcuts.keymap.none}%</option>
 							</select>
 						</div>
-						<label for="keymap"> keyboard shortcuts</label>
+						<label for="keymap">%{settings.shortcuts.keymap.suffix}%</label>
 					</div>
 					<span class="setting__hint hidden" data-visibility="keymap =alternate">
-						<kbd>Alt</kbd> based (<kbd>&#x2325;</kbd>
-						on macOS) shortcuts. Not great for non-English keyboard layouts
+						%{settings.shortcuts.keymap.alternate.hint}%
 					</span>
 					<span class="setting__hint hidden" data-visibility="keymap =chorded">
-						Chorded shortcuts that start with
-						<kbd>Ctrl+Shift+G</kbd> (<kbd>&#x2325;&#x2318;G</kbd>
-						on macOS). Better for non-English keyboard layouts
+						%{settings.shortcuts.keymap.chorded.hint}%
 					</span>
 					<span class="setting__hint hidden" data-visibility="keymap =none">
-						GitLens won't bind any keyboard shortcuts. Configure your own via the
-						<a
-							class="command"
-							title="Open Keyboard Shortcuts"
-							href="command:workbench.action.openGlobalKeybindings"
-							>Keyboard Shortcuts</a
-						>
-						editor
+						%{settings.shortcuts.keymap.none.hint}%
 					</span>
 				</div>
 			</div>
@@ -43,11 +33,7 @@
 
 		<div class="section__group">
 			<p class="section__hint">
-				<i class="icon icon__info"></i> Search for <b><i>gitlens</i></b> in the
-				<a class="command" title="Open Keyboard Shortcuts" href="command:workbench.action.openGlobalKeybindings"
-					>Keyboard Shortcuts</a
-				>
-				editor to see the shortcuts and to customize them further
+				<i class="icon icon__info"></i> %{settings.shortcuts.hint}%
 			</p>
 		</div>
 	</div>

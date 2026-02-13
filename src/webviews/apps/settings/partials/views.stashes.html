@@ -1,22 +1,15 @@
 <section id="stashes-view" class="section--settings section--collapsible">
 	<div class="section__header">
 		<h2>
-			Stashes view
-			<a
-				class="link__learn-more"
-				title="Learn more"
-				href="https://github.com/gitkraken/vscode-gitlens/#stashes-view-"
-			>
+			%{settings.views.stashes.title}%
+			<a class="link__learn-more" title="Learn more"
+				href="https://github.com/gitkraken/vscode-gitlens/#stashes-view-">
 				<i class="icon icon__info"></i>
 			</a>
 		</h2>
 
 		<p class="section__header-hint">
-			Adds a
-			<a class="command command--show-view" title="Show View in Side Bar" href="command:gitlens.showStashesView"
-				>Stashes view</a
-			>
-			to visualize, explore, and manage Git stashes
+			%{settings.views.stashes.hint}%
 		</p>
 	</div>
 
@@ -26,117 +19,84 @@
 				<div class="settings settings--fixed ml-1">
 					<div class="setting">
 						<div class="setting__input">
-							<label for="views.stashes.files.layout">Layout files</label>
+							<label for="views.stashes.files.layout">%{settings.views.common.files.layout.label}%</label>
 							<div class="select-container">
 								<select id="views.stashes.files.layout" name="views.stashes.files.layout" data-setting>
-									<option value="auto">automatically</option>
-									<option value="list">as a list</option>
-									<option value="tree">as a tree</option>
+									<option value="auto">%{settings.views.common.files.layout.auto}%</option>
+									<option value="list">%{settings.views.common.files.layout.list}%</option>
+									<option value="tree">%{settings.views.common.files.layout.tree}%</option>
 								</select>
 							</div>
 						</div>
 						<p class="setting__hint" data-visibility="views.stashes.files.layout =auto">
-							Chooses the best layout based on the number of files at each nesting level
+							%{settings.views.common.files.layout.auto.hint}%
 						</p>
 					</div>
 
 					<div class="setting">
 						<div class="setting__input">
-							<input
-								id="views.stashes.files.compact"
-								name="views.stashes.files.compact"
-								type="checkbox"
-								data-setting
-							/>
-							<label for="views.stashes.files.compact">Use compact file layout</label>
+							<input id="views.stashes.files.compact" name="views.stashes.files.compact" type="checkbox"
+								data-setting />
+							<label
+								for="views.stashes.files.compact">%{settings.views.common.files.compact.label}%</label>
 						</div>
-						<p class="setting__hint">Compacts (flattens) unnecessary nesting when using a tree layouts</p>
+						<p class="setting__hint">%{settings.views.common.files.compact.hint}%</p>
 					</div>
 
 					<div class="setting">
 						<div class="setting__input setting__input--format">
-							<label for="views.formats.stashes.label">Stash&nbsp;label&nbsp;format</label>
-							<input
-								id="views.formats.stashes.label"
-								name="views.formats.stashes.label"
-								type="text"
-								placeholder="${message}"
-								data-setting
-								data-setting-preview
-								data-default-value="${message}"
-								data-popup-trigger
-							/>
-							<label for="views.formats.stashes.label" title="See available tokens">
+							<label
+								for="views.formats.stashes.label">%{settings.views.formats.stashes.label.label}%</label>
+							<input id="views.formats.stashes.label" name="views.formats.stashes.label" type="text"
+								placeholder="${message}" data-setting data-setting-preview
+								data-default-value="${message}" data-popup-trigger />
+							<label for="views.formats.stashes.label" title="%{settings.views.formats.availableTokens}%">
 								<i class="icon icon__chevron-down"></i>
 							</label>
 						</div>
 						<div id="views.formats.stashes.label.popup" class="popup hidden"></div>
-						<span class="setting__hint"
-							>Example:
-							<span
-								data-setting-preview="views.formats.stashes.label"
-								data-setting-preview-type="commit"
-								data-setting-preview-default="${message}"
-							></span>
+						<span class="setting__hint">%{settings.statusBar.format.example}%
+							<span data-setting-preview="views.formats.stashes.label" data-setting-preview-type="commit"
+								data-setting-preview-default="${message}"></span>
 						</span>
 					</div>
 
 					<div class="setting">
 						<div class="setting__input setting__input--format">
-							<label for="views.formats.stashes.description">Stash&nbsp;description&nbsp;format</label>
-							<input
-								id="views.formats.stashes.description"
-								name="views.formats.stashes.description"
-								type="text"
-								placeholder="${agoOrDate}"
-								data-setting
-								data-setting-preview
-								data-default-value="${agoOrDate}"
-								data-popup-trigger
-							/>
-							<label for="views.formats.stashes.description" title="See available tokens">
+							<label
+								for="views.formats.stashes.description">%{settings.views.formats.stashes.description.label}%</label>
+							<input id="views.formats.stashes.description" name="views.formats.stashes.description"
+								type="text" placeholder="${agoOrDate}" data-setting data-setting-preview
+								data-default-value="${agoOrDate}" data-popup-trigger />
+							<label for="views.formats.stashes.description"
+								title="%{settings.views.formats.availableTokens}%">
 								<i class="icon icon__chevron-down"></i>
 							</label>
 						</div>
 						<div id="views.formats.stashes.description.popup" class="popup hidden"></div>
-						<span class="setting__hint"
-							>Example:
-							<span
-								data-setting-preview="views.formats.stashes.description"
-								data-setting-preview-type="commit"
-								data-setting-preview-default="${agoOrDate}"
-							></span>
+						<span class="setting__hint">%{settings.statusBar.format.example}%
+							<span data-setting-preview="views.formats.stashes.description"
+								data-setting-preview-type="commit" data-setting-preview-default="${agoOrDate}"></span>
 						</span>
 					</div>
 				</div>
 			</div>
 
 			<div class="section__preview">
-				<img
-					class="image__preview hidden"
-					src="#{webroot}/media/stashes-view-auto.webp"
-					data-visibility="views.stashes.files.layout !tree"
-					loading="lazy"
-				/>
-				<img
-					class="image__preview hidden"
-					src="#{webroot}/media/stashes-view-tree.webp"
-					data-visibility="views.stashes.files.layout =tree"
-					loading="lazy"
-				/>
+				<img class="image__preview hidden" src="#{webroot}/media/stashes-view-auto.webp"
+					data-visibility="views.stashes.files.layout !tree" loading="lazy" />
+				<img class="image__preview hidden" src="#{webroot}/media/stashes-view-tree.webp"
+					data-visibility="views.stashes.files.layout =tree" loading="lazy" />
 			</div>
 		</div>
 
 		<div class="section__group">
 			<p class="section__hint">
-				<i class="icon icon__info"></i> For more options, open
-				<a
-					class="command"
-					title="Open Settings"
-					href="command:workbench.action.openSettings?%22gitlens.views.stashes%22"
-					>Settings</a
-				>
-				and search for <b><i>gitlens.views.stashes</i></b> or
+				<i class="icon icon__info"></i> %{settings.common.moreOptions.open}%
+				<a class="command" title="Open Settings"
+					href="command:workbench.action.openSettings?%22gitlens.views.stashes%22">%{settings.common.settings}%</a>
+				%{settings.common.moreOptions.search}% <b><i>gitlens.views.stashes</i></b>
+				%{settings.common.moreOptions.or}%
 				<b><i>gitlens.views</i></b>
 			</p>
 		</div>
