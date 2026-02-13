@@ -6,9 +6,17 @@ import { DOM } from '../shared/dom';
 // import { Snow } from '../shared/snow';
 
 const topOffset = 83;
+const storageKeys = {
+	filterQuery: 'gitlens:settings:filterQuery',
+	collapsedSections: 'gitlens:settings:collapsedSections',
+};
 
 export class SettingsApp extends AppWithConfig<State> {
 	private _scopes: HTMLSelectElement | null = null;
+	private _filterInput: HTMLInputElement | null = null;
+	private _filterClear: HTMLAnchorElement | null = null;
+	private _filterCount: HTMLElement | null = null;
+	private _filterEmpty: HTMLElement | null = null;
 	private _observer: IntersectionObserver | undefined;
 
 	private _activeSection: string | undefined = 'general';
@@ -19,6 +27,8 @@ export class SettingsApp extends AppWithConfig<State> {
 	}
 
 	protected override onInitialize() {
+		const settingNameTemplate = document.body.dataset.settingNameTemplate ?? 'Setting name: "{name}"';
+
 		// Add scopes if available
 		const scopes = document.getElementById('scopes') as HTMLSelectElement;
 		if (scopes != null && this.state.scopes.length > 1) {
@@ -36,6 +46,11 @@ export class SettingsApp extends AppWithConfig<State> {
 			this._scopes = scopes;
 		}
 
+		this._filterInput = document.getElementById('settings-filter') as HTMLInputElement | null;
+		this._filterClear = document.getElementById('settings-filter-clear') as HTMLAnchorElement | null;
+		this._filterCount = document.getElementById('settings-filter-count');
+		this._filterEmpty = document.getElementById('settings-filter-empty');
+
 		let top = topOffset;
 		const header = document.querySelector('.hero__area--sticky');
 		if (header != null) {
@@ -52,14 +67,17 @@ export class SettingsApp extends AppWithConfig<State> {
 			this._observer.observe(el);
 		}
 
+		this.restoreUiState();
+		this.updateBackToTopVisibility();
+
 		for (const el of document.querySelectorAll<HTMLInputElement>('[data-setting]')) {
 			if (!el.title && el.type === 'checkbox') {
-				el.title = `Setting name: "gitlens.${el.name}"`;
+				el.title = settingNameTemplate.replace('{name}', `gitlens.${el.name}`);
 			}
 
 			for (const label of document.querySelectorAll<HTMLLabelElement>(`label[for="${el.id}"]`)) {
 				if (!label.title) {
-					label.title = `Setting name: "gitlens.${el.name}"`;
+					label.title = settingNameTemplate.replace('{name}', `gitlens.${el.name}`);
 				}
 			}
 		}
@@ -87,6 +105,12 @@ export class SettingsApp extends AppWithConfig<State> {
 				e.preventDefault();
 			}),
 			DOM.on('[data-action]', 'click', (e, target: HTMLAnchorElement) => this.onActionLinkClicked(target, e)),
+			DOM.on('#settings-filter', 'input', (_e, target: HTMLInputElement) => this.onFilterChanged(target)),
+			DOM.on('#settings-filter', 'keydown', (e, target: HTMLInputElement) => this.onFilterKeydown(e, target)),
+			DOM.on('#settings-filter-clear', 'click', e => this.onFilterClear(e)),
+			DOM.on(document, 'keydown', e => this.onGlobalKeydown(e)),
+			DOM.on(window, 'scroll', () => this.updateBackToTopVisibility()),
+			DOM.on('#back-to-top', 'click', e => this.onBackToTop(e)),
 		);
 
 		return disposables;
@@ -157,6 +181,7 @@ export class SettingsApp extends AppWithConfig<State> {
 
 				document.querySelector('[data-action="collapse"]')!.classList.add('hidden');
 				document.querySelector('[data-action="expand"]')!.classList.remove('hidden');
+				this.persistCollapsedSections();
 				break;
 
 			case 'expand':
@@ -166,11 +191,62 @@ export class SettingsApp extends AppWithConfig<State> {
 
 				document.querySelector('[data-action="collapse"]')!.classList.remove('hidden');
 				document.querySelector('[data-action="expand"]')!.classList.add('hidden');
+				this.persistCollapsedSections();
 				break;
 		}
 
 		e.preventDefault();
 		e.stopPropagation();
+	}
+
+	private onFilterChanged(input: HTMLInputElement) {
+		this.applyFilter(input.value);
+	}
+
+	private onFilterClear(e: MouseEvent) {
+		e.preventDefault();
+		e.stopPropagation();
+
+		if (this._filterInput == null) return;
+
+		this._filterInput.value = '';
+		this.applyFilter('');
+		this._filterInput.focus();
+	}
+
+	private onFilterKeydown(e: KeyboardEvent, input: HTMLInputElement) {
+		if (e.key === 'Escape') {
+			if (input.value.length !== 0) {
+				input.value = '';
+				this.applyFilter('');
+			}
+			e.preventDefault();
+			e.stopPropagation();
+		}
+	}
+
+	private onGlobalKeydown(e: KeyboardEvent) {
+		if (this._filterInput == null) return;
+
+		const target = e.target as HTMLElement | null;
+		if (
+			target != null &&
+			(target.matches('input, textarea, select') || target.isContentEditable)
+		) {
+			return;
+		}
+
+		if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f') {
+			this._filterInput.focus();
+			this._filterInput.select();
+			e.preventDefault();
+		}
+
+		if (!e.ctrlKey && !e.metaKey && !e.altKey && e.key === '/') {
+			this._filterInput.focus();
+			this._filterInput.select();
+			e.preventDefault();
+		}
 	}
 
 	protected override onInputSelected(element: HTMLSelectElement) {
@@ -196,6 +272,7 @@ export class SettingsApp extends AppWithConfig<State> {
 		}
 
 		element.parentElement!.classList.toggle('collapsed');
+		this.persistCollapsedSections();
 	}
 
 	private onSettingExpanderCicked(element: HTMLElement, _e: MouseEvent) {
@@ -207,6 +284,95 @@ export class SettingsApp extends AppWithConfig<State> {
 		if (el != null) {
 			el.classList.toggle('active', active);
 		}
+	}
+
+	private applyFilter(rawQuery: string) {
+		const query = rawQuery.trim().toLowerCase();
+		const hasQuery = query.length > 0;
+		let visibleSections = 0;
+		this.persistFilterQuery(rawQuery);
+
+		if (this._filterClear != null) {
+			this._filterClear.classList.toggle('hidden', !hasQuery);
+		}
+
+		for (const section of document.querySelectorAll<HTMLElement>('section.section--settings[id]')) {
+			const text = (section.textContent ?? '').toLowerCase();
+			const matches = !hasQuery || text.includes(query);
+			section.classList.toggle('hidden-by-filter', !matches);
+			if (matches) {
+				visibleSections++;
+			}
+		}
+
+		for (const link of document.querySelectorAll<HTMLAnchorElement>('a.sidebar__jump-link[href^="#"]')) {
+			const targetId = link.getAttribute('href')?.slice(1);
+			if (!targetId) continue;
+
+			const section = document.getElementById(targetId);
+			const hidden = section?.classList.contains('hidden-by-filter') ?? false;
+			link.parentElement?.classList.toggle('hidden-by-filter', hidden);
+		}
+
+		if (this._filterCount != null) {
+			const template = document.body.dataset.filterResultsTemplate ?? '{count} sections';
+			this._filterCount.textContent = template.replace('{count}', String(visibleSections));
+			this._filterCount.classList.toggle('hidden', !hasQuery);
+		}
+
+		if (this._filterEmpty != null) {
+			this._filterEmpty.classList.toggle('hidden', !hasQuery || visibleSections !== 0);
+		}
+	}
+
+	private onBackToTop(e: MouseEvent) {
+		e.preventDefault();
+		e.stopPropagation();
+
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	}
+
+	private updateBackToTopVisibility() {
+		const button = document.getElementById('back-to-top');
+		if (button == null) return;
+
+		button.classList.toggle('visible', window.scrollY > 420);
+	}
+
+	private persistFilterQuery(query: string) {
+		try {
+			window.localStorage.setItem(storageKeys.filterQuery, query);
+		} catch {}
+	}
+
+	private persistCollapsedSections() {
+		try {
+			const collapsed = [...document.querySelectorAll<HTMLElement>('.section--collapsible.collapsed')]
+				.map(el => el.id)
+				.filter(Boolean);
+			window.localStorage.setItem(storageKeys.collapsedSections, JSON.stringify(collapsed));
+		} catch {}
+	}
+
+	private restoreUiState() {
+		try {
+			const rawCollapsed = window.localStorage.getItem(storageKeys.collapsedSections);
+			if (rawCollapsed != null) {
+				const collapsed = JSON.parse(rawCollapsed) as string[];
+				for (const id of collapsed) {
+					const section = document.getElementById(id);
+					section?.classList.add('collapsed');
+				}
+			}
+		} catch {}
+
+		try {
+			const rawFilter = window.localStorage.getItem(storageKeys.filterQuery);
+			if (rawFilter != null && this._filterInput != null) {
+				this._filterInput.value = rawFilter;
+				this.applyFilter(rawFilter);
+			}
+		} catch {}
 	}
 }
 

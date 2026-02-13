@@ -75,6 +75,11 @@
 										%{settings.command.toggleFileChangesOnly}%
 									</option>
 									<option value="gitlens.toggleCodeLens">%{settings.command.toggleCodeLens}%</option>
+									<option value="gitlens.copyCurrentBranch">%{settings.command.copyCurrentBranch}%
+									</option>
+									<option value="gitlens.copyCurrentBranchAndSha">
+										%{settings.command.copyCurrentBranchAndSha}%
+									</option>
 									<option value="gitlens.diffWithPrevious">
 										%{settings.command.diffWithPrevious}%
 									</option>
@@ -127,17 +132,17 @@
 			</div>
 
 			<div class="section__preview">
-				<img class="image__preview" src="#{webroot}/media/status-bar.webp" loading="lazy" />
-				<img class="image__preview--overlay hidden" src="#{webroot}/media/status-bar-right+pr.webp"
+				<img class="image__preview" src="#{webroot}/media/status-bar.png" loading="lazy" />
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/status-bar-right+pr.png"
 					data-visibility="statusBar.enabled &amp; statusBar.alignment =right &amp; statusBar.pullRequests.enabled"
 					loading="lazy" />
-				<img class="image__preview--overlay hidden" src="#{webroot}/media/status-bar-right.webp"
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/status-bar-right.png"
 					data-visibility="statusBar.enabled &amp; statusBar.alignment =right &amp; statusBar.pullRequests.enabled =false"
 					loading="lazy" />
-				<img class="image__preview--overlay hidden" src="#{webroot}/media/status-bar-left+pr.webp"
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/status-bar-left+pr.png"
 					data-visibility="statusBar.enabled &amp; statusBar.alignment =left &amp; statusBar.pullRequests.enabled"
 					loading="lazy" />
-				<img class="image__preview--overlay hidden" src="#{webroot}/media/status-bar-left.webp"
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/status-bar-left.png"
 					data-visibility="statusBar.enabled &amp; statusBar.alignment =left &amp; statusBar.pullRequests.enabled =false"
 					loading="lazy" />
 			</div>

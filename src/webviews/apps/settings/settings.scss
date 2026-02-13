@@ -200,6 +200,8 @@ header {
 	flex: 1 1 auto;
 
 	display: flex;
+	align-items: center;
+	gap: 1rem;
 	justify-content: flex-end;
 	white-space: nowrap;
 
@@ -212,6 +214,37 @@ header {
 			margin-right: unset;
 		}
 	}
+}
+
+.hero__toolbar-search {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+
+	input[type='search'] {
+		min-width: 220px;
+		padding: 0.35rem 0.6rem;
+	}
+
+	@media all and (max-width: 925px) {
+		display: none;
+	}
+}
+
+.hero__toolbar-search-count {
+	color: var(--color-foreground--75);
+	font-size: 1.2rem;
+}
+
+.settings-filter-empty {
+	color: var(--color-foreground--75);
+	font-size: 1.3rem;
+	padding: 1rem 1.5rem 0;
+}
+
+.section--settings.hidden-by-filter,
+.sidebar .hidden-by-filter {
+	display: none !important;
 }
 
 .hero__toolbar-scope {
@@ -583,7 +616,8 @@ section {
 	}
 
 	& label {
-		white-space: nowrap;
+		line-height: 1.35;
+		white-space: normal;
 	}
 
 	.link__learn-more,
@@ -645,7 +679,9 @@ section {
 	position: sticky;
 	top: 100px;
 	margin-right: -2rem;
-	min-width: 180px;
+	min-width: 220px;
+	max-height: calc(100vh - 120px);
+	overflow: auto;
 	z-index: 2;
 	padding: 1.5rem;
 	background: var(--premium-glass);
@@ -659,7 +695,8 @@ section {
 	}
 
 	li {
-		white-space: nowrap;
+		line-height: 1.4;
+		white-space: normal;
 		margin-bottom: 0.5rem;
 	}
 
@@ -710,6 +747,39 @@ section {
 				border-left-color: var(--color-link-foreground--lighten-20);
 			}
 		}
+	}
+}
+
+.back-to-top {
+	position: fixed;
+	right: 2rem;
+	bottom: 2rem;
+	width: 3.2rem;
+	height: 3.2rem;
+	line-height: 3.2rem;
+	text-align: center;
+	border-radius: 999px;
+	font-size: 2rem;
+	font-weight: 600;
+	color: var(--color-button-foreground);
+	background: var(--color-button-background);
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+	opacity: 0;
+	pointer-events: none;
+	transform: translateY(8px);
+	transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+	z-index: 20;
+
+	&.visible {
+		opacity: 0.95;
+		pointer-events: auto;
+		transform: translateY(0);
+	}
+
+	&:hover,
+	&:focus {
+		background: var(--color-button-background--darken-30);
+		color: var(--color-button-foreground);
 	}
 }
 

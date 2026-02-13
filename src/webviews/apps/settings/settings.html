@@ -5,7 +5,8 @@
 	<meta charset="utf-8" />
 </head>
 
-<body class="preload">
+<body class="preload" data-setting-name-template="%{settings.common.settingNameTemplate}%"
+	data-filter-results-template="%{settings.header.filter.results}%">
 	<!-- <canvas class="snow"></canvas>
 		<img
 			class="snow__trigger snow__trigger--fixed-right snow__trigger--flipped"
@@ -36,6 +37,12 @@
 						title="Expand all sections">%{settings.header.expandAll}%</a>
 				</div>
 				<div class="hero__toolbar">
+					<div class="hero__toolbar-search">
+						<input id="settings-filter" type="search" placeholder="%{settings.header.filter.placeholder}%"
+							title="%{settings.header.filter.placeholder}%" />
+						<a href="#" id="settings-filter-clear" class="hidden">%{settings.header.filter.clear}%</a>
+						<span id="settings-filter-count" class="hero__toolbar-search-count hidden"></span>
+					</div>
 					<div class="hero__toolbar-scope hidden">
 						<label for="scopes">%{settings.header.saveSettingsTo}%</label>
 						<div class="select-container">
@@ -55,6 +62,9 @@
 		</div>
 
 		<div class="content__area content__area--full-scroll">
+			<div id="settings-filter-empty" class="settings-filter-empty hidden">
+				%{settings.header.filter.empty}%
+			</div>
 			<!-- prettier-ignore -->
 			<%= require('html-loader?{"esModule":false}!./partials/current-line.html') %>
 				<%= require('html-loader?{"esModule":false}!./partials/code-lens.html') %>
@@ -207,6 +217,7 @@
 			</div>
 		</div>
 	</div>
+	<a id="back-to-top" class="back-to-top" href="#" title="%{settings.backToTop}%">↑</a>
 
 	#{endOfBody}
 	<style nonce="#{cspNonce}">

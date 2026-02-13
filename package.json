@@ -157,7 +157,8 @@
 		"onCommand:gitlens.addAuthors",
 		"onCommand:gitlens.connectRemoteProvider",
 		"onCommand:gitlens.disconnectRemoteProvider",
-		"oncommand:gitlens.copyCurrentBranch",
+		"onCommand:gitlens.copyCurrentBranch",
+		"onCommand:gitlens.copyCurrentBranchAndSha",
 		"onCommand:gitlens.copyMessageToClipboard",
 		"onCommand:gitlens.copyShaToClipboard",
 		"onCommand:gitlens.closeUnchangedFiles",
@@ -510,6 +511,8 @@
 							"gitlens.toggleFileChanges",
 							"gitlens.toggleFileChangesOnly",
 							"gitlens.toggleCodeLens",
+							"gitlens.copyCurrentBranch",
+							"gitlens.copyCurrentBranchAndSha",
 							"gitlens.diffWithPrevious",
 							"gitlens.diffWithWorking",
 							"gitlens.revealCommitInView",
@@ -529,6 +532,8 @@
 							"Toggles file changes since before the commit",
 							"Toggles file changes from the commit",
 							"Toggles Git CodeLens",
+							"Copies the current branch name to the clipboard",
+							"Copies the current branch name and commit SHA to the clipboard",
 							"Compares the current line commit with the previous",
 							"Compares the current line commit with the working tree",
 							"Reveals the commit in the Side Bar",
@@ -4287,13 +4292,19 @@
 			},
 			{
 				"command": "gitlens.copyCurrentBranch",
-				"title": "Copy Current Branch Name",
+				"title": "%command.copyCurrentBranch.title%",
+				"category": "GitLens",
+				"icon": "$(copy)"
+			},
+			{
+				"command": "gitlens.copyCurrentBranchAndSha",
+				"title": "%command.copyCurrentBranchAndSha.title%",
 				"category": "GitLens",
 				"icon": "$(copy)"
 			},
 			{
 				"command": "gitlens.copyMessageToClipboard",
-				"title": "Copy Message",
+				"title": "%command.copyMessageToClipboard.title%",
 				"category": "GitLens",
 				"icon": "$(copy)"
 			},
@@ -6435,6 +6446,10 @@
 				},
 				{
 					"command": "gitlens.copyCurrentBranch",
+					"when": "gitlens:enabled"
+				},
+				{
+					"command": "gitlens.copyCurrentBranchAndSha",
 					"when": "gitlens:enabled"
 				},
 				{
