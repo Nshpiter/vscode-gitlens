@@ -16,7 +16,6 @@ import { hasVisibleTextEditor, isTextEditor } from '../../../system/utils';
 import { IpcMessage, onIpc } from '../../../webviews/protocol';
 import { WebviewViewBase } from '../../../webviews/webviewViewBase';
 import type { SubscriptionChangeEvent } from '../../subscription/subscriptionService';
-import { ensurePlusFeaturesEnabled } from '../../subscription/utils';
 import {
 	Commit,
 	DidChangeStateNotificationType,
@@ -55,8 +54,7 @@ export class TimelineWebviewView extends WebviewViewBase<State> {
 		};
 	}
 
-	override async show(options?: { preserveFocus?: boolean | undefined }): Promise<void> {
-		if (!(await ensurePlusFeaturesEnabled())) return;
+	override show(options?: { preserveFocus?: boolean | undefined }): Promise<void> {
 		return super.show(options);
 	}
 

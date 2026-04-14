@@ -1272,19 +1272,31 @@ export class GitHubApi {
 	async getContributors(token: string, owner: string, repo: string): Promise<GitHubContributor[]> {
 		const cc = Logger.getCorrelationContext();
 
-		// TODO@eamodio implement pagination
-
 		try {
-			const rsp = await this.request(token, 'GET /repos/{owner}/{repo}/contributors', {
-				owner: owner,
-				repo: repo,
-				per_page: 100,
-			});
+			const allContributors: GitHubContributor[] = [];
+			let page = 1;
+			const perPage = 100;
 
-			const result = rsp?.data;
-			if (result == null) return [];
+			while (true) {
+				const rsp = await this.request(token, 'GET /repos/{owner}/{repo}/contributors', {
+					owner: owner,
+					repo: repo,
+					per_page: perPage,
+					page: page,
+				});
 
-			return rsp.data;
+				const result = rsp?.data;
+				if (result == null || result.length === 0) break;
+
+				allContributors.push(...result);
+
+				// 如果返回数量少于 perPage，说明已经是最后一页
+				if (result.length < perPage) break;
+
+				page++;
+			}
+
+			return allContributors;
 		} catch (ex) {
 			debugger;
 			return this.handleException<GitHubContributor[]>(ex, cc, []);

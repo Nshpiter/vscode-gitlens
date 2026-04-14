@@ -42,7 +42,7 @@ type ResetStepState<T extends State = State> = ExcludeSome<StepState<T>, 'repo',
 
 export class ResetGitCommand extends QuickCommand<State> {
 	constructor(container: Container, args?: ResetGitCommandArgs) {
-		super(container, 'reset', 'reset', 'Reset', { description: 'resets the current branch to a specified commit' });
+		super(container, 'reset', 'reset', 'Reset', { description: '将当前分支重置到指定的提交' });
 
 		let counter = 0;
 		if (args?.state?.repo != null) {
@@ -129,8 +129,8 @@ export class ResetGitCommand extends QuickCommand<State> {
 					onDidLoadMore: log => context.cache.set(ref, Promise.resolve(log)),
 					placeholder: (context, log) =>
 						log == null
-							? `${context.destination.name} has no commits`
-							: `Choose a commit to reset ${context.destination.name} to`,
+							? `${context.destination.name} 没有提交记录`
+							: `选择要将 ${context.destination.name} 重置到的提交`,
 					picked: state.reference?.ref,
 				});
 				if (result === StepResult.Break) {
@@ -165,23 +165,23 @@ export class ResetGitCommand extends QuickCommand<State> {
 			[
 				FlagsQuickPickItem.create<Flags>(state.flags, [], {
 					label: this.title,
-					detail: `Will reset (leaves changes in the working tree) ${GitReference.toString(
+					detail: `将重置（保留工作区中的更改）${GitReference.toString(
 						context.destination,
-					)} to ${GitReference.toString(state.reference)}`,
+					)} 到 ${GitReference.toString(state.reference)}`,
 				}),
 				FlagsQuickPickItem.create<Flags>(state.flags, ['--soft'], {
-					label: `Soft ${this.title}`,
+					label: `软${this.title}`,
 					description: '--soft',
-					detail: `Will soft reset (leaves changes in the index and working tree) ${GitReference.toString(
+					detail: `将软重置（保留暂存区和工作区中的更改）${GitReference.toString(
 						context.destination,
-					)} to ${GitReference.toString(state.reference)}`,
+					)} 到 ${GitReference.toString(state.reference)}`,
 				}),
 				FlagsQuickPickItem.create<Flags>(state.flags, ['--hard'], {
-					label: `Hard ${this.title}`,
+					label: `硬${this.title}`,
 					description: '--hard',
-					detail: `Will hard reset (discards all changes) ${GitReference.toString(
+					detail: `将硬重置（丢弃所有更改）${GitReference.toString(
 						context.destination,
-					)} to ${GitReference.toString(state.reference)}`,
+					)} 到 ${GitReference.toString(state.reference)}`,
 				}),
 			],
 		);

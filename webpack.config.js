@@ -258,6 +258,7 @@ function getWebviewsConfig(mode, env) {
 		}),
 		new MiniCssExtractPlugin({ filename: '[name].css' }),
 		getHtmlPlugin('home', false, mode, env),
+		getHtmlPlugin('graph', true, mode, env),
 		getHtmlPlugin('rebase', false, mode, env),
 		getHtmlPlugin('settings', false, mode, env),
 		getHtmlPlugin('timeline', true, mode, env),
@@ -300,6 +301,7 @@ function getWebviewsConfig(mode, env) {
 		name: 'webviews',
 		context: basePath,
 		entry: {
+			graph: './plus/graph/graph.ts',
 			home: './home/home.ts',
 			rebase: './rebase/rebase.ts',
 			settings: './settings/settings.ts',

@@ -1,5 +1,6 @@
 /*global document IntersectionObserver*/
 import './settings.scss';
+import { ExportConfigurationCommandType, ImportConfigurationCommandType } from '../../protocol';
 import { State } from '../../settings/protocol';
 import { AppWithConfig } from '../shared/appWithConfigBase';
 import { DOM } from '../shared/dom';
@@ -17,6 +18,7 @@ export class SettingsApp extends AppWithConfig<State> {
 	private _filterClear: HTMLAnchorElement | null = null;
 	private _filterCount: HTMLElement | null = null;
 	private _filterEmpty: HTMLElement | null = null;
+	private _importInput: HTMLInputElement | null = null;
 	private _observer: IntersectionObserver | undefined;
 
 	private _activeSection: string | undefined = 'general';
@@ -50,6 +52,7 @@ export class SettingsApp extends AppWithConfig<State> {
 		this._filterClear = document.getElementById('settings-filter-clear') as HTMLAnchorElement | null;
 		this._filterCount = document.getElementById('settings-filter-count');
 		this._filterEmpty = document.getElementById('settings-filter-empty');
+		this._importInput = document.getElementById('settings-import-file') as HTMLInputElement | null;
 
 		let top = topOffset;
 		const header = document.querySelector('.hero__area--sticky');
@@ -108,6 +111,7 @@ export class SettingsApp extends AppWithConfig<State> {
 			DOM.on('#settings-filter', 'input', (_e, target: HTMLInputElement) => this.onFilterChanged(target)),
 			DOM.on('#settings-filter', 'keydown', (e, target: HTMLInputElement) => this.onFilterKeydown(e, target)),
 			DOM.on('#settings-filter-clear', 'click', e => this.onFilterClear(e)),
+			DOM.on('#settings-import-file', 'change', (_e, target: HTMLInputElement) => this.onImportFileChanged(target)),
 			DOM.on(document, 'keydown', e => this.onGlobalKeydown(e)),
 			DOM.on(window, 'scroll', () => this.updateBackToTopVisibility()),
 			DOM.on('#back-to-top', 'click', e => this.onBackToTop(e)),
@@ -193,10 +197,37 @@ export class SettingsApp extends AppWithConfig<State> {
 				document.querySelector('[data-action="expand"]')!.classList.add('hidden');
 				this.persistCollapsedSections();
 				break;
+
+			case 'export-settings':
+				this.sendCommand(ExportConfigurationCommandType, { scope: this.getSettingsScope() });
+				break;
+
+			case 'import-settings':
+				if (this._importInput != null) {
+					this._importInput.value = '';
+					this._importInput.click();
+				}
+				break;
 		}
 
 		e.preventDefault();
 		e.stopPropagation();
+	}
+
+	private async onImportFileChanged(input: HTMLInputElement) {
+		const file = input.files?.[0];
+		if (file == null) return;
+
+		try {
+			const content = await file.text();
+			this.sendCommand(ImportConfigurationCommandType, {
+				content: content,
+				fileName: file.name,
+				scope: this.getSettingsScope(),
+			});
+		} finally {
+			input.value = '';
+		}
 	}
 
 	private onFilterChanged(input: HTMLInputElement) {

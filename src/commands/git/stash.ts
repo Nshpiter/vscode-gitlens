@@ -79,11 +79,11 @@ type PopStepState<T extends PopState = PopState> = StashStepState<ExcludeSome<T,
 type PushStepState<T extends PushState = PushState> = StashStepState<ExcludeSome<T, 'repo', string>>;
 
 const subcommandToTitleMap = new Map<State['subcommand'], string>([
-	['apply', 'Apply'],
-	['drop', 'Drop'],
-	['list', 'List'],
-	['pop', 'Pop'],
-	['push', 'Push'],
+	['apply', '应用'],
+	['drop', '删除'],
+	['list', '列表'],
+	['pop', '弹出'],
+	['push', '推入'],
 ]);
 function getTitle(title: string, subcommand: State['subcommand'] | undefined) {
 	return subcommand == null ? title : `${subcommandToTitleMap.get(subcommand)} ${title}`;
@@ -100,7 +100,7 @@ export class StashGitCommand extends QuickCommand<State> {
 
 	constructor(container: Container, args?: StashGitCommandArgs) {
 		super(container, 'stash', 'stash', 'Stash', {
-			description: 'shelves (stashes) local changes to be reapplied later',
+			description: '暂存本地更改以便稍后重新应用',
 		});
 
 		let counter = 0;
@@ -228,37 +228,37 @@ export class StashGitCommand extends QuickCommand<State> {
 	private *pickSubcommandStep(state: PartialStepState<State>): StepResultGenerator<State['subcommand']> {
 		const step = QuickCommand.createPickStep<QuickPickItemOfT<State['subcommand']>>({
 			title: this.title,
-			placeholder: `Choose a ${this.label} command`,
+			placeholder: `选择一个 ${this.label} 命令`,
 			items: [
 				{
 					label: 'apply',
-					description: 'integrates changes from the specified stash into the current branch',
+					description: '将指定贮藏的更改集成到当前分支',
 					picked: state.subcommand === 'apply',
 					item: 'apply',
 				},
 				{
 					label: 'drop',
-					description: 'deletes the specified stash',
+					description: '删除指定的贮藏',
 					picked: state.subcommand === 'drop',
 					item: 'drop',
 				},
 				{
 					label: 'list',
-					description: 'lists the saved stashes',
+					description: '列出已保存的贮藏',
 					picked: state.subcommand === 'list',
 					item: 'list',
 				},
 				{
 					label: 'pop',
 					description:
-						'integrates changes from the specified stash into the current branch and deletes the stash',
+						'将指定贮藏的更改集成到当前分支并删除该贮藏',
 					picked: state.subcommand === 'pop',
 					item: 'pop',
 				},
 				{
 					label: 'push',
 					description:
-						'saves your local changes to a new stash and discards them from the working tree and index',
+						'将本地更改保存到新贮藏并从工作区和暂存区中丢弃',
 					picked: state.subcommand === 'push',
 					item: 'push',
 				},
@@ -276,8 +276,8 @@ export class StashGitCommand extends QuickCommand<State> {
 					stash: await this.container.git.getStash(state.repo.path),
 					placeholder: (context, stash) =>
 						stash == null
-							? `No stashes found in ${state.repo.formattedName}`
-							: 'Choose a stash to apply to your working tree',
+							? `在 ${state.repo.formattedName} 中未找到贮藏`
+							: '选择要应用到工作区的贮藏',
 					picked: state.reference?.ref,
 				});
 				// Always break on the first step (so we will go back)
@@ -306,7 +306,7 @@ export class StashGitCommand extends QuickCommand<State> {
 
 				if (StashApplyError.is(ex, StashApplyErrorReason.WorkingChanges)) {
 					void window.showWarningMessage(
-						'Unable to apply stash. Your working tree changes would be overwritten. Please commit or stash your changes before trying again',
+						'无法应用贮藏。您的工作区更改将被覆盖。请先提交或贮藏您的更改后再试',
 					);
 				} else {
 					void Messages.showGenericErrorMessage(ex.message);
@@ -326,12 +326,12 @@ export class StashGitCommand extends QuickCommand<State> {
 					label: context.title,
 					detail:
 						state.subcommand === 'pop'
-							? `Will delete ${GitReference.toString(
+							? `将删除 ${GitReference.toString(
 									state.reference,
-							  )} and apply the changes to the working tree`
-							: `Will apply the changes from ${GitReference.toString(
+							  )} 并将更改应用到工作区`
+							: `将把 ${GitReference.toString(
 									state.reference,
-							  )} to the working tree`,
+							  )} 的更改应用到工作区`,
 					item: state.subcommand,
 				},
 				// Alternate confirmation (if pop then apply, and vice versa)
@@ -339,12 +339,12 @@ export class StashGitCommand extends QuickCommand<State> {
 					label: getTitle(this.title, state.subcommand === 'pop' ? 'apply' : 'pop'),
 					detail:
 						state.subcommand === 'pop'
-							? `Will apply the changes from ${GitReference.toString(
+							? `将把 ${GitReference.toString(
 									state.reference,
-							  )} to the working tree`
-							: `Will delete ${GitReference.toString(
+							  )} 的更改应用到工作区`
+							: `将删除 ${GitReference.toString(
 									state.reference,
-							  )} and apply the changes to the working tree`,
+							  )} 并将更改应用到工作区`,
 					item: state.subcommand === 'pop' ? 'apply' : 'pop',
 				},
 			],
@@ -372,7 +372,7 @@ export class StashGitCommand extends QuickCommand<State> {
 				const result: StepResult<GitStashReference> = yield* pickStashStep(state, context, {
 					stash: await this.container.git.getStash(state.repo.path),
 					placeholder: (context, stash) =>
-						stash == null ? `No stashes found in ${state.repo.formattedName}` : 'Choose a stash to delete',
+						stash == null ? `在 ${state.repo.formattedName} 中未找到贮藏` : '选择要删除的贮藏',
 					picked: state.reference?.ref,
 				});
 				// Always break on the first step (so we will go back)
@@ -391,7 +391,7 @@ export class StashGitCommand extends QuickCommand<State> {
 			} catch (ex) {
 				Logger.error(ex, context.title);
 
-				void Messages.showGenericErrorMessage('Unable to delete stash');
+				void Messages.showGenericErrorMessage('无法删除贮藏');
 
 				return;
 			}
@@ -404,7 +404,7 @@ export class StashGitCommand extends QuickCommand<State> {
 			[
 				{
 					label: context.title,
-					detail: `Will delete ${GitReference.toString(state.reference)}`,
+					detail: `将删除 ${GitReference.toString(state.reference)}`,
 				},
 			],
 			undefined,
@@ -426,14 +426,14 @@ export class StashGitCommand extends QuickCommand<State> {
 	}
 
 	private async *listCommandSteps(state: ListStepState, context: Context): StepGenerator {
-		context.title = 'Stashes';
+		context.title = '贮藏列表';
 
 		while (this.canStepsContinue(state)) {
 			if (state.counter < 3 || state.reference == null) {
 				const result: StepResult<GitStashCommit> = yield* pickStashStep(state, context, {
 					stash: await this.container.git.getStash(state.repo.path),
 					placeholder: (context, stash) =>
-						stash == null ? `No stashes found in ${state.repo.formattedName}` : 'Choose a stash',
+						stash == null ? `在 ${state.repo.formattedName} 中未找到贮藏` : '选择一个贮藏',
 					picked: state.reference?.ref,
 				});
 				// Always break on the first step (so we will go back)
@@ -492,12 +492,12 @@ export class StashGitCommand extends QuickCommand<State> {
 
 				const msg: string = ex?.message ?? ex?.toString() ?? '';
 				if (msg.includes('newer version of Git')) {
-					void window.showErrorMessage(`Unable to stash changes. ${msg}`);
+					void window.showErrorMessage(`无法贮藏更改。${msg}`);
 
 					return;
 				}
 
-				void Messages.showGenericErrorMessage('Unable to stash changes');
+				void Messages.showGenericErrorMessage('无法贮藏更改');
 
 				return;
 			}
@@ -521,9 +521,9 @@ export class StashGitCommand extends QuickCommand<State> {
 					  }`
 					: undefined,
 			),
-			placeholder: 'Please provide a stash message',
+			placeholder: '请输入贮藏信息',
 			value: state.message,
-			prompt: 'Enter stash message',
+			prompt: '输入贮藏信息',
 		});
 
 		const value: StepSelection<typeof step> = yield step;
@@ -544,35 +544,35 @@ export class StashGitCommand extends QuickCommand<State> {
 				? [
 						FlagsQuickPickItem.create<PushFlags>(state.flags, [], {
 							label: context.title,
-							detail: 'Will stash uncommitted changes',
+							detail: '将贮藏未提交的更改',
 						}),
 						FlagsQuickPickItem.create<PushFlags>(state.flags, ['--include-untracked'], {
-							label: `${context.title} & Include Untracked`,
+							label: `${context.title} & 包含未跟踪文件`,
 							description: '--include-untracked',
-							detail: 'Will stash uncommitted changes, including untracked files',
+							detail: '将贮藏未提交的更改，包括未跟踪的文件',
 						}),
 						FlagsQuickPickItem.create<PushFlags>(state.flags, ['--keep-index'], {
-							label: `${context.title} & Keep Staged`,
+							label: `${context.title} & 保留暂存区`,
 							description: '--keep-index',
-							detail: 'Will stash uncommitted changes, but will keep staged files intact',
+							detail: '将贮藏未提交的更改，但保留暂存区的文件不变',
 						}),
 				  ]
 				: [
 						FlagsQuickPickItem.create<PushFlags>(state.flags, [], {
 							label: context.title,
-							detail: `Will stash changes from ${
+							detail: `将贮藏来自 ${
 								state.uris.length === 1
 									? formatPath(state.uris[0], { fileOnly: true })
-									: `${state.uris.length} files`
-							}`,
+									: `${state.uris.length} 个文件`
+							} 的更改`,
 						}),
 						FlagsQuickPickItem.create<PushFlags>(state.flags, ['--keep-index'], {
-							label: `${context.title} & Keep Staged`,
-							detail: `Will stash changes from ${
+							label: `${context.title} & 保留暂存区`,
+							detail: `将贮藏来自 ${
 								state.uris.length === 1
 									? formatPath(state.uris[0], { fileOnly: true })
-									: `${state.uris.length} files`
-							}, but will keep staged files intact`,
+									: `${state.uris.length} 个文件`
+							} 的更改，但保留暂存区的文件不变`,
 						}),
 				  ],
 			undefined,

@@ -1,0 +1,39 @@
+<template id="operation-status">
+	<section class="operation-card">
+		<span class="operation-card__eyebrow">%{home.operation.title}%</span>
+		<h3 class="operation-card__title">
+			<span class="operation-card__badge" data-visible="merge">%{home.operation.merge}%</span>
+			<span class="operation-card__badge" data-visible="rebase">%{home.operation.rebase}%</span>
+			<span class="operation-card__repo" data-bind="repository"></span>
+		</h3>
+		<p class="operation-card__detail" data-visible="merge">
+			%{home.operation.merge.descriptionPrefix}% <b data-bind="incoming"></b>
+			%{home.operation.merge.descriptionInto}% <b data-bind="current"></b>.
+		</p>
+		<p class="operation-card__detail" data-visible="rebase">
+			%{home.operation.rebase.descriptionPrefix}% <b data-bind="incoming"></b>
+			%{home.operation.rebase.descriptionOnto}% <b data-bind="current"></b>.
+		</p>
+		<p class="operation-card__detail" data-visible="hasStep">
+			%{home.operation.rebase.step}% <b data-bind="step"></b> / <b data-bind="total"></b>
+		</p>
+		<p class="operation-card__detail" data-visible="hasConflicts">
+			%{home.operation.conflicts}% <b data-bind="conflicts"></b>
+		</p>
+		<div class="operation-card__quick-actions">
+			<button class="operation-card__action-btn operation-card__action-btn--danger" data-visible="merge" data-action="command:git.merge.abort">
+				<i class="codicon codicon-close" aria-hidden="true"></i> %{home.operation.abort}%
+			</button>
+			<button class="operation-card__action-btn operation-card__action-btn--danger" data-visible="rebase" data-action="command:git.rebase.abort">
+				<i class="codicon codicon-close" aria-hidden="true"></i> %{home.operation.abort}%
+			</button>
+			<button class="operation-card__action-btn operation-card__action-btn--primary" data-visible="rebase" data-action="command:git.rebase.continue">
+				<i class="codicon codicon-play" aria-hidden="true"></i> %{home.operation.continue}%
+			</button>
+		</div>
+		<div class="operation-card__actions">
+			<a href="command:gitlens.showQuickRepoStatus">%{command.showQuickRepoStatus.title}%</a>
+			<a href="command:gitlens.showRepositoriesView">%{command.showRepositoriesView.title}%</a>
+		</div>
+	</section>
+</template>

@@ -10,6 +10,12 @@ enum ViewsLayout {
 	SourceControl = 'scm',
 }
 
+const additionalViews = ['graph'] as const;
+
+function getLayoutViewIds(): string[] {
+	return [...viewsConfigKeys, ...additionalViews].map(view => `gitlens.views.${view}`);
+}
+
 export interface SetViewsLayoutCommandArgs {
 	layout: ViewsLayout;
 }
@@ -54,7 +60,7 @@ export class SetViewsLayoutCommand extends Command {
 					let count = 0;
 					while (count++ < 2) {
 						void (await executeCoreCommand(CoreCommands.MoveViews, {
-							viewIds: viewsConfigKeys.map(view => `gitlens.views.${view}`),
+							viewIds: getLayoutViewIds(),
 							destinationId: 'workbench.view.extension.gitlens',
 						}));
 					}
@@ -67,12 +73,12 @@ export class SetViewsLayoutCommand extends Command {
 					let count = 0;
 					while (count++ < 2) {
 						void (await executeCoreCommand(CoreCommands.MoveViews, {
-							viewIds: viewsConfigKeys.map(view => `gitlens.views.${view}`),
+							viewIds: getLayoutViewIds(),
 							destinationId: 'workbench.view.scm',
 						}));
 					}
 				} catch {
-					for (const view of viewsConfigKeys) {
+					for (const view of [...viewsConfigKeys, ...additionalViews]) {
 						void (await executeCommand(`gitlens.views.${view}.resetViewLocation`));
 					}
 				}

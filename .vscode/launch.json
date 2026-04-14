@@ -16,6 +16,7 @@
 				"webRoot": "${workspaceFolder}/src/webviews/apps"
 			},
 			"outFiles": ["${workspaceFolder}/dist/**/*.js"],
+			"preLaunchTask": "${defaultBuildTask}",
 			"presentation": {
 				"group": "2_run",
 				"order": 1

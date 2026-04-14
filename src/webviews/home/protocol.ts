@@ -1,15 +1,26 @@
-import type { Subscription } from '../../subscription';
 import { IpcNotificationType } from '../protocol';
 
-export interface State {
-	subscription: Subscription;
-	welcomeVisible: boolean;
+export interface HomeOperationState {
+	kind: 'merge' | 'rebase';
+	repository: string;
+	current: string;
+	incoming: string;
+	conflicts: number;
+	step?: number;
+	total?: number;
 }
 
-export interface DidChangeSubscriptionParams {
-	subscription: Subscription;
+export interface State {
 	welcomeVisible: boolean;
+	operation?: HomeOperationState;
+	stashCount: number;
 }
-export const DidChangeSubscriptionNotificationType = new IpcNotificationType<DidChangeSubscriptionParams>(
-	'subscription/didChange',
+
+export interface DidChangeStateParams {
+	welcomeVisible: boolean;
+	operation?: HomeOperationState;
+	stashCount: number;
+}
+export const DidChangeStateNotificationType = new IpcNotificationType<DidChangeStateParams>(
+	'home/didChangeState',
 );

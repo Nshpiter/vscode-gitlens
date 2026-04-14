@@ -52,6 +52,7 @@
 		"onCustomEditor:gitlens.rebase",
 		"onFileSystem:gitlens",
 		"onView:gitlens.views.home",
+		"onView:gitlens.views.graph",
 		"onView:gitlens.views.repositories",
 		"onView:gitlens.views.commits",
 		"onView:gitlens.views.fileHistory",
@@ -90,6 +91,8 @@
 		"onCommand:gitlens.showCommitsView",
 		"onCommand:gitlens.showContributorsView",
 		"onCommand:gitlens.showFileHistoryView",
+		"onCommand:gitlens.showGraphPage",
+		"onCommand:gitlens.showGraphView",
 		"onCommand:gitlens.showHomeView",
 		"onCommand:gitlens.showLineHistoryView",
 		"onCommand:gitlens.showRemotesView",
@@ -140,7 +143,6 @@
 		"onCommand:gitlens.revealCommitInView",
 		"onCommand:gitlens.showCommitInView",
 		"onCommand:gitlens.showCommitsInView",
-		"onCommand:gitlens.showFileHistoryInView",
 		"onCommand:gitlens.openFileHistory",
 		"onCommand:gitlens.openFolderHistory",
 		"onCommand:gitlens.showQuickCommitDetails",
@@ -3753,6 +3755,21 @@
 				"icon": "$(gear)"
 			},
 			{
+				"command": "gitlens.showGraphPage",
+				"title": "%command.showGraphPage.title%",
+				"category": "GitLens",
+				"icon": {
+					"dark": "images/dark/icon-history.svg",
+					"light": "images/light/icon-history.svg"
+				}
+			},
+			{
+				"command": "gitlens.refreshGraphPage",
+				"title": "Refresh",
+				"category": "GitLens",
+				"icon": "$(refresh)"
+			},
+			{
 				"command": "gitlens.showTimelinePage",
 				"title": "%command.showTimelinePage.title%",
 				"category": "GitLens",
@@ -3791,6 +3808,15 @@
 				"command": "gitlens.showFileHistoryView",
 				"title": "%command.showFileHistoryView.title%",
 				"category": "GitLens"
+			},
+			{
+				"command": "gitlens.showGraphView",
+				"title": "%command.showGraphView.title%",
+				"category": "GitLens",
+				"icon": {
+					"dark": "images/dark/icon-history.svg",
+					"light": "images/light/icon-history.svg"
+				}
 			},
 			{
 				"command": "gitlens.showHomeView",
@@ -4177,11 +4203,6 @@
 			{
 				"command": "gitlens.showCommitsInView",
 				"title": "Search for Commits within Selection",
-				"category": "GitLens"
-			},
-			{
-				"command": "gitlens.showFileHistoryInView",
-				"title": "%command.openFileHistory.title%",
 				"category": "GitLens"
 			},
 			{
@@ -5946,6 +5967,18 @@
 				"category": "GitLens"
 			},
 			{
+				"command": "gitlens.views.graph.openInTab",
+				"title": "Open in Editor Area",
+				"category": "GitLens",
+				"icon": "$(link-external)"
+			},
+			{
+				"command": "gitlens.views.graph.refresh",
+				"title": "Refresh",
+				"category": "GitLens",
+				"icon": "$(refresh)"
+			},
+			{
 				"command": "gitlens.views.timeline.openInTab",
 				"title": "Open in Editor Area",
 				"category": "GitLens",
@@ -6109,6 +6142,14 @@
 					"when": "false"
 				},
 				{
+					"command": "gitlens.showGraphPage",
+					"when": "gitlens:enabled"
+				},
+				{
+					"command": "gitlens.refreshGraphPage",
+					"when": "false"
+				},
+				{
 					"command": "gitlens.showTimelinePage",
 					"when": "gitlens:enabled && editorFocus"
 				},
@@ -6130,6 +6171,10 @@
 				},
 				{
 					"command": "gitlens.showFileHistoryView",
+					"when": "gitlens:enabled"
+				},
+				{
+					"command": "gitlens.showGraphView",
 					"when": "gitlens:enabled"
 				},
 				{
@@ -6375,10 +6420,6 @@
 				{
 					"command": "gitlens.showCommitsInView",
 					"when": "gitlens:activeFileStatus =~ /blameable/"
-				},
-				{
-					"command": "gitlens.showFileHistoryInView",
-					"when": "false"
 				},
 				{
 					"command": "gitlens.openFileHistory",
@@ -7521,6 +7562,14 @@
 					"when": "false"
 				},
 				{
+					"command": "gitlens.views.graph.openInTab",
+					"when": "false"
+				},
+				{
+					"command": "gitlens.views.graph.refresh",
+					"when": "false"
+				},
+				{
 					"command": "gitlens.views.timeline.openInTab",
 					"when": "false"
 				},
@@ -7776,6 +7825,11 @@
 					"group": "navigation@100"
 				},
 				{
+					"command": "gitlens.refreshGraphPage",
+					"when": "gitlens:graphPage:focused",
+					"group": "navigation@-99"
+				},
+				{
 					"command": "gitlens.refreshTimelinePage",
 					"when": "gitlens:timelinePage:focused",
 					"group": "navigation@-99"
@@ -7969,7 +8023,24 @@
 					"alt": "gitlens.copyRemoteCommitUrl"
 				}
 			],
+			"viewContainer/title": [
+				{
+					"command": "gitlens.showGraphPage",
+					"when": "viewContainer == gitlensInspect",
+					"group": "navigation@11"
+				}
+			],
 			"view/title": [
+				{
+					"command": "gitlens.showGraphView",
+					"when": "view =~ /^gitlens\\.views\\.(branches|commits|contributors|fileHistory|lineHistory|remotes|repositories|searchAndCompare|stashes|tags|worktrees)\\b/",
+					"group": "navigation@12"
+				},
+				{
+					"command": "gitlens.showGraphView",
+					"when": "view =~ /^gitlens\\.views\\.timeline/",
+					"group": "navigation@97"
+				},
 				{
 					"command": "gitlens.views.switchToAnotherBranch",
 					"when": "!gitlens:readonly && !gitlens:untrusted && !gitlens:hasVirtualFolders && view =~ /^gitlens\\.views\\.branches/",
@@ -8529,6 +8600,16 @@
 					"command": "gitlens.views.tags.setShowAvatarsOff",
 					"when": "view =~ /^gitlens\\.views\\.tags/ && config.gitlens.views.tags.avatars",
 					"group": "5_gitlens@0"
+				},
+				{
+					"command": "gitlens.views.graph.openInTab",
+					"when": "view =~ /^gitlens\\.views\\.graph/",
+					"group": "navigation@98"
+				},
+				{
+					"command": "gitlens.views.graph.refresh",
+					"when": "view =~ /^gitlens\\.views\\.graph/",
+					"group": "navigation@99"
 				},
 				{
 					"command": "gitlens.views.timeline.openInTab",
@@ -10763,7 +10844,7 @@
 					"type": "webview",
 					"id": "gitlens.views.home",
 					"name": "%views.home.title%",
-					"when": "!gitlens:disabled && config.gitlens.plusFeatures.enabled",
+					"when": "!gitlens:disabled",
 					"contextualTitle": "%views.home.title%",
 					"icon": "images/gitlens-activitybar.svg",
 					"visibility": "visible"
@@ -10774,7 +10855,7 @@
 					"type": "webview",
 					"id": "gitlens.views.timeline",
 					"name": "%views.timeline.title%",
-					"when": "!gitlens:disabled && config.gitlens.views.timeline.enabled && config.gitlens.plusFeatures.enabled",
+					"when": "!gitlens:disabled && config.gitlens.views.timeline.enabled",
 					"contextualTitle": "%views.timeline.title%",
 					"icon": "images/views/timeline.svg",
 					"visibility": "collapsed"
@@ -10788,6 +10869,15 @@
 					"contextualTitle": "%views.fileHistory.title%",
 					"icon": "images/views/history.svg",
 					"visibility": "visible"
+				},
+				{
+					"type": "webview",
+					"id": "gitlens.views.graph",
+					"name": "%views.graph.title%",
+					"when": "!gitlens:disabled",
+					"contextualTitle": "%views.graph.title%",
+					"icon": "images/views/history.svg",
+					"visibility": "collapsed"
 				},
 				{
 					"id": "gitlens.views.lineHistory",
@@ -10813,7 +10903,7 @@
 					"when": "!gitlens:disabled && !gitlens:hasVirtualFolders",
 					"contextualTitle": "%views.repositories.title%",
 					"icon": "images/views/repositories.svg",
-					"visibility": "visible"
+					"visibility": "hidden"
 				},
 				{
 					"id": "gitlens.views.branches",
@@ -10829,7 +10919,7 @@
 					"when": "!gitlens:disabled",
 					"contextualTitle": "%views.remotes.title%",
 					"icon": "images/views/remotes.svg",
-					"visibility": "collapsed"
+					"visibility": "hidden"
 				},
 				{
 					"id": "gitlens.views.stashes",
@@ -10850,7 +10940,7 @@
 				{
 					"id": "gitlens.views.worktrees",
 					"name": "%views.worktrees.title%",
-					"when": "!gitlens:disabled && !gitlens:hasVirtualFolders && config.gitlens.plusFeatures.enabled",
+					"when": "!gitlens:disabled && !gitlens:hasVirtualFolders",
 					"contextualTitle": "%views.worktrees.title%",
 					"icon": "images/views/worktrees.svg",
 					"visibility": "collapsed"
@@ -10861,7 +10951,7 @@
 					"when": "!gitlens:disabled",
 					"contextualTitle": "%views.contributors.title%",
 					"icon": "images/views/contributors.svg",
-					"visibility": "collapsed"
+					"visibility": "hidden"
 				},
 				{
 					"id": "gitlens.views.searchAndCompare",

@@ -7,9 +7,13 @@ import { CommitFormatter } from '../git/formatters';
 import { GitUri } from '../git/gitUri';
 import { GitCommit, GitDiffHunk, GitDiffHunkLine, GitRemote, GitRevision, PullRequest } from '../git/models';
 import { Logger, LogLevel } from '../logger';
+import { LRUCache } from '../system/cache';
 import { count } from '../system/iterable';
 import { PromiseCancelledError } from '../system/promise';
 import { getDurationMilliseconds } from '../system/string';
+
+// 悬停 Diff 缓存：避免对同一位置重复计算 diff
+const hoverDiffCache = new LRUCache<string | undefined>(200, 30 * 1000); // 200 条，30 秒过期
 
 export namespace Hovers {
 	export async function changesMessage(
@@ -25,7 +29,6 @@ export namespace Hovers {
 		async function getDiff() {
 			if (commit.file == null) return undefined;
 
-			// TODO: Figure out how to optimize this
 			let ref;
 			if (commit.isUncommitted) {
 				if (GitRevision.isUncommittedStaged(documentRef)) {
@@ -50,7 +53,14 @@ export namespace Hovers {
 			}
 
 			editorLine = commitLine.line - 1;
-			// TODO: Doesn't work with dirty files -- pass in editor? or contents?
+
+			// 使用缓存避免重复计算 diff
+			const cacheKey = `${uri.toString()}|${editorLine}|${ref ?? ''}|${documentRef ?? ''}`;
+			const cached = hoverDiffCache.get(cacheKey);
+			if (cached !== undefined) {
+				return cached;
+			}
+
 			let hunkLine = await Container.instance.git.getDiffForLine(uri, editorLine, ref, documentRef, document);
 
 			// If we didn't find a diff & ref is undefined (meaning uncommitted), check for a staged diff
@@ -64,7 +74,9 @@ export namespace Hovers {
 				);
 			}
 
-			return hunkLine != null ? getDiffFromHunkLine(hunkLine) : undefined;
+			const result = hunkLine != null ? getDiffFromHunkLine(hunkLine) : undefined;
+			hoverDiffCache.set(cacheKey, result);
+			return result;
 		}
 
 		const diff = await getDiff();
@@ -260,7 +272,10 @@ export namespace Hovers {
 			remotes: remotes,
 		});
 
-		const markdown = new MarkdownString(details, true);
+		// Build quick-action links for the hover footer
+		const quickActions = buildHoverQuickActions(commit);
+
+		const markdown = new MarkdownString(details + quickActions, true);
 		markdown.supportHtml = true;
 		markdown.isTrusted = true;
 		return markdown;
@@ -268,6 +283,24 @@ export namespace Hovers {
 
 	function getDiffFromHunk(hunk: GitDiffHunk): string {
 		return `\`\`\`diff\n${hunk.diff.trim()}\n\`\`\``;
+	}
+
+	/**
+	 * Builds a small footer row of quick-action command links for the hover.
+	 * Shows: copy SHA, show commit details, copy remote URL (if applicable).
+	 */
+	function buildHoverQuickActions(commit: GitCommit): string {
+		if (commit.isUncommitted) return '';
+
+		const copyShaArgs = encodeURIComponent(JSON.stringify([{ sha: commit.shortSha }]));
+		const showCommitArgs = ShowQuickCommitCommand.getMarkdownCommandArgs(commit.sha);
+
+		const actions: string[] = [
+			`[$(clippy) 复制 SHA](command:gitlens.copyShaToClipboard?${copyShaArgs} "复制提交哈希到剪贴板")`,
+			`[$(eye) 详情](${showCommitArgs} "查看提交详情")`,
+		];
+
+		return `\n\n---\n\n${actions.join(' &nbsp;&nbsp; ')}`;
 	}
 
 	function getDiffFromHunkLine(hunkLine: GitDiffHunkLine, diffStyle?: 'line' | 'hunk'): string {

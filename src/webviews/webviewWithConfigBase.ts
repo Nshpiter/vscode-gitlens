@@ -1,4 +1,11 @@
-import { ConfigurationChangeEvent, ConfigurationTarget, WebviewPanelOnDidChangeViewStateEvent } from 'vscode';
+import {
+	ConfigurationChangeEvent,
+	ConfigurationTarget,
+	Uri,
+	WebviewPanelOnDidChangeViewStateEvent,
+	window,
+	workspace,
+} from 'vscode';
 import { configuration } from '../configuration';
 import { Commands } from '../constants';
 import type { Container } from '../container';
@@ -13,10 +20,14 @@ import {
 } from '../git/models';
 import { Logger } from '../logger';
 import {
+	ConfigurationScope,
 	DidChangeConfigurationNotificationType,
 	DidGenerateConfigurationPreviewNotificationType,
 	DidOpenAnchorNotificationType,
+	ExportConfigurationCommandType,
 	GenerateConfigurationPreviewCommandType,
+	ImportConfigurationCommandType,
+	ImportConfigurationParams,
 	IpcMessage,
 	onIpc,
 	UpdateConfigurationCommandType,
@@ -135,6 +146,22 @@ export abstract class WebviewWithConfigBase<State> extends WebviewBase<State> {
 				});
 				break;
 
+			case ExportConfigurationCommandType.method:
+				Logger.debug(`Webview(${this.id}).onMessageReceived: method=${e.method}`);
+
+				onIpc(ExportConfigurationCommandType, e, async params => {
+					await this.exportConfiguration(params.scope ?? 'user');
+				});
+				break;
+
+			case ImportConfigurationCommandType.method:
+				Logger.debug(`Webview(${this.id}).onMessageReceived: method=${e.method}`);
+
+				onIpc(ImportConfigurationCommandType, e, async params => {
+					await this.importConfiguration(params);
+				});
+				break;
+
 			case GenerateConfigurationPreviewCommandType.method:
 				Logger.debug(`Webview(${this.id}).onMessageReceived: method=${e.method}`);
 
@@ -238,6 +265,147 @@ export abstract class WebviewWithConfigBase<State> extends WebviewBase<State> {
 		return customSettings;
 	}
 
+	private async exportConfiguration(scope: ConfigurationScope) {
+		try {
+			const uri = await window.showSaveDialog({
+				defaultUri: this.getDefaultConfigurationUri(scope),
+				filters: {
+					JSON: ['json'],
+				},
+				saveLabel: 'Export Settings',
+				title: `Export GitLens ${scope === 'workspace' ? 'Workspace' : 'User'} Settings`,
+			});
+			if (uri == null) return;
+
+			const customSettings = scope === 'workspace' ? undefined : this.getCustomSettings();
+			const exportable: ExportableConfiguration = {
+				version: 1,
+				extension: 'gitlens',
+				exportedAt: new Date().toISOString(),
+				scope: scope,
+				config: this.getScopedConfiguration(scope),
+				customSettings:
+					customSettings != null && Object.keys(customSettings).length !== 0 ? customSettings : undefined,
+			};
+
+			await workspace.fs.writeFile(uri, new TextEncoder().encode(`${JSON.stringify(exportable, null, '\t')}\n`));
+
+			void window.showInformationMessage(`Exported GitLens ${scope} settings to '${uri.fsPath}'.`);
+		} catch (ex) {
+			Logger.error(ex, `Webview(${this.id}).exportConfiguration`);
+			void window.showErrorMessage('Unable to export GitLens settings.');
+		}
+	}
+
+	private getDefaultConfigurationUri(scope: ConfigurationScope): Uri | undefined {
+		const folder = workspace.workspaceFolders?.[0]?.uri;
+		return folder != null ? Uri.joinPath(folder, `gitlens-settings-${scope}.json`) : undefined;
+	}
+
+	private getScopedConfiguration(scope: ConfigurationScope): Record<string, any> {
+		const inspection = configuration.inspectAny<Record<string, any>>('gitlens');
+		return (scope === 'workspace' ? inspection?.workspaceValue : inspection?.globalValue) ?? {};
+	}
+
+	private async importConfiguration(params: ImportConfigurationParams) {
+		const scope = params.scope ?? 'user';
+		const target = scope === 'workspace' ? ConfigurationTarget.Workspace : ConfigurationTarget.Global;
+
+		try {
+			const imported = this.parseImportedConfiguration(params);
+			await configuration.updateAny('gitlens', isEmptyObject(imported.config) ? undefined : imported.config, target);
+
+			if (scope !== 'workspace' && imported.customSettings != null) {
+				for (const [key, value] of Object.entries(imported.customSettings)) {
+					const customSetting = this.customSettings.get(key);
+					if (customSetting == null) continue;
+
+					await customSetting.update(value);
+				}
+			}
+
+			void window.showInformationMessage(
+				`Imported GitLens ${scope} settings${params.fileName != null ? ` from '${params.fileName}'` : ''}.`,
+			);
+		} catch (ex) {
+			Logger.error(ex, `Webview(${this.id}).importConfiguration`);
+			void window.showErrorMessage(
+				ex instanceof Error ? ex.message : 'Unable to import GitLens settings.',
+			);
+		}
+	}
+
+	private parseImportedConfiguration(params: ImportConfigurationParams): ImportedConfiguration {
+		if (params.content != null) {
+			const payload = asPlainObject(JSON.parse(params.content));
+			if (payload == null) {
+				throw new Error('The selected file does not contain a valid JSON object.');
+			}
+
+			if (payload.config != null || payload.customSettings != null || payload.extension != null) {
+				// Validate version compatibility for GitLens export format
+				if (payload.version != null && payload.version !== 1) {
+					throw new Error(
+						`Unsupported configuration version: ${payload.version}. This version of GitLens only supports version 1.`,
+					);
+				}
+
+				if (payload.extension != null && payload.extension !== 'gitlens') {
+					throw new Error(
+						`This configuration was exported from '${payload.extension}', not GitLens.`,
+					);
+				}
+
+				const config = asPlainObject(payload.config);
+				if (config == null) {
+					throw new Error('The selected file does not contain a valid GitLens configuration export.');
+				}
+
+				return {
+					config: config,
+					customSettings: filterCustomSettings(payload.customSettings),
+				};
+			}
+
+			const gitlens = asPlainObject(payload.gitlens);
+			if (gitlens != null) {
+				return {
+					config: gitlens,
+					customSettings:
+						filterCustomSettings(payload.customSettings) ?? getCustomSettingsFromSettingsJson(payload),
+				};
+			}
+
+			const flattened = getGitLensConfigurationFromSettingsJson(payload);
+			if (flattened != null) {
+				return {
+					config: flattened,
+					customSettings:
+						filterCustomSettings(payload.customSettings) ?? getCustomSettingsFromSettingsJson(payload),
+				};
+			}
+
+			if (Object.keys(payload).some(key => key.includes('.'))) {
+				throw new Error('The selected file does not contain any GitLens settings to import.');
+			}
+
+			return {
+				config: payload,
+				customSettings: filterCustomSettings(payload.customSettings),
+			};
+		}
+
+		const config = asPlainObject(params.config);
+		if (config == null) {
+			throw new Error('The selected file does not contain a valid GitLens configuration.');
+		}
+
+		return {
+			config: config,
+			customSettings: filterCustomSettings(params.customSettings),
+		};
+	}
+
 	private notifyDidChangeConfiguration() {
 		// Make sure to get the raw config, not from the container which has the modes mixed in
 		return this.notify(DidChangeConfigurationNotificationType, {
@@ -251,4 +419,101 @@ interface CustomSetting {
 	name: string;
 	enabled: () => boolean;
 	update: (enabled: boolean) => Promise<void>;
+}
+
+interface ExportableConfiguration {
+	version: 1;
+	extension: 'gitlens';
+	exportedAt: string;
+	scope: ConfigurationScope;
+	config: Record<string, any>;
+	customSettings?: Record<string, boolean>;
+}
+
+interface ImportedConfiguration {
+	config: Record<string, any>;
+	customSettings?: Record<string, boolean>;
+}
+
+function asPlainObject(value: unknown): Record<string, any> | undefined {
+	return value != null && !Array.isArray(value) && typeof value === 'object'
+		? (value as Record<string, any>)
+		: undefined;
+}
+
+function filterCustomSettings(value: unknown): Record<string, boolean> | undefined {
+	const customSettings = asPlainObject(value);
+	if (customSettings == null) return undefined;
+
+	const filtered = Object.entries(customSettings).reduce<Record<string, boolean>>((accumulator, [key, item]) => {
+		if (typeof item === 'boolean') {
+			accumulator[key] = item;
+		}
+		return accumulator;
+	}, Object.create(null) as Record<string, boolean>);
+
+	return Object.keys(filtered).length !== 0 ? filtered : undefined;
+}
+
+function getGitLensConfigurationFromSettingsJson(settings: Record<string, any>): Record<string, any> | undefined {
+	const config = Object.entries(settings).reduce<Record<string, any>>((accumulator, [key, value]) => {
+		if (!key.startsWith('gitlens.')) return accumulator;
+
+		setObjectValue(accumulator, key.substring('gitlens.'.length), value);
+		return accumulator;
+	}, Object.create(null) as Record<string, any>);
+
+	return Object.keys(config).length !== 0 ? config : undefined;
+}
+
+function getCustomSettingsFromSettingsJson(settings: Record<string, any>): Record<string, boolean> | undefined {
+	const associations = settings['workbench.editorAssociations'];
+	if (Array.isArray(associations)) {
+		const association = associations.find(
+			value =>
+				value != null &&
+				typeof value === 'object' &&
+				(value as { filenamePattern?: string }).filenamePattern === 'git-rebase-todo',
+		) as { viewType?: string } | undefined;
+
+		if (association?.viewType != null) {
+			return {
+				'rebaseEditor.enabled': association.viewType === 'gitlens.rebase',
+			};
+		}
+	}
+
+	const mappedAssociations = asPlainObject(associations);
+	if (mappedAssociations?.['git-rebase-todo'] != null) {
+		return {
+			'rebaseEditor.enabled': mappedAssociations['git-rebase-todo'] === 'gitlens.rebase',
+		};
+	}
+
+	return undefined;
+}
+
+function isEmptyObject(value: Record<string, any>): boolean {
+	return Object.keys(value).length === 0;
+}
+
+function setObjectValue(target: Record<string, any>, path: string, value: any): void {
+	const segments = path.split('.');
+	const last = segments.length - 1;
+
+	let current = target;
+	for (let i = 0; i <= last; i++) {
+		const key = segments[i];
+		if (i === last) {
+			current[key] = value;
+			return;
+		}
+
+		const existing = current[key];
+		if (existing == null || Array.isArray(existing) || typeof existing !== 'object') {
+			current[key] = {};
+		}
+
+		current = current[key];
+	}
 }

@@ -6,6 +6,7 @@
 
 	<body class="preload">
 		<div id="container" class="container">
+			<div id="slot0"></div>
 			<div id="slot1"></div>
 			<div id="slot2" class="divider"></div>
 		</div>
@@ -19,13 +20,7 @@
 	</body>
 
 	<!-- prettier-ignore -->
+	<%= require('html-loader?{"esModule":false}!./partials/operation-status.html') %>
 	<%= require('html-loader?{"esModule":false}!./partials/welcome.html') %>
 	<%= require('html-loader?{"esModule":false}!./partials/links.html') %>
-	<%= require('html-loader?{"esModule":false}!./partials/state.free.html') %>
-	<%= require('html-loader?{"esModule":false}!./partials/state.free-preview.html') %>
-	<%= require('html-loader?{"esModule":false}!./partials/state.free-preview-expired.html') %>
-	<%= require('html-loader?{"esModule":false}!./partials/state.plus-trial.html') %>
-	<%= require('html-loader?{"esModule":false}!./partials/state.plus-trial-expired.html') %>
-	<%= require('html-loader?{"esModule":false}!./partials/state.paid.html') %>
-	<%= require('html-loader?{"esModule":false}!./partials/state.verify-email.html') %>
 </html>

@@ -2,13 +2,13 @@
 import './home.scss';
 import { provideVSCodeDesignSystem, vsCodeButton } from '@vscode/webview-ui-toolkit';
 import { Disposable } from 'vscode';
-import { getSubscriptionTimeRemaining, SubscriptionState } from '../../../subscription';
-import { DidChangeSubscriptionNotificationType, State } from '../../home/protocol';
+import { DidChangeStateNotificationType, State } from '../../home/protocol';
 import { ExecuteCommandType, IpcMessage, onIpc } from '../../protocol';
 import { App } from '../shared/appBase';
 import { DOM } from '../shared/dom';
 
 export class HomeApp extends App<State> {
+	private $slot0!: HTMLDivElement;
 	private $slot1!: HTMLDivElement;
 	private $slot2!: HTMLDivElement;
 
@@ -23,6 +23,7 @@ export class HomeApp extends App<State> {
 			},
 		});
 
+		this.$slot0 = document.getElementById('slot0') as HTMLDivElement;
 		this.$slot1 = document.getElementById('slot1') as HTMLDivElement;
 		this.$slot2 = document.getElementById('slot2') as HTMLDivElement;
 
@@ -41,10 +42,10 @@ export class HomeApp extends App<State> {
 		const msg = e.data as IpcMessage;
 
 		switch (msg.method) {
-			case DidChangeSubscriptionNotificationType.method:
+			case DidChangeStateNotificationType.method:
 				this.log(`${this.appName}.onMessageReceived(${msg.id}): name=${msg.method}`);
 
-				onIpc(DidChangeSubscriptionNotificationType, msg, params => {
+				onIpc(DidChangeStateNotificationType, msg, params => {
 					this.state = params;
 					this.updateState();
 				});
@@ -64,10 +65,32 @@ export class HomeApp extends App<State> {
 	}
 
 	private updateState() {
-		const { welcomeVisible } = this.state;
+		const { operation, welcomeVisible, stashCount } = this.state;
 
 		const $container = document.getElementById('container') as HTMLDivElement;
 		$container.classList.toggle('welcome', welcomeVisible);
+		this.$slot2.classList.toggle('divider', welcomeVisible);
+
+		if (operation != null) {
+			DOM.insertTemplate('operation-status', this.$slot0, {
+				bindings: {
+					conflicts: operation.conflicts,
+					current: operation.current,
+					incoming: operation.incoming,
+					repository: operation.repository,
+					step: operation.step,
+					total: operation.total,
+				},
+				visible: {
+					hasConflicts: operation.conflicts > 0,
+					hasStep: operation.kind === 'rebase' && operation.step != null && operation.total != null,
+					merge: operation.kind === 'merge',
+					rebase: operation.kind === 'rebase',
+				},
+			});
+		} else {
+			this.$slot0.innerHTML = '';
+		}
 
 		if (welcomeVisible) {
 			DOM.insertTemplate('welcome', this.$slot1);
@@ -75,7 +98,17 @@ export class HomeApp extends App<State> {
 		} else {
 			DOM.insertTemplate('links', this.$slot1);
 			this.$slot2.innerHTML = '';
-			this.$slot2.classList.remove('divider');
+		}
+
+		// Stash indicator
+		const $stash = document.getElementById('stash-indicator');
+		if ($stash != null) {
+			if (stashCount > 0) {
+				$stash.textContent = `${stashCount}`;
+				$stash.parentElement?.classList.remove('hidden');
+			} else {
+				$stash.parentElement?.classList.add('hidden');
+			}
 		}
 	}
 }

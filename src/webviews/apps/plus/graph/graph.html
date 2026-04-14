@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+	</head>
+
+	<body class="preload">
+		<div class="container">
+			<header class="header">
+				<div class="header__bar">
+					<div class="graph-filters">
+						<button id="filter-toggle" class="graph-filters__toggle" type="button" aria-expanded="false">
+							<span class="codicon codicon-filter" aria-hidden="true"></span>
+						</button>
+						<div id="filter-panel" class="graph-filters__panel hidden" role="dialog" aria-label="%{graph.filtersDialog}%">
+							<div class="graph-filters__section">
+								<label class="graph-option">
+									<input id="scope-all" name="graph-scope" type="radio" value="all" />
+									<span>%{graph.allBranches}%</span>
+								</label>
+								<label class="graph-option">
+									<input id="scope-current" name="graph-scope" type="radio" value="current" />
+									<span>%{graph.currentBranch}%</span>
+								</label>
+							</div>
+							<div class="graph-filters__section">
+								<label class="graph-option graph-option--checkbox">
+									<input id="hide-tags" type="checkbox" />
+									<span>%{graph.hideTags}%</span>
+								</label>
+								<label class="graph-option graph-option--checkbox">
+									<input id="dim-merges" type="checkbox" />
+									<span>%{graph.dimMerges}%</span>
+								</label>
+							</div>
+							<div id="branch-filter" class="graph-filters__section hidden">
+								<div class="graph-filters__hint">%{graph.selectedBranch}%</div>
+								<div class="graph-filters__branch-row">
+									<span id="branch-filter-name" class="header__badge"></span>
+									<button id="branch-filter-clear" class="graph-filters__clear" type="button">%{graph.clear}%</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<label class="graph-search" for="search">
+						<span class="codicon codicon-search" aria-hidden="true"></span>
+						<input id="search" type="search" placeholder="%{graph.searchPlaceholder}%" />
+					</label>
+					<span id="current-branch" class="header__badge hidden"></span>
+					<span id="summary" class="header__summary"></span>
+				</div>
+			</header>
+
+			<section id="empty" class="empty hidden">
+				<p data-bind="empty"></p>
+			</section>
+
+			<section id="graph" class="graph hidden">
+				<div id="graph-svg" class="graph__svg"></div>
+				<div id="graph-list" class="graph__list"></div>
+			</section>
+		</div>
+		#{endOfBody}
+		<style nonce="#{cspNonce}">
+			@font-face {
+				font-family: 'codicon';
+				src: url('#{root}/dist/webviews/codicon.ttf?669d352dfabff8f6eaa466c8ae820e43') format('truetype');
+			}
+		</style>
+	</body>
+</html>

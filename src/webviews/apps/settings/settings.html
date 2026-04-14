@@ -32,6 +32,10 @@
 			<div class="hero__row">
 				<h2 class="hero__title">%{settings.header.title}%</h2>
 				<div class="hero__title-actions">
+					<a href="#" data-action="import-settings"
+						title="%{settings.header.import.title}%">%{settings.header.import}%</a>
+					<a href="#" data-action="export-settings"
+						title="%{settings.header.export.title}%">%{settings.header.export}%</a>
 					<a href="#" data-action="collapse" title="Collapse all sections">%{settings.header.collapseAll}%</a>
 					<a href="#" data-action="expand" class="hidden"
 						title="Expand all sections">%{settings.header.expandAll}%</a>
@@ -60,6 +64,7 @@
 					href="command:workbench.action.openGlobalSettings">%{settings.header.advancedCustomizations.userSettingsLink}%</a>
 			</p>
 		</div>
+		<input id="settings-import-file" class="hidden" type="file" accept=".json,application/json" />
 
 		<div class="content__area content__area--full-scroll">
 			<div id="settings-filter-empty" class="settings-filter-empty hidden">

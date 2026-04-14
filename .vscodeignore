@@ -1,4 +1,6 @@
 .github/**
+.ruff_cache/**
+.spec-workflow/**
 .vscode/**
 .vscode-clean/**
 .vscode-test/**
@@ -39,6 +41,11 @@ yarn.lock
 build_log*.txt
 debug_output.txt
 debug_tsc.js
+analysis.json
+FINDINGS_SUMMARY.txt
+GITLENS_SUBSCRIPTION_ANALYSIS.md
+QUICK_REFERENCE.md
+SUBSCRIPTION_CODE_FLOW.md
 validate_json.py
 *.vsix
 yarn.lock.bak

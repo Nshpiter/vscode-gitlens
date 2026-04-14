@@ -43,7 +43,7 @@ export interface SwitchGitCommandArgs {
 export class SwitchGitCommand extends QuickCommand<State> {
 	constructor(container: Container, args?: SwitchGitCommandArgs) {
 		super(container, 'switch', 'switch', 'Switch', {
-			description: 'aka checkout, switches the current branch to a specified branch',
+			description: '即 checkout，切换当前分支到指定分支',
 		});
 
 		let counter = 0;
@@ -126,7 +126,7 @@ export class SwitchGitCommand extends QuickCommand<State> {
 
 			if (state.counter < 2 || state.reference == null) {
 				const result = yield* pickBranchOrTagStepMultiRepo(state as SwitchStepState, context, {
-					placeholder: context => `Choose a branch${context.showTags ? ' or tag' : ''} to switch to`,
+					placeholder: context => `选择要切换到的分支${context.showTags ? '或标签' : ''}`,
 				});
 				if (result === StepResult.Break) {
 					// If we skipped the previous step, make sure we back up past it
@@ -141,7 +141,7 @@ export class SwitchGitCommand extends QuickCommand<State> {
 			}
 
 			if (GitReference.isBranch(state.reference) && state.reference.remote) {
-				context.title = `Create Branch and ${this.title}`;
+				context.title = `创建分支并${this.title}`;
 
 				const { values: branches } = await this.container.git.getBranches(state.reference.repoPath, {
 					filter: b => b.upstream?.name === state.reference!.name,
@@ -150,7 +150,7 @@ export class SwitchGitCommand extends QuickCommand<State> {
 
 				if (branches.length === 0) {
 					const result = yield* inputBranchNameStep(state as SwitchStepState, context, {
-						placeholder: 'Please provide a name for the new branch',
+						placeholder: '请输入新分支的名称',
 						titleContext: ` based on ${GitReference.toString(state.reference, {
 							icon: false,
 						})}`,
@@ -185,17 +185,17 @@ export class SwitchGitCommand extends QuickCommand<State> {
 				{
 					label: context.title,
 					description: state.createBranch ? '-b' : '',
-					detail: `Will ${
+					detail: `将${
 						state.createBranch
-							? `create and switch to a new branch named ${
+							? `从 ${GitReference.toString(state.reference)} 创建并切换到名为 ${
 									state.createBranch
-							  } from ${GitReference.toString(state.reference)}`
-							: `switch to ${GitReference.toString(state.reference)}`
-					} in ${
+							  } 的新分支`
+							: `切换到 ${GitReference.toString(state.reference)}`
+					} 在 ${
 						state.repos.length === 1
 							? `$(repo) ${state.repos[0].formattedName}`
-							: `${state.repos.length} repositories`
-					}`,
+							: `${state.repos.length} 个仓库`
+					} 中`,
 				},
 			],
 			undefined,

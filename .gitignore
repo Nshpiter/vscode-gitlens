@@ -15,3 +15,13 @@ build*.txt
 debug*.txt
 compile*.txt
 placeholders.txt
+
+# Analysis / reverse-engineering artifacts (sensitive)
+FINDINGS_SUMMARY.txt
+GITLENS_SUBSCRIPTION_ANALYSIS.md
+QUICK_REFERENCE.md
+SUBSCRIPTION_CODE_FLOW.md
+analysis.json
+
+# Spec workflow temp files
+.spec-workflow/

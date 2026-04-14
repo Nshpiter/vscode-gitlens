@@ -16,7 +16,6 @@ import { hasVisibleTextEditor, isTextEditor } from '../../../system/utils';
 import { IpcMessage, onIpc } from '../../../webviews/protocol';
 import { WebviewBase } from '../../../webviews/webviewBase';
 import type { SubscriptionChangeEvent } from '../../subscription/subscriptionService';
-import { ensurePlusFeaturesEnabled } from '../../subscription/utils';
 import {
 	Commit,
 	DidChangeStateNotificationType,
@@ -62,8 +61,7 @@ export class TimelineWebview extends WebviewBase<State> {
 		};
 	}
 
-	override async show(column: ViewColumn = ViewColumn.Beside): Promise<void> {
-		if (!(await ensurePlusFeaturesEnabled())) return;
+	override show(column: ViewColumn = ViewColumn.Beside): Promise<void> {
 		return super.show(column);
 	}
 

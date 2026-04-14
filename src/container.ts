@@ -32,6 +32,8 @@ import { Logger } from './logger';
 import { SubscriptionAuthenticationProvider } from './plus/subscription/authenticationProvider';
 import { ServerConnection } from './plus/subscription/serverConnection';
 import { SubscriptionService } from './plus/subscription/subscriptionService';
+import { GraphWebview } from './plus/webviews/graph/graphWebview';
+import { GraphWebviewView } from './plus/webviews/graph/graphWebviewView';
 import { TimelineWebview } from './plus/webviews/timeline/timelineWebview';
 import { TimelineWebviewView } from './plus/webviews/timeline/timelineWebviewView';
 import { StatusBarController } from './statusbar/statusBarController';
@@ -180,6 +182,7 @@ export class Container {
 		context.subscriptions.push((this._statusBarController = new StatusBarController(this)));
 		context.subscriptions.push((this._codeLensController = new GitCodeLensController(this)));
 
+		context.subscriptions.push((this._graphWebview = new GraphWebview(this)));
 		context.subscriptions.push((this._settingsWebview = new SettingsWebview(this)));
 		context.subscriptions.push((this._timelineWebview = new TimelineWebview(this)));
 		context.subscriptions.push((this._welcomeWebview = new WelcomeWebview(this)));
@@ -199,6 +202,7 @@ export class Container {
 		context.subscriptions.push((this._contributorsView = new ContributorsView(this)));
 		context.subscriptions.push((this._searchAndCompareView = new SearchAndCompareView(this)));
 
+		context.subscriptions.push((this._graphView = new GraphWebviewView(this)));
 		context.subscriptions.push((this._homeView = new HomeWebviewView(this)));
 		context.subscriptions.push((this._timelineView = new TimelineWebviewView(this)));
 
@@ -348,6 +352,16 @@ export class Container {
 		}
 
 		return this._fileHistoryView;
+	}
+
+	private _graphView: GraphWebviewView;
+	get graphView() {
+		return this._graphView;
+	}
+
+	private _graphWebview: GraphWebview;
+	get graphWebview() {
+		return this._graphWebview;
 	}
 
 	private _git: GitProviderService;

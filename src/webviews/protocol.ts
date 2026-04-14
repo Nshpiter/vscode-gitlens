@@ -57,10 +57,26 @@ export interface UpdateConfigurationParams {
 		[key: string]: any;
 	};
 	removes: string[];
-	scope?: 'user' | 'workspace';
+	scope?: ConfigurationScope;
 	uri?: string;
 }
 export const UpdateConfigurationCommandType = new IpcCommandType<UpdateConfigurationParams>('configuration/update');
+
+export type ConfigurationScope = 'user' | 'workspace';
+
+export interface ExportConfigurationParams {
+	scope?: ConfigurationScope;
+}
+export const ExportConfigurationCommandType = new IpcCommandType<ExportConfigurationParams>('configuration/export');
+
+export interface ImportConfigurationParams {
+	config?: Record<string, any>;
+	content?: string;
+	customSettings?: Record<string, boolean>;
+	fileName?: string;
+	scope?: ConfigurationScope;
+}
+export const ImportConfigurationCommandType = new IpcCommandType<ImportConfigurationParams>('configuration/import');
 
 // NOTIFICATIONS
 

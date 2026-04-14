@@ -48,7 +48,7 @@ type PushStepState<T extends State = State> = ExcludeSome<StepState<T>, 'repos',
 export class PushGitCommand extends QuickCommand<State> {
 	constructor(container: Container, args?: PushGitCommandArgs) {
 		super(container, 'push', 'push', 'Push', {
-			description: 'pushes changes from the current branch to a remote',
+			description: '将当前分支的更改推送到远程仓库',
 		});
 
 		let counter = 0;
@@ -160,14 +160,14 @@ export class PushGitCommand extends QuickCommand<State> {
 			step = this.createConfirmStep(appendReposToTitle(`Confirm ${context.title}`, state, context), [
 				FlagsQuickPickItem.create<Flags>(state.flags, [], {
 					label: this.title,
-					detail: `Will push ${state.repos.length} repositories`,
+					detail: `将推送 ${state.repos.length} 个仓库`,
 				}),
 				FlagsQuickPickItem.create<Flags>(state.flags, ['--force'], {
-					label: `Force ${this.title}${useForceWithLease ? ' (with lease)' : ''}`,
+					label: `强制${this.title}${useForceWithLease ? '（使用租约）' : ''}`,
 					description: `--force${useForceWithLease ? '-with-lease' : ''}`,
-					detail: `Will force push${useForceWithLease ? ' (with lease)' : ''} ${
+					detail: `将强制推送${useForceWithLease ? '（使用租约）' : ''} ${
 						state.repos.length
-					} repositories`,
+					} 个仓库`,
 				}),
 			]);
 		} else {
@@ -181,8 +181,8 @@ export class PushGitCommand extends QuickCommand<State> {
 						appendReposToTitle(`Confirm ${context.title}`, state, context),
 						[],
 						DirectiveQuickPickItem.create(Directive.Cancel, true, {
-							label: `Cancel ${this.title}`,
-							detail: 'Cannot push remote branch',
+							label: `取消${this.title}`,
+							detail: '无法推送远程分支',
 						}),
 					);
 				} else {
@@ -195,8 +195,8 @@ export class PushGitCommand extends QuickCommand<State> {
 									state.flags,
 									['--set-upstream', remote.name, branch.name],
 									{
-										label: `Publish ${branch.name} to ${remote.name}`,
-										detail: `Will publish ${GitReference.toString(branch)} to ${remote.name}`,
+										label: `发布 ${branch.name} 到 ${remote.name}`,
+										detail: `将发布 ${GitReference.toString(branch)} 到 ${remote.name}`,
 									},
 								),
 							);
@@ -204,20 +204,20 @@ export class PushGitCommand extends QuickCommand<State> {
 
 						if (items.length) {
 							step = this.createConfirmStep(
-								appendReposToTitle('Confirm Publish', state, context),
+								appendReposToTitle('确认发布', state, context),
 								items,
 								undefined,
-								{ placeholder: 'Confirm Publish' },
+								{ placeholder: '确认发布' },
 							);
 						} else {
 							step = this.createConfirmStep(
-								appendReposToTitle('Confirm Publish', state, context),
+								appendReposToTitle('确认发布', state, context),
 								[],
 								DirectiveQuickPickItem.create(Directive.Cancel, true, {
-									label: 'Cancel Publish',
-									detail: 'Cannot publish; No remotes found',
+									label: '取消发布',
+									detail: '无法发布；未找到远程仓库',
 								}),
-								{ placeholder: 'Confirm Publish' },
+								{ placeholder: '确认发布' },
 							);
 						}
 					} else if (branch != null && branch?.state.behind > 0) {
@@ -228,15 +228,15 @@ export class PushGitCommand extends QuickCommand<State> {
 							branch.id === currentBranch?.id
 								? [
 										FlagsQuickPickItem.create<Flags>(state.flags, ['--force'], {
-											label: `Force ${this.title}${useForceWithLease ? ' (with lease)' : ''}`,
+											label: `强制${this.title}${useForceWithLease ? '（使用租约）' : ''}`,
 											description: `--force${useForceWithLease ? '-with-lease' : ''}`,
-											detail: `Will force push${useForceWithLease ? ' (with lease)' : ''} ${
+											detail: `将强制推送${useForceWithLease ? '（使用租约）' : ''} ${
 												branch?.state.ahead ? ` ${pluralize('commit', branch.state.ahead)}` : ''
-											}${branch.getRemoteName() ? ` to ${branch.getRemoteName()}` : ''}${
+											}${branch.getRemoteName() ? ` 到 ${branch.getRemoteName()}` : ''}${
 												branch != null && branch.state.behind > 0
-													? `, overwriting ${pluralize('commit', branch.state.behind)}${
+													? `，覆盖 ${pluralize('commit', branch.state.behind)}${
 															branch?.getRemoteName()
-																? ` on ${branch.getRemoteName()}`
+																? ` 在 ${branch.getRemoteName()}`
 																: ''
 													  }`
 													: ''
@@ -245,20 +245,20 @@ export class PushGitCommand extends QuickCommand<State> {
 								  ]
 								: [],
 							DirectiveQuickPickItem.create(Directive.Cancel, true, {
-								label: `Cancel ${this.title}`,
-								detail: `Cannot push; ${GitReference.toString(
+								label: `取消${this.title}`,
+								detail: `无法推送；${GitReference.toString(
 									branch,
-								)} is behind ${branch.getRemoteName()} by ${pluralize('commit', branch.state.behind)}`,
+								)} 落后于 ${branch.getRemoteName()} ${pluralize('commit', branch.state.behind)}`,
 							}),
 						);
 					} else if (branch != null && branch?.state.ahead > 0) {
 						step = this.createConfirmStep(appendReposToTitle(`Confirm ${context.title}`, state, context), [
 							FlagsQuickPickItem.create<Flags>(state.flags, [branch.getRemoteName()!], {
 								label: this.title,
-								detail: `Will push ${pluralize(
+								detail: `将推送 ${pluralize(
 									'commit',
 									branch.state.ahead,
-								)} from ${GitReference.toString(branch)} to ${branch.getRemoteName()}`,
+								)} 从 ${GitReference.toString(branch)} 到 ${branch.getRemoteName()}`,
 							}),
 						]);
 					} else {
@@ -266,8 +266,8 @@ export class PushGitCommand extends QuickCommand<State> {
 							appendReposToTitle(`Confirm ${context.title}`, state, context),
 							[],
 							DirectiveQuickPickItem.create(Directive.Cancel, true, {
-								label: `Cancel ${this.title}`,
-								detail: 'No commits found to push',
+								label: `取消${this.title}`,
+								detail: '没有找到可推送的提交',
 							}),
 						);
 					}
@@ -293,8 +293,8 @@ export class PushGitCommand extends QuickCommand<State> {
 									state.flags,
 									['--set-upstream', remote.name, status.branch],
 									{
-										label: `Publish ${branch.name} to ${remote.name}`,
-										detail: `Will publish ${GitReference.toString(branch)} to ${remote.name}`,
+										label: `发布 ${branch.name} 到 ${remote.name}`,
+										detail: `将发布 ${GitReference.toString(branch)} 到 ${remote.name}`,
 									},
 								),
 							);
@@ -303,28 +303,28 @@ export class PushGitCommand extends QuickCommand<State> {
 
 					if (items.length) {
 						step = this.createConfirmStep(
-							appendReposToTitle('Confirm Publish', state, context),
+							appendReposToTitle('确认发布', state, context),
 							items,
 							undefined,
-							{ placeholder: 'Confirm Publish' },
+							{ placeholder: '确认发布' },
 						);
 					} else if (status.upstream == null) {
 						step = this.createConfirmStep(
-							appendReposToTitle('Confirm Publish', state, context),
+							appendReposToTitle('确认发布', state, context),
 							[],
 							DirectiveQuickPickItem.create(Directive.Cancel, true, {
-								label: 'Cancel Publish',
-								detail: 'Cannot publish; No remotes found',
+								label: '取消发布',
+								detail: '无法发布；未找到远程仓库',
 							}),
-							{ placeholder: 'Confirm Publish' },
+							{ placeholder: '确认发布' },
 						);
 					} else {
 						step = this.createConfirmStep(
-							appendReposToTitle('Confirm Push', state, context),
+							appendReposToTitle('确认推送', state, context),
 							[],
 							DirectiveQuickPickItem.create(Directive.Cancel, true, {
-								label: `Cancel ${this.title}`,
-								detail: `Cannot push; No commits ahead of ${GitBranch.getRemote(status.upstream)}`,
+								label: `取消${this.title}`,
+								detail: `无法推送；没有领先于 ${GitBranch.getRemote(status.upstream)} 的提交`,
 							}),
 						);
 					}
@@ -333,21 +333,21 @@ export class PushGitCommand extends QuickCommand<State> {
 
 					const lastFetched = await repo.getLastFetched();
 					if (lastFetched !== 0) {
-						lastFetchedOn = `${pad(GlyphChars.Dot, 2, 2)}Last fetched ${fromNow(new Date(lastFetched))}`;
+						lastFetchedOn = `${pad(GlyphChars.Dot, 2, 2)}上次拉取于 ${fromNow(new Date(lastFetched))}`;
 					}
 
 					let pushDetails;
 					if (state.reference != null) {
 						pushDetails = `${
 							status?.state.ahead
-								? ` commits up to and including ${GitReference.toString(state.reference, {
+								? ` 提交（截至并包括 ${GitReference.toString(state.reference, {
 										label: false,
-								  })}`
+								  })}）`
 								: ''
-						}${status?.upstream ? ` to ${GitBranch.getRemote(status.upstream)}` : ''}`;
+						}${status?.upstream ? ` 到 ${GitBranch.getRemote(status.upstream)}` : ''}`;
 					} else {
 						pushDetails = `${status?.state.ahead ? ` ${pluralize('commit', status.state.ahead)}` : ''}${
-							status?.upstream ? ` to ${GitBranch.getRemote(status.upstream)}` : ''
+							status?.upstream ? ` 到 ${GitBranch.getRemote(status.upstream)}` : ''
 						}`;
 					}
 
@@ -359,16 +359,16 @@ export class PushGitCommand extends QuickCommand<State> {
 								: [
 										FlagsQuickPickItem.create<Flags>(state.flags, [], {
 											label: this.title,
-											detail: `Will push${pushDetails}`,
+											detail: `将推送${pushDetails}`,
 										}),
 								  ]),
 							FlagsQuickPickItem.create<Flags>(state.flags, ['--force'], {
-								label: `Force ${this.title}${useForceWithLease ? ' (with lease)' : ''}`,
+								label: `强制${this.title}${useForceWithLease ? '（使用租约）' : ''}`,
 								description: `--force${useForceWithLease ? '-with-lease' : ''}`,
-								detail: `Will force push${useForceWithLease ? ' (with lease)' : ''} ${pushDetails}${
+								detail: `将强制推送${useForceWithLease ? '（使用租约）' : ''} ${pushDetails}${
 									status != null && status.state.behind > 0
-										? `, overwriting ${pluralize('commit', status.state.behind)}${
-												status?.upstream ? ` on ${GitBranch.getRemote(status.upstream)}` : ''
+										? `，覆盖 ${pluralize('commit', status.state.behind)}${
+												status?.upstream ? ` 在 ${GitBranch.getRemote(status.upstream)}` : ''
 										  }`
 										: ''
 								}`,
@@ -376,10 +376,10 @@ export class PushGitCommand extends QuickCommand<State> {
 						],
 						status?.state.behind
 							? DirectiveQuickPickItem.create(Directive.Cancel, true, {
-									label: `Cancel ${this.title}`,
-									detail: `Cannot push; ${GitReference.toString(branch)} is behind${
+									label: `取消${this.title}`,
+									detail: `无法推送；${GitReference.toString(branch)} 落后于${
 										status?.upstream ? ` ${GitBranch.getRemote(status.upstream)}` : ''
-									} by ${pluralize('commit', status.state.behind)}`,
+									} ${pluralize('commit', status.state.behind)}`,
 							  })
 							: undefined,
 					);
@@ -388,7 +388,7 @@ export class PushGitCommand extends QuickCommand<State> {
 					step.onDidClickButton = async (quickpick, button) => {
 						if (button !== QuickCommandButtons.Fetch || quickpick.busy) return false;
 
-						quickpick.title = `Confirm ${context.title}${pad(GlyphChars.Dot, 2, 2)}Fetching${
+						quickpick.title = `确认 ${context.title}${pad(GlyphChars.Dot, 2, 2)}正在获取${
 							GlyphChars.Ellipsis
 						}`;
 

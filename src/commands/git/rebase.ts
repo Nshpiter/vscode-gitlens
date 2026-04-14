@@ -52,7 +52,7 @@ export class RebaseGitCommand extends QuickCommand<State> {
 	constructor(container: Container, args?: RebaseGitCommandArgs) {
 		super(container, 'rebase', 'rebase', 'Rebase', {
 			description:
-				'integrates changes from a specified branch into the current branch, by changing the base of the branch and reapplying the commits on top',
+				'通过变基将提交从一个分支应用到另一个分支，即更改分支的基点并在其上重新应用提交',
 		});
 
 		let counter = 0;
@@ -158,7 +158,7 @@ export class RebaseGitCommand extends QuickCommand<State> {
 				});
 
 				const result: StepResult<GitReference> = yield* pickBranchOrTagStep(state as RebaseStepState, context, {
-					placeholder: context => `Choose a branch${context.showTags ? ' or tag' : ''} to rebase`,
+					placeholder: context => `选择要变基的分支${context.showTags ? '或标签' : ''}`,
 					picked: context.selectedBranchOrTag?.ref,
 					value: context.selectedBranchOrTag == null ? state.reference?.ref : undefined,
 					additionalButtons: [pickCommitToggle],
@@ -199,12 +199,12 @@ export class RebaseGitCommand extends QuickCommand<State> {
 					onDidLoadMore: log => context.cache.set(ref, Promise.resolve(log)),
 					placeholder: (context, log) =>
 						log == null
-							? `No commits found on ${GitReference.toString(context.selectedBranchOrTag, {
+							? `在 ${GitReference.toString(context.selectedBranchOrTag, {
 									icon: false,
-							  })}`
-							: `Choose a commit to rebase ${GitReference.toString(context.destination, {
+							  })} 上未找到提交`
+							: `选择一个提交以将 ${GitReference.toString(context.destination, {
 									icon: false,
-							  })} onto`,
+							  })} 变基到其上`,
 					picked: state.reference?.ref,
 				});
 				if (result === StepResult.Break) continue;
@@ -237,10 +237,10 @@ export class RebaseGitCommand extends QuickCommand<State> {
 				appendReposToTitle(`Confirm ${context.title}`, state, context),
 				[],
 				DirectiveQuickPickItem.create(Directive.Cancel, true, {
-					label: `Cancel ${this.title}`,
+					label: `取消${this.title}`,
 					detail: `${GitReference.toString(context.destination, {
 						capitalize: true,
-					})} is up to date with ${GitReference.toString(state.reference)}`,
+					})} 已与 ${GitReference.toString(state.reference)} 保持同步`,
 				}),
 			);
 			const selection: StepSelection<typeof step> = yield step;
@@ -253,17 +253,17 @@ export class RebaseGitCommand extends QuickCommand<State> {
 			[
 				FlagsQuickPickItem.create<Flags>(state.flags, [], {
 					label: this.title,
-					detail: `Will update ${GitReference.toString(context.destination)} by applying ${pluralize(
+					detail: `将更新 ${GitReference.toString(context.destination)}，在 ${GitReference.toString(state.reference)} 上重新应用 ${pluralize(
 						'commit',
 						count,
-					)} on top of ${GitReference.toString(state.reference)}`,
+					)}`,
 				}),
 				FlagsQuickPickItem.create<Flags>(state.flags, ['--interactive'], {
-					label: `Interactive ${this.title}`,
+					label: `交互式${this.title}`,
 					description: '--interactive',
-					detail: `Will interactively update ${GitReference.toString(
+					detail: `将以交互方式更新 ${GitReference.toString(
 						context.destination,
-					)} by applying ${pluralize('commit', count)} on top of ${GitReference.toString(state.reference)}`,
+					)}，在 ${GitReference.toString(state.reference)} 上重新应用 ${pluralize('commit', count)}`,
 				}),
 			],
 		);
