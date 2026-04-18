@@ -102,6 +102,7 @@
 		"onCommand:gitlens.showTagsView",
 		"onCommand:gitlens.showTimelineView",
 		"onCommand:gitlens.showWorktreesView",
+		"onCommand:gitlens.showCommitDetailsPage",
 		"onCommand:gitlens.compareWith",
 		"onCommand:gitlens.compareHeadWith",
 		"onCommand:gitlens.compareWorkingWith",
@@ -759,7 +760,7 @@
 					},
 					"gitlens.views.formats.commits.description": {
 						"type": "string",
-						"default": "${author, }${agoOrDate}",
+						"default": "${author, }${agoOrDate}${  •  changesShort}",
 						"markdownDescription": "Specifies the description format of commits in the views. See [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens) in the GitLens docs",
 						"scope": "window",
 						"order": 31
@@ -1031,7 +1032,7 @@
 					},
 					"gitlens.views.repositories.showWorktrees": {
 						"type": "boolean",
-						"default": true,
+						"default": false,
 						"markdownDescription": "Specifies whether to show the worktrees for each repository in the _Repositories_ view",
 						"scope": "window",
 						"order": 36
@@ -3864,6 +3865,12 @@
 				"category": "GitLens"
 			},
 			{
+				"command": "gitlens.showCommitDetailsPage",
+				"title": "显示提交详情",
+				"category": "GitLens",
+				"icon": "$(preview)"
+			},
+			{
 				"command": "gitlens.compareWith",
 				"title": "Compare References...",
 				"category": "GitLens",
@@ -6143,7 +6150,7 @@
 				},
 				{
 					"command": "gitlens.showGraphPage",
-					"when": "gitlens:enabled"
+					"when": "false"
 				},
 				{
 					"command": "gitlens.refreshGraphPage",
@@ -6175,7 +6182,7 @@
 				},
 				{
 					"command": "gitlens.showGraphView",
-					"when": "gitlens:enabled"
+					"when": "false"
 				},
 				{
 					"command": "gitlens.showHomeView",
@@ -6211,7 +6218,11 @@
 				},
 				{
 					"command": "gitlens.showWorktreesView",
-					"when": "gitlens:enabled && !gitlens:hasVirtualFolders"
+					"when": "false"
+				},
+				{
+					"command": "gitlens.showCommitDetailsPage",
+					"when": "false"
 				},
 				{
 					"command": "gitlens.compareWith",
@@ -8026,19 +8037,19 @@
 			"viewContainer/title": [
 				{
 					"command": "gitlens.showGraphPage",
-					"when": "viewContainer == gitlensInspect",
+					"when": "false",
 					"group": "navigation@11"
 				}
 			],
 			"view/title": [
 				{
 					"command": "gitlens.showGraphView",
-					"when": "view =~ /^gitlens\\.views\\.(branches|commits|contributors|fileHistory|lineHistory|remotes|repositories|searchAndCompare|stashes|tags|worktrees)\\b/",
+					"when": "false",
 					"group": "navigation@12"
 				},
 				{
 					"command": "gitlens.showGraphView",
-					"when": "view =~ /^gitlens\\.views\\.timeline/",
+					"when": "false",
 					"group": "navigation@97"
 				},
 				{
@@ -9022,6 +9033,16 @@
 					"command": "gitlens.views.addAuthor",
 					"when": "viewItem =~ /gitlens:contributor\\b(?!.*?\\b\\+current\\b)/",
 					"group": "1_gitlens_actions@2"
+				},
+				{
+					"command": "gitlens.showCommitDetailsPage",
+					"when": "viewItem =~ /gitlens:commit\\b/",
+					"group": "inline@1"
+				},
+				{
+					"command": "gitlens.showCommitDetailsPage",
+					"when": "viewItem =~ /gitlens:commit\\b/",
+					"group": "navigation@-99"
 				},
 				{
 					"command": "gitlens.copyShaToClipboard",
@@ -10874,7 +10895,7 @@
 					"type": "webview",
 					"id": "gitlens.views.graph",
 					"name": "%views.graph.title%",
-					"when": "!gitlens:disabled",
+					"when": "false",
 					"contextualTitle": "%views.graph.title%",
 					"icon": "images/views/history.svg",
 					"visibility": "collapsed"
@@ -10927,7 +10948,7 @@
 					"when": "!gitlens:disabled && !gitlens:hasVirtualFolders",
 					"contextualTitle": "%views.stashes.title%",
 					"icon": "images/views/stashes.svg",
-					"visibility": "collapsed"
+					"visibility": "hidden"
 				},
 				{
 					"id": "gitlens.views.tags",
@@ -10935,12 +10956,12 @@
 					"when": "!gitlens:disabled",
 					"contextualTitle": "%views.tags.title%",
 					"icon": "images/views/tags.svg",
-					"visibility": "collapsed"
+					"visibility": "hidden"
 				},
 				{
 					"id": "gitlens.views.worktrees",
 					"name": "%views.worktrees.title%",
-					"when": "!gitlens:disabled && !gitlens:hasVirtualFolders",
+					"when": "false",
 					"contextualTitle": "%views.worktrees.title%",
 					"icon": "images/views/worktrees.svg",
 					"visibility": "collapsed"
@@ -10951,7 +10972,7 @@
 					"when": "!gitlens:disabled",
 					"contextualTitle": "%views.contributors.title%",
 					"icon": "images/views/contributors.svg",
-					"visibility": "hidden"
+					"visibility": "visible"
 				},
 				{
 					"id": "gitlens.views.searchAndCompare",
@@ -10959,7 +10980,7 @@
 					"when": "!gitlens:disabled",
 					"contextualTitle": "%views.searchAndCompare.title%",
 					"icon": "images/views/search.svg",
-					"visibility": "collapsed"
+					"visibility": "hidden"
 				}
 			]
 		},

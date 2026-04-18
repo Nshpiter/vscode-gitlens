@@ -10,6 +10,7 @@ import {
 	TreeItemCollapsibleState,
 	TreeView,
 	TreeViewExpansionEvent,
+	TreeViewSelectionChangeEvent,
 	TreeViewVisibilityChangeEvent,
 	window,
 } from 'vscode';
@@ -32,6 +33,7 @@ import {
 	WorktreesViewConfig,
 } from '../configuration';
 import { Container } from '../container';
+import { Commands } from '../constants';
 import { Logger } from '../logger';
 import { executeCommand } from '../system/command';
 import { debug, log } from '../system/decorators/log';
@@ -253,6 +255,7 @@ export abstract class ViewBase<
 			this.tree.onDidChangeVisibility(debounce(this.onVisibilityChanged, 250), this),
 			this.tree.onDidCollapseElement(this.onElementCollapsed, this),
 			this.tree.onDidExpandElement(this.onElementExpanded, this),
+			this.tree.onDidChangeSelection(this.onSelectionChangedCore, this),
 		);
 		this._title = this.tree.title;
 	}
@@ -290,6 +293,16 @@ export abstract class ViewBase<
 
 	protected onElementExpanded(e: TreeViewExpansionEvent<ViewNode>) {
 		this._onDidChangeNodeCollapsibleState.fire({ ...e, state: TreeItemCollapsibleState.Expanded });
+	}
+
+	protected onSelectionChangedCore(e: TreeViewSelectionChangeEvent<ViewNode>): void {
+		if (e.selection.length === 0) return;
+		const node: any = e.selection[0];
+		const contextValue: string | undefined = node?.contextValue;
+		if (contextValue == null || !contextValue.startsWith('gitlens:commit')) return;
+		const commit = node.commit;
+		if (commit == null || typeof commit.sha !== 'string') return;
+		void executeCommand(Commands.ShowCommitDetailsPage, commit);
 	}
 
 	protected onVisibilityChanged(e: TreeViewVisibilityChangeEvent) {

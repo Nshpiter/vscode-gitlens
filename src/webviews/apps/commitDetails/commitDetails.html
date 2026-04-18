@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8" />
+	</head>
+	<body class="preload">
+		<div id="app" class="commit-details">
+			<div id="toolbar" class="commit-details__toolbar hidden">
+				<button id="nav-prev" class="commit-details__btn" type="button" title="上一条（更新的）">← 上一条</button>
+				<button id="nav-next" class="commit-details__btn" type="button" title="下一条（更旧的）">下一条 →</button>
+				<button id="refresh" class="commit-details__btn" type="button" title="刷新">↻ 刷新</button>
+			</div>
+			<div id="empty" class="commit-details__empty hidden">
+				<p>未选择提交</p>
+			</div>
+			<header id="header" class="commit-details__header hidden">
+				<img id="avatar" class="commit-details__avatar" src="" alt="avatar" />
+				<div class="commit-details__header-info">
+					<h1 id="summary" class="commit-details__summary"></h1>
+					<div class="commit-details__meta">
+						<span id="author" class="commit-details__author"></span>
+						<span class="commit-details__dot">•</span>
+						<span id="date" class="commit-details__date" title=""></span>
+					</div>
+					<div class="commit-details__meta">
+						<code id="sha" class="commit-details__sha"></code>
+						<button id="copy-sha" class="commit-details__btn" type="button" title="复制完整 SHA">
+							复制
+						</button>
+						<a id="remote-link" class="commit-details__btn commit-details__btn--link hidden" target="_blank" rel="noopener">在远程打开 ↗</a>
+					</div>
+				</div>
+			</header>
+
+			<section id="body" class="commit-details__body hidden">
+				<pre id="body-text" class="commit-details__body-text"></pre>
+			</section>
+
+			<section id="files-section" class="commit-details__files hidden">
+				<div class="commit-details__files-header">
+					<span id="files-count" class="commit-details__files-count"></span>
+					<span id="stats" class="commit-details__stats"></span>
+				</div>
+				<ul id="files-list" class="commit-details__files-list"></ul>
+			</section>
+		</div>
+		#{endOfBody}
+	</body>
+</html>

@@ -160,6 +160,7 @@ export const enum Commands {
 	SetViewsLayout = 'gitlens.setViewsLayout',
 	ShowBranchesView = 'gitlens.showBranchesView',
 	ShowCommitInView = 'gitlens.showCommitInView',
+	ShowCommitDetailsPage = 'gitlens.showCommitDetailsPage',
 	ShowCommitsInView = 'gitlens.showCommitsInView',
 	ShowCommitsView = 'gitlens.showCommitsView',
 	ShowContributorsView = 'gitlens.showContributorsView',

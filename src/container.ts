@@ -62,6 +62,7 @@ import { HomeWebviewView } from './webviews/home/homeWebviewView';
 import { RebaseEditorProvider } from './webviews/rebase/rebaseEditor';
 import { SettingsWebview } from './webviews/settings/settingsWebview';
 import { WelcomeWebview } from './webviews/welcome/welcomeWebview';
+import { CommitDetailsWebview } from './webviews/commitDetails/commitDetailsWebview';
 
 export class Container {
 	static #instance: Container | undefined;
@@ -186,6 +187,7 @@ export class Container {
 		context.subscriptions.push((this._settingsWebview = new SettingsWebview(this)));
 		context.subscriptions.push((this._timelineWebview = new TimelineWebview(this)));
 		context.subscriptions.push((this._welcomeWebview = new WelcomeWebview(this)));
+		context.subscriptions.push((this._commitDetailsWebview = new CommitDetailsWebview(this)));
 		context.subscriptions.push((this._rebaseEditor = new RebaseEditorProvider(this)));
 
 		context.subscriptions.push(new ViewFileDecorationProvider());
@@ -479,6 +481,11 @@ export class Container {
 	private _settingsWebview: SettingsWebview;
 	get settingsWebview() {
 		return this._settingsWebview;
+	}
+
+	private _commitDetailsWebview: CommitDetailsWebview;
+	get commitDetailsWebview() {
+		return this._commitDetailsWebview;
 	}
 
 	private _stashesView: StashesView | undefined;
