@@ -242,7 +242,7 @@
 					},
 					"gitlens.currentLine.format": {
 						"type": "string",
-						"default": "$(git-commit) ${author, }${agoOrDate}${' via 'pullRequest}${ • message|50?}",
+						"default": "${author, }${agoOrDate}${' via 'pullRequest}${ • message|50?}",
 						"markdownDescription": "Specifies the format of the current line blame annotation. See [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens) in the GitLens docs. Date formatting is controlled by the `#gitlens.currentLine.dateFormat#` setting",
 						"scope": "window",
 						"order": 30
