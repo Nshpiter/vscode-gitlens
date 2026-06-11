@@ -7,9 +7,7 @@ import {
 	Event,
 	EventEmitter,
 	MessageItem,
-	StatusBarAlignment,
 	StatusBarItem,
-	ThemeColor,
 	Uri,
 	window,
 } from 'vscode';
@@ -19,28 +17,19 @@ import { setContext } from '../../context';
 import { RepositoriesChangeEvent } from '../../git/gitProviderService';
 import {
 	getSubscriptionPlan,
-	getSubscriptionPlanPriority,
-	getSubscriptionTimeRemaining,
-	isSubscriptionPaidPlan,
-	isSubscriptionTrial,
 	Subscription,
 	SubscriptionPlanId,
 	SubscriptionState,
 } from '../../subscription';
 import { configuration } from '../../configuration';
-import { StorageKeys } from '../../storage';
 import { executeCommand } from '../../system/command';
 import { createFromDateDelta } from '../../system/date';
 import { gate } from '../../system/decorators/gate';
 import { debug, log } from '../../system/decorators/log';
 import { memoize } from '../../system/decorators/memoize';
 import { once } from '../../system/function';
-import { pluralize } from '../../system/string';
 import { openWalkthrough } from '../../system/utils';
 import { ensurePlusFeaturesEnabled } from './utils';
-
-// TODO: What user-agent should we use?
-const userAgent = 'Visual-Studio-Code-GitLens';
 
 export interface SubscriptionChangeEvent {
 	readonly current: Subscription;
@@ -102,20 +91,6 @@ export class SubscriptionService implements Disposable {
 
 		this._session = session;
 		void this.validate();
-	}
-
-	@memoize()
-	private get baseApiUri(): Uri {
-		const { env } = this.container;
-		if (env === 'staging') {
-			return Uri.parse('https://stagingapi.gitkraken.com');
-		}
-
-		if (env === 'dev') {
-			return Uri.parse('https://devapi.gitkraken.com');
-		}
-
-		return Uri.parse('https://api.gitkraken.com');
 	}
 
 	@memoize()
@@ -347,94 +322,6 @@ export class SubscriptionService implements Disposable {
 		this.changeSubscription(this._subscription);
 	}
 
-	private _lastCheckInDate: Date | undefined;
-	@debug<SubscriptionService['checkInAndValidate']>({ args: { 0: s => s?.account.label } })
-	private async checkInAndValidate(_session: AuthenticationSession): Promise<void> {
-		await Promise.resolve();
-		this.startDailyCheckInTimer();
-	}
-
-	private _dailyCheckInTimer: ReturnType<typeof setInterval> | undefined;
-	private startDailyCheckInTimer(): void {
-		if (this._dailyCheckInTimer != null) {
-			clearInterval(this._dailyCheckInTimer);
-		}
-
-		// Check twice a day to ensure we check in at least once a day
-		this._dailyCheckInTimer = setInterval(() => {
-			if (this._lastCheckInDate == null || this._lastCheckInDate.getDate() !== new Date().getDate()) {
-				void this.ensureSession(false, true);
-			}
-		}, 1000 * 60 * 60 * 12);
-	}
-
-	@debug()
-	private validateSubscription(data: GKLicenseInfo) {
-		const account: Subscription['account'] = {
-			id: data.user.id,
-			name: data.user.name,
-			email: data.user.email,
-			verified: data.user.status === 'activated',
-		};
-
-		const effectiveLicenses = Object.entries(data.licenses.effectiveLicenses) as [GKLicenseType, GKLicense][];
-		const paidLicenses = Object.entries(data.licenses.paidLicenses) as [GKLicenseType, GKLicense][];
-
-		let actual: Subscription['plan']['actual'] | undefined;
-		if (paidLicenses.length > 0) {
-			paidLicenses.sort(
-				(a, b) =>
-					licenseStatusPriority(b[1].latestStatus) - licenseStatusPriority(a[1].latestStatus) ||
-					getSubscriptionPlanPriority(convertLicenseTypeToPlanId(b[0])) -
-					getSubscriptionPlanPriority(convertLicenseTypeToPlanId(a[0])),
-			);
-
-			const [licenseType, license] = paidLicenses[0];
-			actual = getSubscriptionPlan(
-				convertLicenseTypeToPlanId(licenseType),
-				new Date(license.latestStartDate),
-				new Date(license.latestEndDate),
-			);
-		}
-
-		if (actual == null) {
-			actual = getSubscriptionPlan(
-				SubscriptionPlanId.FreePlus,
-				data.user.firstGitLensCheckIn != null ? new Date(data.user.firstGitLensCheckIn) : undefined,
-			);
-		}
-
-		let effective: Subscription['plan']['effective'] | undefined;
-		if (effectiveLicenses.length > 0) {
-			effectiveLicenses.sort(
-				(a, b) =>
-					licenseStatusPriority(b[1].latestStatus) - licenseStatusPriority(a[1].latestStatus) ||
-					getSubscriptionPlanPriority(convertLicenseTypeToPlanId(b[0])) -
-					getSubscriptionPlanPriority(convertLicenseTypeToPlanId(a[0])),
-			);
-
-			const [licenseType, license] = effectiveLicenses[0];
-			effective = getSubscriptionPlan(
-				convertLicenseTypeToPlanId(licenseType),
-				new Date(license.latestStartDate),
-				new Date(license.latestEndDate),
-			);
-		}
-
-		if (effective == null) {
-			effective = { ...actual };
-		}
-
-		this.changeSubscription({
-			...this._subscription,
-			plan: {
-				actual: actual,
-				effective: effective,
-			},
-			account: account,
-		});
-	}
-
 	private _sessionPromise: Promise<AuthenticationSession | null> | undefined;
 	private _session: AuthenticationSession | null | undefined;
 
@@ -451,11 +338,6 @@ export class SubscriptionService implements Disposable {
 			},
 			scopes: ['gitlens'],
 		};
-	}
-
-	@debug()
-	private async getOrCreateSession(_createIfNeeded: boolean): Promise<AuthenticationSession | null> {
-		return this.ensureSession(true) as Promise<AuthenticationSession>;
 	}
 
 	@debug()
@@ -504,13 +386,6 @@ export class SubscriptionService implements Disposable {
 		};
 	}
 
-	private async storeSubscription(subscription: Subscription): Promise<void> {
-		return this.container.storage.store<Stored<Subscription>>(StorageKeys.Subscription, {
-			v: 1,
-			data: subscription,
-		});
-	}
-
 	private updateContext(): void {
 		void this.updateStatusBar();
 
@@ -525,73 +400,4 @@ export class SubscriptionService implements Disposable {
 		this._statusBarSubscription?.dispose();
 		this._statusBarSubscription = undefined;
 	}
-}
-
-function assertSubscriptionState(subscription: Optional<Subscription, 'state'>): asserts subscription is Subscription { }
-
-interface GKLicenseInfo {
-	user: GKUser;
-	licenses: {
-		paidLicenses: Record<GKLicenseType, GKLicense>;
-		effectiveLicenses: Record<GKLicenseType, GKLicense>;
-	};
-}
-
-type GKLicenseType =
-	| 'gitlens-pro'
-	| 'gitlens-hosted-enterprise'
-	| 'gitlens-self-hosted-enterprise'
-	| 'gitlens-standalone-enterprise'
-	| 'bundle-pro'
-	| 'bundle-hosted-enterprise'
-	| 'bundle-self-hosted-enterprise'
-	| 'bundle-standalone-enterprise';
-
-function convertLicenseTypeToPlanId(licenseType: GKLicenseType): SubscriptionPlanId {
-	switch (licenseType) {
-		case 'gitlens-pro':
-		case 'bundle-pro':
-			return SubscriptionPlanId.Pro;
-		case 'gitlens-hosted-enterprise':
-		case 'gitlens-self-hosted-enterprise':
-		case 'gitlens-standalone-enterprise':
-		case 'bundle-hosted-enterprise':
-		case 'bundle-self-hosted-enterprise':
-		case 'bundle-standalone-enterprise':
-			return SubscriptionPlanId.Enterprise;
-		default:
-			return SubscriptionPlanId.FreePlus;
-	}
-}
-
-function licenseStatusPriority(status: GKLicense['latestStatus']): number {
-	switch (status) {
-		case 'active':
-			return 100;
-		case 'expired':
-			return -100;
-		case 'trial':
-			return 1;
-		case 'canceled':
-			return 0;
-	}
-}
-
-interface GKLicense {
-	latestStatus: 'active' | 'canceled' | 'expired' | 'trial';
-	latestStartDate: string;
-	latestEndDate: string;
-}
-
-interface GKUser {
-	id: string;
-	name: string;
-	email: string;
-	status: 'activated' | 'pending';
-	firstGitLensCheckIn?: string;
-}
-
-interface Stored<T, SchemaVersion extends number = 1> {
-	v: SchemaVersion;
-	data: T;
 }

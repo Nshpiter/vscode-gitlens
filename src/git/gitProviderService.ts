@@ -26,14 +26,7 @@ import { Logger } from '../logger';
 import type { SubscriptionChangeEvent } from '../plus/subscription/subscriptionService';
 import { asRepoComparisonKey, RepoComparisionKey, Repositories } from '../repositories';
 import { WorkspaceStorageKeys } from '../storage';
-import {
-	FreeSubscriptionPlans,
-	getSubscriptionPlanPriority,
-	isSubscriptionPaidPlan,
-	RequiredSubscriptionPlans,
-	Subscription,
-	SubscriptionPlanId,
-} from '../subscription';
+import { Subscription } from '../subscription';
 import { groupByFilterMap, groupByMap } from '../system/array';
 import { gate } from '../system/decorators/gate';
 import { debug, log } from '../system/decorators/log';

@@ -62,7 +62,7 @@ export class RemotesViewNode extends RepositoriesSubscribeableNode<RemotesView, 
 		if (this.children == null) {
 			const repositories = this.view.container.git.openRepositories;
 			if (repositories.length === 0) {
-				this.view.message = 'No remotes could be found.';
+				this.view.message = '未找到任何远程仓库。';
 
 				return [];
 			}
@@ -302,7 +302,7 @@ export class RemotesView extends ViewBase<RemotesViewNode, RemotesViewConfig> {
 		return window.withProgress(
 			{
 				location: ProgressLocation.Notification,
-				title: `Revealing ${GitReference.toString(branch, { icon: false, quoted: true })} in the side bar...`,
+				title: `正在侧边栏中显示 ${GitReference.toString(branch, { icon: false, quoted: true })}...`,
 				cancellable: true,
 			},
 			async (progress, token) => {
@@ -328,7 +328,7 @@ export class RemotesView extends ViewBase<RemotesViewNode, RemotesViewConfig> {
 		return window.withProgress(
 			{
 				location: ProgressLocation.Notification,
-				title: `Revealing ${GitReference.toString(commit, { icon: false, quoted: true })} in the side bar...`,
+				title: `正在侧边栏中显示 ${GitReference.toString(commit, { icon: false, quoted: true })}...`,
 				cancellable: true,
 			},
 			async (progress, token) => {
@@ -354,7 +354,7 @@ export class RemotesView extends ViewBase<RemotesViewNode, RemotesViewConfig> {
 		return window.withProgress(
 			{
 				location: ProgressLocation.Notification,
-				title: `Revealing remote '${remote.name}' in the side bar...`,
+				title: `正在侧边栏中显示远程仓库 '${remote.name}'...`,
 				cancellable: true,
 			},
 			async (progress, token) => {

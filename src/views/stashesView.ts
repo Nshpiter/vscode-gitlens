@@ -50,7 +50,7 @@ export class StashesViewNode extends RepositoriesSubscribeableNode<StashesView, 
 		if (this.children == null) {
 			const repositories = this.view.container.git.openRepositories;
 			if (repositories.length === 0) {
-				this.view.message = 'No stashes could be found.';
+				this.view.message = '未找到任何贮藏。';
 
 				return [];
 			}
@@ -206,7 +206,7 @@ export class StashesView extends ViewBase<StashesViewNode, StashesViewConfig> {
 		return window.withProgress(
 			{
 				location: ProgressLocation.Notification,
-				title: `Revealing ${GitReference.toString(stash, { icon: false, quoted: true })} in the side bar...`,
+				title: `正在侧边栏中显示 ${GitReference.toString(stash, { icon: false, quoted: true })}...`,
 				cancellable: true,
 			},
 			async (progress, token) => {

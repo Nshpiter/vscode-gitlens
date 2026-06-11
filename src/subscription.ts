@@ -60,71 +60,33 @@ export const enum SubscriptionState {
 	Paid,
 }
 
-export function computeSubscriptionState(subscription: Optional<Subscription, 'state'>): SubscriptionState {
-	const {
-		account,
-		plan: { actual, effective },
-		previewTrial: preview,
-	} = subscription;
-
-	if (account?.verified === false) return SubscriptionState.VerificationRequired;
-
-	if (actual.id === effective.id) {
-		switch (effective.id) {
-			case SubscriptionPlanId.Free:
-				return preview == null ? SubscriptionState.Free : SubscriptionState.FreePreviewExpired;
-
-			case SubscriptionPlanId.FreePlus:
-				return SubscriptionState.FreePlusTrialExpired;
-
-			case SubscriptionPlanId.Pro:
-			case SubscriptionPlanId.Teams:
-			case SubscriptionPlanId.Enterprise:
-				return SubscriptionState.Paid;
-		}
-	}
-
-	switch (effective.id) {
-		case SubscriptionPlanId.Free:
-			return preview == null ? SubscriptionState.Free : SubscriptionState.FreeInPreview;
-
-		case SubscriptionPlanId.FreePlus:
-			return SubscriptionState.FreePlusTrialExpired;
-
-		case SubscriptionPlanId.Pro:
-			return actual.id === SubscriptionPlanId.Free
-				? SubscriptionState.FreeInPreview
-				: SubscriptionState.FreePlusInTrial;
-
-		case SubscriptionPlanId.Teams:
-		case SubscriptionPlanId.Enterprise:
-			return SubscriptionState.Paid;
-	}
-}
-
 export function getSubscriptionPlan(id: SubscriptionPlanId, startedOn?: Date, expiresOn?: Date): SubscriptionPlan {
+	let name: string;
+	switch (id) {
+		case SubscriptionPlanId.FreePlus:
+			name = 'GitLens+';
+			break;
+		case SubscriptionPlanId.Pro:
+			name = 'GitLens+ Pro';
+			break;
+		case SubscriptionPlanId.Teams:
+			name = 'GitLens+ Teams';
+			break;
+		case SubscriptionPlanId.Enterprise:
+			name = 'GitLens+ Enterprise';
+			break;
+		case SubscriptionPlanId.Free:
+		default:
+			name = 'GitLens';
+			break;
+	}
+
 	return {
 		id: id,
-		name: getSubscriptionPlanName(id),
+		name: name,
 		startedOn: (startedOn ?? new Date()).toISOString(),
 		expiresOn: expiresOn != null ? expiresOn.toISOString() : undefined,
 	};
-}
-
-export function getSubscriptionPlanName(id: SubscriptionPlanId) {
-	switch (id) {
-		case SubscriptionPlanId.FreePlus:
-			return 'GitLens+';
-		case SubscriptionPlanId.Pro:
-			return 'GitLens+ Pro';
-		case SubscriptionPlanId.Teams:
-			return 'GitLens+ Teams';
-		case SubscriptionPlanId.Enterprise:
-			return 'GitLens+ Enterprise';
-		case SubscriptionPlanId.Free:
-		default:
-			return 'GitLens';
-	}
 }
 
 const plansPriority = new Map<SubscriptionPlanId | undefined, number>([
@@ -140,13 +102,6 @@ export function getSubscriptionPlanPriority(id: SubscriptionPlanId | undefined):
 	return plansPriority.get(id)!;
 }
 
-export function getSubscriptionTimeRemaining(
-	subscription: Optional<Subscription, 'state'>,
-	unit?: 'days' | 'hours' | 'minutes' | 'seconds',
-): number | undefined {
-	return getTimeRemaining(subscription.plan.effective.expiresOn, unit);
-}
-
 export function getTimeRemaining(
 	expiresOn: string | undefined,
 	unit?: 'days' | 'hours' | 'minutes' | 'seconds',
@@ -154,21 +109,8 @@ export function getTimeRemaining(
 	return expiresOn != null ? getDateDifference(Date.now(), new Date(expiresOn), unit) : undefined;
 }
 
-export function isSubscriptionPaid(subscription: Optional<Subscription, 'state'>): boolean {
-	return isSubscriptionPaidPlan(subscription.plan.effective.id);
-}
-
 export function isSubscriptionPaidPlan(id: SubscriptionPlanId): id is PaidSubscriptionPlans {
 	return id !== SubscriptionPlanId.Free && id !== SubscriptionPlanId.FreePlus;
-}
-
-export function isSubscriptionExpired(subscription: Optional<Subscription, 'state'>): boolean {
-	const remaining = getSubscriptionTimeRemaining(subscription);
-	return remaining != null && remaining <= 0;
-}
-
-export function isSubscriptionTrial(subscription: Optional<Subscription, 'state'>): boolean {
-	return subscription.plan.actual.id !== subscription.plan.effective.id;
 }
 
 export function isSubscriptionPreviewTrialExpired(subscription: Optional<Subscription, 'state'>): boolean | undefined {

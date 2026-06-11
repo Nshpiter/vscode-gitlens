@@ -68,7 +68,7 @@ export class BranchesViewNode extends RepositoriesSubscribeableNode<BranchesView
 		if (this.children == null) {
 			const repositories = this.view.container.git.openRepositories;
 			if (repositories.length === 0) {
-				this.view.message = 'No branches could be found.';
+				this.view.message = '未找到任何分支。';
 
 				return [];
 			}
@@ -283,7 +283,7 @@ export class BranchesView extends ViewBase<BranchesViewNode, BranchesViewConfig>
 		return window.withProgress(
 			{
 				location: ProgressLocation.Notification,
-				title: `Revealing ${GitReference.toString(branch, { icon: false, quoted: true })} in the side bar...`,
+				title: `正在侧边栏中显示 ${GitReference.toString(branch, { icon: false, quoted: true })}...`,
 				cancellable: true,
 			},
 			async (progress, token) => {
@@ -309,7 +309,7 @@ export class BranchesView extends ViewBase<BranchesViewNode, BranchesViewConfig>
 		return window.withProgress(
 			{
 				location: ProgressLocation.Notification,
-				title: `Revealing ${GitReference.toString(commit, { icon: false, quoted: true })} in the side bar...`,
+				title: `正在侧边栏中显示 ${GitReference.toString(commit, { icon: false, quoted: true })}...`,
 				cancellable: true,
 			},
 			async (progress, token) => {

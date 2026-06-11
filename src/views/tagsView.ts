@@ -50,7 +50,7 @@ export class TagsViewNode extends RepositoriesSubscribeableNode<TagsView, TagsRe
 		if (this.children == null) {
 			const repositories = this.view.container.git.openRepositories;
 			if (repositories.length === 0) {
-				this.view.message = 'No tags could be found.';
+				this.view.message = '未找到任何标签。';
 
 				return [];
 			}
@@ -228,7 +228,7 @@ export class TagsView extends ViewBase<TagsViewNode, TagsViewConfig> {
 		return window.withProgress(
 			{
 				location: ProgressLocation.Notification,
-				title: `Revealing ${GitReference.toString(tag, { icon: false, quoted: true })} in the side bar...`,
+				title: `正在侧边栏中显示 ${GitReference.toString(tag, { icon: false, quoted: true })}...`,
 				cancellable: true,
 			},
 			async (progress, token) => {

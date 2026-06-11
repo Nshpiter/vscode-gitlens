@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-cn">
 	<head>
 		<meta charset="utf-8" />
 	</head>
@@ -52,7 +52,16 @@
 			</header>
 
 			<section id="empty" class="empty hidden">
-				<p data-bind="empty"></p>
+				<span class="empty__icon codicon codicon-graph"></span>
+				<p class="empty__message" data-bind="empty"></p>
+				<div class="empty__suggestions">
+					<p class="empty__suggestions-title">可以尝试以下操作：</p>
+					<ul class="empty__suggestions-list">
+						<li>切换分支以查看不同的提交历史</li>
+						<li>调整筛选条件或清除搜索关键词</li>
+						<li>选择「所有分支」以查看完整的仓库历史</li>
+					</ul>
+				</div>
 			</section>
 
 			<section id="graph" class="graph hidden">

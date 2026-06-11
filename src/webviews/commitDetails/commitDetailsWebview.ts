@@ -1,4 +1,4 @@
-import { commands, env, Uri } from 'vscode';
+import { env, Uri } from 'vscode';
 import { Commands } from '../../constants';
 import type { Container } from '../../container';
 import { GitCommit } from '../../git/models';

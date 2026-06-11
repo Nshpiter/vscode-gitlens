@@ -192,10 +192,53 @@ body {
 /* ========== Empty state ========== */
 
 .empty {
-	padding: 1.5rem 1rem;
-	font-size: 1.15rem;
-	opacity: 0.8;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 3rem 1.5rem;
 	text-align: center;
+	flex: 1;
+}
+
+.empty__icon {
+	font-size: 3rem;
+	opacity: 0.35;
+	margin-bottom: 1rem;
+	line-height: 1;
+}
+
+.empty__message {
+	font-size: 1.15rem;
+	opacity: 0.85;
+	margin: 0 0 1.5rem;
+	max-width: 24rem;
+}
+
+.empty__suggestions {
+	background: color-mix(in srgb, var(--vscode-editor-background) 94%, var(--vscode-editorInfo-foreground) 6%);
+	border: 1px solid color-mix(in srgb, var(--vscode-panel-border) 50%, transparent);
+	border-radius: 8px;
+	padding: 1rem 1.4rem;
+	text-align: left;
+	max-width: 22rem;
+	width: 100%;
+}
+
+.empty__suggestions-title {
+	margin: 0 0 0.5rem;
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: var(--vscode-foreground);
+	opacity: 0.8;
+}
+
+.empty__suggestions-list {
+	margin: 0;
+	padding: 0 0 0 1.2rem;
+	font-size: 0.9rem;
+	line-height: 1.7;
+	color: var(--vscode-descriptionForeground);
 }
 
 /* ========== Graph area ========== */

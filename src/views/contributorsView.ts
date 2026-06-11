@@ -268,7 +268,7 @@ export class ContributorsView extends ViewBase<ContributorsViewNode, Contributor
 		return window.withProgress(
 			{
 				location: ProgressLocation.Notification,
-				title: `Revealing contributor '${contributor.name}' in the side bar...`,
+				title: `正在侧边栏中显示贡献者 '${contributor.name}'...`,
 				cancellable: true,
 			},
 			async (progress, token) => {

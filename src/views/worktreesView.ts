@@ -109,7 +109,7 @@ export class WorktreesView extends ViewBase<WorktreesViewNode, WorktreesViewConf
 					return {
 						badge: '●',
 						color: new ThemeColor('gitlens.decorations.worktreeView.hasUncommittedChangesForegroundColoSr'),
-						tooltip: 'Has Uncommitted Changes',
+						tooltip: '有未提交的变更',
 					};
 				},
 			}),
@@ -260,7 +260,7 @@ export class WorktreesView extends ViewBase<WorktreesViewNode, WorktreesViewConf
 		return window.withProgress(
 			{
 				location: ProgressLocation.Notification,
-				title: `Revealing worktree '${worktree.name}' in the side bar...`,
+				title: `正在侧边栏中显示工作树 '${worktree.name}'...`,
 				cancellable: true,
 			},
 			async (progress, token) => {
