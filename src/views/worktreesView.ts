@@ -108,7 +108,7 @@ export class WorktreesView extends ViewBase<WorktreesViewNode, WorktreesViewConf
 
 					return {
 						badge: '●',
-						color: new ThemeColor('gitlens.decorations.worktreeView.hasUncommittedChangesForegroundColoSr'),
+						color: new ThemeColor('gitlens.decorations.worktreeView.hasUncommittedChangesForegroundColor'),
 						tooltip: '有未提交的变更',
 					};
 				},

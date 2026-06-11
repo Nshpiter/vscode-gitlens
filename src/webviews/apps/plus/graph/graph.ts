@@ -225,7 +225,7 @@ export class GraphApp extends App<State> {
 			$svg.appendChild($node);
 		}
 
-		// Single delegated click listener on SVG container (replaces per-node listeners)
+		// Single delegated click listener on SVG (created fresh each render, so no leak)
 		$svg.addEventListener('click', e => {
 			const target = e.target as SVGElement;
 			const sha = target?.dataset?.sha;
@@ -240,13 +240,9 @@ export class GraphApp extends App<State> {
 		$listContainer.style.height = `${totalListHeight}px`;
 		$listContainer.style.position = 'relative';
 
-		// Single delegated click listener on list container (persists across virtual re-renders)
-		$listContainer.addEventListener('click', e => {
-			const target = (e.target as HTMLElement).closest('.graph-row') as HTMLElement;
-			if (target == null) return;
-			const sha = target.dataset.sha;
-			if (sha) this.openCommit(sha);
-		});
+		// NOTE: $listContainer click listener is bound in bindControls() to avoid
+		// accumulating duplicate listeners on every re-render (clearElement only
+		// removes children, not listeners on the container itself).
 
 		this.renderedRange = { start: 0, end: 0 };
 		this.$scrollContainer = document.getElementById('graph');
@@ -420,6 +416,16 @@ export class GraphApp extends App<State> {
 			if (e.key === 'Escape') {
 				this.closeFilterPanel();
 			}
+		});
+
+		// Delegated click listener on list container — bound once here (not in renderGraphVirtualized)
+		// to avoid accumulating duplicate listeners on every re-render.
+		const $listContainer = document.getElementById('graph-list');
+		$listContainer?.addEventListener('click', e => {
+			const target = (e.target as HTMLElement).closest('.graph-row') as HTMLElement;
+			if (target == null) return;
+			const sha = target.dataset.sha;
+			if (sha) this.openCommit(sha);
 		});
 	}
 

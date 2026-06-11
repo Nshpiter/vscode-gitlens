@@ -429,21 +429,21 @@
 					},
 					"gitlens.strings.codeLens.unsavedChanges.recentChangeAndAuthors": {
 						"type": "string",
-						"default": "$(ellipsis)",
+						"default": "…",
 						"markdownDescription": "Specifies the string to be shown in place of both the _recent change_ and _authors_ CodeLens when there are unsaved changes",
 						"scope": "window",
 						"order": 70
 					},
 					"gitlens.strings.codeLens.unsavedChanges.recentChangeOnly": {
 						"type": "string",
-						"default": "$(ellipsis)",
+						"default": "…",
 						"markdownDescription": "Specifies the string to be shown in place of the _recent change_ CodeLens when there are unsaved changes",
 						"scope": "window",
 						"order": 71
 					},
 					"gitlens.strings.codeLens.unsavedChanges.authorsOnly": {
 						"type": "string",
-						"default": "$(ellipsis)",
+						"default": "…",
 						"markdownDescription": "Specifies the string to be shown in place of the _authors_ CodeLens when there are unsaved changes",
 						"scope": "window",
 						"order": 72
@@ -485,7 +485,7 @@
 					},
 					"gitlens.statusBar.format": {
 						"type": "string",
-						"default": "$(git-commit) ${id|7-} ${author}, ${agoOrDate}${' via 'pullRequest}",
+						"default": "${id|7-} ${author}, ${agoOrDate}${' via 'pullRequest}",
 						"markdownDescription": "Specifies the format of the blame information in the status bar. See [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens) in the GitLens docs. Date formatting is controlled by the `#gitlens.statusBar.dateFormat#` setting",
 						"scope": "window",
 						"order": 30

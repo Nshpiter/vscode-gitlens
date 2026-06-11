@@ -953,7 +953,7 @@ export class GitProviderService implements Disposable {
 		if (repositories.length === 0) return;
 
 		if (repositories.length === 1) {
-			await operation(repositories[0], { ...options } as T & { progress: boolean });
+			await operation(repositories[0], { ...options, progress: true } as T & { progress: boolean });
 			return;
 		}
 
@@ -962,7 +962,7 @@ export class GitProviderService implements Disposable {
 				location: ProgressLocation.Notification,
 				title: `${progressVerb} ${repositories.length} repositories`,
 			},
-			() => Promise.all(repositories!.map(r => operation(r, { progress: false, ...options } as T & { progress: boolean }))),
+			() => Promise.all(repositories!.map(r => operation(r, { ...options, progress: false } as T & { progress: boolean }))),
 		);
 	}
 

@@ -190,6 +190,7 @@ export function debounce<T extends (...args: any[]) => any>(
 		return pending;
 	};
 	tracked.cancel = function () {
+		pending = false;
 		return debounced.cancel.apply(debounced);
 	};
 	tracked.flush = function () {
