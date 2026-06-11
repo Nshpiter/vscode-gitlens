@@ -1,5 +1,3 @@
-// eslint-disable-next-line no-restricted-imports
-import { debounce as _debounce, once as _once } from 'lodash-es';
 import { Disposable } from 'vscode';
 
 export interface Deferrable<T extends (...args: any[]) => any> {
@@ -19,6 +17,145 @@ export interface DebounceOptions {
 	maxWait?: number;
 	track?: boolean;
 	trailing?: boolean;
+}
+
+/**
+ * Lightweight debounce implementation (replaces lodash-es _debounce).
+ * Supports leading/trailing edges, maxWait, cancel(), and flush().
+ */
+function _debounce<T extends (...args: any[]) => any>(
+	fn: T,
+	wait?: number,
+	options?: { leading?: boolean; trailing?: boolean; maxWait?: number },
+): Deferrable<T> {
+	let timeoutId: ReturnType<typeof setTimeout> | undefined;
+	let lastArgs: Parameters<T> | undefined;
+	let lastThis: any;
+	let result: ReturnType<T> | undefined;
+	let lastCallTime: number | undefined;
+	let lastInvokeTime = 0;
+
+	const leading = options?.leading ?? false;
+	const trailing = options?.trailing ?? true;
+	const maxWait = options?.maxWait;
+	const hasMaxWait = maxWait !== undefined;
+
+	const waitMs = Math.max(wait ?? 0, 0);
+
+	function invoke(time: number): ReturnType<T> | undefined {
+		const args = lastArgs;
+		const thisArg = lastThis;
+		lastArgs = undefined;
+		lastThis = undefined;
+		lastInvokeTime = time;
+		if (args != null) {
+			result = fn.apply(thisArg, args);
+		}
+		return result;
+	}
+
+	function startTimer(pendingFunc: () => void, ms: number): ReturnType<typeof setTimeout> {
+		return setTimeout(pendingFunc, ms);
+	}
+
+	function trailingEdge(time: number): ReturnType<T> | undefined {
+		timeoutId = undefined;
+		if (trailing && lastArgs != null) {
+			return invoke(time);
+		}
+		lastArgs = undefined;
+		lastThis = undefined;
+		return result;
+	}
+
+	function remainingWait(time: number): number {
+		const timeSinceLastCall = time - (lastCallTime ?? 0);
+		const timeWaiting = waitMs - timeSinceLastCall;
+		if (hasMaxWait) {
+			const timeSinceLastInvoke = time - lastInvokeTime;
+			return Math.min(timeWaiting, maxWait - timeSinceLastInvoke);
+		}
+		return timeWaiting;
+	}
+
+	function shouldInvoke(time: number): boolean {
+		const timeSinceLastCall = time - (lastCallTime ?? 0);
+		const timeSinceLastInvoke = time - lastInvokeTime;
+		return (
+			lastCallTime === undefined ||
+			timeSinceLastCall >= waitMs ||
+			timeSinceLastCall < 0 ||
+			(hasMaxWait && timeSinceLastInvoke >= maxWait)
+		);
+	}
+
+	function timerExpired(): void {
+		const time = Date.now();
+		if (shouldInvoke(time)) {
+			trailingEdge(time);
+			return;
+		}
+		timeoutId = startTimer(timerExpired, remainingWait(time));
+	}
+
+	function leadingEdge(time: number): ReturnType<T> | undefined {
+		lastInvokeTime = time;
+		timeoutId = startTimer(timerExpired, waitMs);
+		return leading ? invoke(time) : result;
+	}
+
+	const debounced = function (this: any, ...args: Parameters<T>): ReturnType<T> | undefined {
+		const time = Date.now();
+		const isInvoking = shouldInvoke(time);
+
+		lastArgs = args;
+		lastThis = this;
+		lastCallTime = time;
+
+		if (isInvoking) {
+			if (timeoutId === undefined) {
+				return leadingEdge(time);
+			}
+			if (hasMaxWait) {
+				clearTimeout(timeoutId);
+				timeoutId = startTimer(timerExpired, waitMs);
+				return invoke(time);
+			}
+		}
+		if (timeoutId === undefined) {
+			leadingEdge(time);
+		}
+		return result;
+	} as Deferrable<T>;
+
+	debounced.cancel = function (): void {
+		if (timeoutId !== undefined) clearTimeout(timeoutId);
+		lastInvokeTime = 0;
+		lastArgs = undefined;
+		lastCallTime = undefined;
+		lastThis = undefined;
+		timeoutId = undefined;
+	};
+
+	debounced.flush = function (): ReturnType<T> | undefined {
+		if (timeoutId === undefined) return result;
+		clearTimeout(timeoutId);
+		return trailingEdge(Date.now());
+	};
+
+	return debounced;
+}
+
+function _once<T extends (...args: any[]) => any>(fn: T): T {
+	let called = false;
+	let result: ReturnType<T>;
+	return function (this: any, ...args: any[]) {
+		if (!called) {
+			called = true;
+			result = fn.apply(this, args) as ReturnType<T>;
+		}
+		return result;
+	} as unknown as T;
 }
 
 export function debounce<T extends (...args: any[]) => any>(

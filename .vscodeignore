@@ -19,6 +19,7 @@ test/**
 **/*.fig
 **/*.pdn
 **/*.js.LICENSE.txt
+**/*.map
 .eslintcache
 .eslintignore
 .eslintrc.json

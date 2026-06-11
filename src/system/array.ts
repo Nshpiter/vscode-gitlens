@@ -1,5 +1,34 @@
-// eslint-disable-next-line no-restricted-imports
-export { findLastIndex, intersectionWith as intersection } from 'lodash-es';
+/**
+ * Lightweight replacements for lodash-es array utilities.
+ */
+
+/**
+ * Like Array.prototype.findIndex, but searches from the end of the array.
+ */
+export function findLastIndex<T>(array: ArrayLike<T> | null | undefined, predicate: (value: T, index: number) => boolean): number {
+	if (array == null) return -1;
+	for (let i = array.length - 1; i >= 0; i--) {
+		if (predicate(array[i], i)) return i;
+	}
+	return -1;
+}
+
+/**
+ * Computes the intersection of arrays using a custom comparator.
+ * The result contains values from the first array that have a match in every other array.
+ */
+export function intersection<T>(...args: [...T[][], (a: T, b: T) => boolean]): T[] {
+	if (args.length < 2) return [];
+
+	const comparator = args[args.length - 1] as (a: T, b: T) => boolean;
+	const arrays = args.slice(0, -1) as T[][];
+
+	if (arrays.length === 0 || arrays[0].length === 0) return [];
+
+	return arrays[0].filter(item =>
+		arrays.slice(1).every(arr => arr.some(other => comparator(item, other))),
+	);
+}
 
 export function chunk<T>(source: T[], size: number): T[][] {
 	const chunks = [];

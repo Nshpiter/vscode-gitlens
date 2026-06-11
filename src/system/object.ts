@@ -1,5 +1,56 @@
-// eslint-disable-next-line no-restricted-imports
-export { isEqual as areEqual } from 'lodash-es';
+/**
+ * Deep equality comparison (lightweight replacement for lodash-es isEqual).
+ * Handles primitives, Date, RegExp, Array, plain objects, Map, and Set.
+ */
+export function areEqual(a: any, b: any): boolean {
+	if (a === b) return true;
+	if (a == null || b == null) return a === b;
+	if (typeof a !== typeof b) return false;
+
+	if (typeof a === 'number' && typeof b === 'number') {
+		if (Number.isNaN(a) && Number.isNaN(b)) return true;
+		return a === b;
+	}
+
+	if (a instanceof Date && b instanceof Date) return a.getTime() === b.getTime();
+	if (a instanceof RegExp && b instanceof RegExp) return a.source === b.source && a.flags === b.flags;
+
+	if (a instanceof Map && b instanceof Map) {
+		if (a.size !== b.size) return false;
+		for (const [key, val] of a) {
+			if (!b.has(key) || !areEqual(val, b.get(key))) return false;
+		}
+		return true;
+	}
+
+	if (a instanceof Set && b instanceof Set) {
+		if (a.size !== b.size) return false;
+		for (const val of a) {
+			if (!b.has(val)) return false;
+		}
+		return true;
+	}
+
+	if (Array.isArray(a)) {
+		if (!Array.isArray(b) || a.length !== b.length) return false;
+		for (let i = 0; i < a.length; i++) {
+			if (!areEqual(a[i], b[i])) return false;
+		}
+		return true;
+	}
+
+	if (typeof a === 'object') {
+		const keysA = Object.keys(a);
+		const keysB = Object.keys(b);
+		if (keysA.length !== keysB.length) return false;
+		for (const key of keysA) {
+			if (!Object.prototype.hasOwnProperty.call(b, key) || !areEqual(a[key], b[key])) return false;
+		}
+		return true;
+	}
+
+	return false;
+}
 
 export function flatten(o: any, prefix: string = '', stringify: boolean = false): Record<string, any> {
 	const flattened = Object.create(null) as Record<string, any>;

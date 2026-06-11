@@ -61,6 +61,8 @@ export class GraphApp extends App<State> {
 	private renderedRange: { start: number; end: number } = { start: 0, end: 0 };
 	/** Scroll container reference */
 	private $scrollContainer: HTMLElement | null = null;
+	/** AbortController for scroll listener lifecycle management */
+	private scrollAbortController: AbortController | undefined;
 
 	constructor() {
 		super('GraphApp');
@@ -197,7 +199,7 @@ export class GraphApp extends App<State> {
 			}
 		}
 
-		// Nodes
+		// Nodes (use data-sha for event delegation instead of per-node listeners)
 		for (let i = 0; i < rows.length; i++) {
 			const row = rows[i];
 			const x = metrics.lanePadding + row.lane * metrics.laneWidth;
@@ -214,7 +216,7 @@ export class GraphApp extends App<State> {
 				}`,
 			);
 			$node.style.setProperty('--graph-accent', getLaneColor(row.lane));
-			$node.addEventListener('click', () => this.openCommit(row.sha));
+			$node.dataset.sha = row.sha;
 
 			const $title = document.createElementNS(svgNs, 'title');
 			$title.textContent = `${row.shortSha} ${row.message}`;
@@ -222,6 +224,13 @@ export class GraphApp extends App<State> {
 
 			$svg.appendChild($node);
 		}
+
+		// Single delegated click listener on SVG container (replaces per-node listeners)
+		$svg.addEventListener('click', e => {
+			const target = e.target as SVGElement;
+			const sha = target?.dataset?.sha;
+			if (sha) this.openCommit(sha);
+		});
 
 		$svgContainer.style.minWidth = `${graphWidth}px`;
 		$svgContainer.appendChild($svg);
@@ -231,17 +240,27 @@ export class GraphApp extends App<State> {
 		$listContainer.style.height = `${totalListHeight}px`;
 		$listContainer.style.position = 'relative';
 
+		// Single delegated click listener on list container (persists across virtual re-renders)
+		$listContainer.addEventListener('click', e => {
+			const target = (e.target as HTMLElement).closest('.graph-row') as HTMLElement;
+			if (target == null) return;
+			const sha = target.dataset.sha;
+			if (sha) this.openCommit(sha);
+		});
+
 		this.renderedRange = { start: 0, end: 0 };
 		this.$scrollContainer = document.getElementById('graph');
 
 		// Initial render of visible rows
 		this.renderVisibleRows(rows, metrics);
 
-		// Attach scroll listener for virtual scrolling
+		// Attach scroll listener for virtual scrolling (abort previous listener to prevent leaks)
+		this.scrollAbortController?.abort();
+		this.scrollAbortController = new AbortController();
 		if (this.$scrollContainer != null) {
 			this.$scrollContainer.addEventListener('scroll', () => {
 				this.renderVisibleRows(rows, metrics);
-			}, { passive: true });
+			}, { passive: true, signal: this.scrollAbortController.signal });
 		}
 	}
 
@@ -276,8 +295,8 @@ export class GraphApp extends App<State> {
 			$row.className = `graph-row${this.viewFilters.dimMerges && row.parents.length > 1 ? ' graph-row--merge-dim' : ''}`;
 			$row.type = 'button';
 			$row.title = `${row.shortSha} ${row.message}`;
+			$row.dataset.sha = row.sha;
 			$row.style.setProperty('--graph-accent', getLaneColor(row.lane));
-			$row.addEventListener('click', () => this.openCommit(row.sha));
 
 			const $sha = document.createElement('span');
 			$sha.className = 'graph-row__sha';

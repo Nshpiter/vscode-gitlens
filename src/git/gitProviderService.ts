@@ -918,24 +918,7 @@ export class GitProviderService implements Disposable {
 	)
 	@log<GitProviderService['fetchAll']>({ args: { 0: repos => repos?.map(r => r.name).join(', ') } })
 	async fetchAll(repositories?: Repository[], options?: { all?: boolean; prune?: boolean }) {
-		if (repositories == null) {
-			repositories = this.openRepositories;
-		}
-		if (repositories.length === 0) return;
-
-		if (repositories.length === 1) {
-			await repositories[0].fetch(options);
-
-			return;
-		}
-
-		await window.withProgress(
-			{
-				location: ProgressLocation.Notification,
-				title: `Fetching ${repositories.length} repositories`,
-			},
-			() => Promise.all(repositories!.map(r => r.fetch({ progress: false, ...options }))),
-		);
+		return this.batchRepositoryOperation(repositories, (r, opts) => r.fetch(opts), options, 'Fetching');
 	}
 
 	@gate<GitProviderService['pullAll']>(
@@ -943,24 +926,7 @@ export class GitProviderService implements Disposable {
 	)
 	@log<GitProviderService['pullAll']>({ args: { 0: repos => repos?.map(r => r.name).join(', ') } })
 	async pullAll(repositories?: Repository[], options?: { rebase?: boolean }) {
-		if (repositories == null) {
-			repositories = this.openRepositories;
-		}
-		if (repositories.length === 0) return;
-
-		if (repositories.length === 1) {
-			await repositories[0].pull(options);
-
-			return;
-		}
-
-		await window.withProgress(
-			{
-				location: ProgressLocation.Notification,
-				title: `Pulling ${repositories.length} repositories`,
-			},
-			() => Promise.all(repositories!.map(r => r.pull({ progress: false, ...options }))),
-		);
+		return this.batchRepositoryOperation(repositories, (r, opts) => r.pull(opts), options, 'Pulling');
 	}
 
 	@gate<GitProviderService['pushAll']>(repos => `${repos == null ? '' : repos.map(r => r.id).join(',')}`)
@@ -975,23 +941,35 @@ export class GitProviderService implements Disposable {
 			};
 		},
 	) {
+		return this.batchRepositoryOperation(repositories, (r, opts) => r.push(opts), options, 'Pushing');
+	}
+
+	/**
+	 * Generic batch operation template for multiple repositories.
+	 * Handles single-repo fast path and multi-repo progress notification.
+	 */
+	private async batchRepositoryOperation<T>(
+		repositories: Repository[] | undefined,
+		operation: (repo: Repository, options: T & { progress: boolean }) => Promise<void>,
+		options: T | undefined,
+		progressVerb: string,
+	): Promise<void> {
 		if (repositories == null) {
 			repositories = this.openRepositories;
 		}
 		if (repositories.length === 0) return;
 
 		if (repositories.length === 1) {
-			await repositories[0].push(options);
-
+			await operation(repositories[0], { ...options } as T & { progress: boolean });
 			return;
 		}
 
 		await window.withProgress(
 			{
 				location: ProgressLocation.Notification,
-				title: `Pushing ${repositories.length} repositories`,
+				title: `${progressVerb} ${repositories.length} repositories`,
 			},
-			() => Promise.all(repositories!.map(r => r.push({ progress: false, ...options }))),
+			() => Promise.all(repositories!.map(r => operation(r, { progress: false, ...options } as T & { progress: boolean }))),
 		);
 	}
 

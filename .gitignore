@@ -25,3 +25,9 @@ analysis.json
 
 # Spec workflow temp files
 .spec-workflow/
+
+# Stale lock files and tool scripts
+yarn.lock.bak
+debug_tsc.js
+validate_json.py
+verify_nls.js
