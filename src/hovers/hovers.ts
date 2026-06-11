@@ -1,6 +1,6 @@
 import { CancellationToken, MarkdownString, TextDocument } from 'vscode';
 import { hrtime } from '@env/hrtime';
-import { DiffWithCommand, ShowQuickCommitCommand } from '../commands';
+import { DiffWithCommand, OpenCommitOnRemoteCommand, ShowQuickCommitCommand } from '../commands';
 import { GlyphChars } from '../constants';
 import { Container } from '../container';
 import { CommitFormatter } from '../git/formatters';
@@ -287,17 +287,21 @@ export namespace Hovers {
 
 	/**
 	 * Builds a small footer row of quick-action command links for the hover.
-	 * Shows: copy SHA, show commit details, copy remote URL (if applicable).
+	 * Shows: copy SHA, show commit details, file history, open on remote.
 	 */
 	function buildHoverQuickActions(commit: GitCommit): string {
 		if (commit.isUncommitted) return '';
 
 		const copyShaArgs = encodeURIComponent(JSON.stringify([{ sha: commit.shortSha }]));
 		const showCommitArgs = ShowQuickCommitCommand.getMarkdownCommandArgs(commit.sha);
+		const openRemoteArgs = OpenCommitOnRemoteCommand.getMarkdownCommandArgs(commit.sha);
+		const fileHistoryArgs = encodeURIComponent(JSON.stringify([{}]));
 
 		const actions: string[] = [
 			`[$(clippy) 复制 SHA](command:gitlens.copyShaToClipboard?${copyShaArgs} "复制提交哈希到剪贴板")`,
 			`[$(eye) 详情](${showCommitArgs} "查看提交详情")`,
+			`[$(history) 文件历史](command:gitlens.showQuickFileHistory?${fileHistoryArgs} "查看当前文件的提交历史")`,
+			`[$(globe) 远程查看](${openRemoteArgs} "在远程仓库中查看此提交")`,
 		];
 
 		return `\n\n---\n\n${actions.join(' &nbsp;&nbsp; ')}`;

@@ -503,7 +503,7 @@ export class GitCodeLensProvider implements CodeLensProvider {
 		// 	}
 		// }
 
-		let title = `${recentCommit.author.name}, ${
+		let title = `$(git-commit) ${recentCommit.author.name}, ${
 			lens.dateFormat == null ? recentCommit.formattedDate : recentCommit.formatDate(lens.dateFormat)
 		}`;
 		if (this.container.config.debug) {
@@ -576,7 +576,7 @@ export class GitCodeLensProvider implements CodeLensProvider {
 
 		const author = first(blame.authors.values()).name;
 
-		let title = `${count} ${count > 1 ? 'authors' : 'author'} (${author}${count > 1 ? ' and others' : ''})`;
+		let title = `$(people) ${count} ${count > 1 ? '位作者' : '位作者'} (${author}${count > 1 ? ' 等人' : ''})`;
 		if (this.container.config.debug) {
 			title += ` [${lens.languageId}: ${SymbolKind[lens.symbol.kind]}(${lens.range.start.character}-${
 				lens.range.end.character
