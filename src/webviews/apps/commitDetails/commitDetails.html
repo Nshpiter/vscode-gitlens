@@ -9,14 +9,21 @@
 				<button id="nav-prev" class="commit-details__btn" type="button" title="上一条（更新的）">← 上一条</button>
 				<button id="nav-next" class="commit-details__btn" type="button" title="下一条（更旧的）">下一条 →</button>
 				<button id="refresh" class="commit-details__btn" type="button" title="刷新">↻ 刷新</button>
+				<span class="commit-details__toolbar-spacer"></span>
+				<button id="copy-patch" class="commit-details__btn" type="button" title="复制完整补丁（官方同款）">
+					复制补丁
+				</button>
+				<button id="copy-message" class="commit-details__btn" type="button" title="复制提交说明">
+					复制说明
+				</button>
 			</div>
 			<div id="empty" class="commit-details__empty hidden">
 				<span class="commit-details__empty-icon codicon codicon-git-commit"></span>
 				<p class="commit-details__empty-title">未选择提交</p>
-				<p class="commit-details__empty-hint">在提交视图中选择一个提交以在此处查看详细信息</p>
+				<p class="commit-details__empty-hint">在「提交」视图中单击一条提交，即可在此查看详情与 diff</p>
 			</div>
 			<header id="header" class="commit-details__header hidden">
-				<img id="avatar" class="commit-details__avatar" src="" alt="avatar" />
+				<img id="avatar" class="commit-details__avatar" src="" alt="头像" />
 				<div class="commit-details__header-info">
 					<h1 id="summary" class="commit-details__summary"></h1>
 					<div class="commit-details__meta">
@@ -27,9 +34,15 @@
 					<div class="commit-details__meta">
 						<code id="sha" class="commit-details__sha"></code>
 						<button id="copy-sha" class="commit-details__btn" type="button" title="复制完整 SHA">
-							复制
+							复制 SHA
 						</button>
-						<a id="remote-link" class="commit-details__btn commit-details__btn--link hidden" target="_blank" rel="noopener">在远程打开 ↗</a>
+						<a
+							id="remote-link"
+							class="commit-details__btn commit-details__btn--link hidden"
+							target="_blank"
+							rel="noopener"
+							>在远程打开 ↗</a
+						>
 					</div>
 				</div>
 			</header>
@@ -43,6 +56,7 @@
 					<span id="files-count" class="commit-details__files-count"></span>
 					<span id="stats" class="commit-details__stats"></span>
 				</div>
+				<p class="commit-details__files-hint">单击文件打开 diff · 右键可打开工作区文件 / 在资源管理器中显示</p>
 				<ul id="files-list" class="commit-details__files-list"></ul>
 			</section>
 		</div>

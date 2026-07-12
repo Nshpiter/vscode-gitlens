@@ -1,6 +1,6 @@
 {
-    "gitlens.displayName": "GitLens — Git supercharged",
-    "gitlens.description": "Supercharge Git within VS Code — Visualize code authorship at a glance via Git blame annotations and CodeLens, seamlessly navigate and explore Git repositories, gain valuable insights via rich visualizations and powerful comparison commands, and so much more",
+    "gitlens.displayName": "GitLens Personal — Git supercharged",
+    "gitlens.description": "Personal slim GitLens: current-line blame, commit history, file history, CodeLens, and Chinese UI. No account, no trials, no marketing popups.",
     "config.gitlens.currentLine.enabled": "Specifies whether to provide a blame annotation for the current line, by default. Use the `Toggle Line Blame Annotations` command (`gitlens.toggleLineBlame`) to toggle the annotations on and off for the current window",
     "config.gitlens.codeLens.enabled": "Specifies whether to provide any Git CodeLens, by default. Use the `Toggle Git CodeLens` command (`gitlens.toggleCodeLens`) to toggle the Git CodeLens on and off for the current window",
     "views.repositories.title": "Repositories",

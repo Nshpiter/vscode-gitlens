@@ -1,3 +1,5 @@
+# Personal build: ship only runtime essentials
+
 .github/**
 .ruff_cache/**
 .spec-workflow/**
@@ -7,15 +9,20 @@
 .vscode-test-web/**
 .yarn/**
 dist/webviews/*.css
+dist/webviews/media/**
+dist/browser/**
 emoji/**
-images/docs/gitlens-preview.gif
+images/docs/**
 images/originals/**
+images/snowman.png
+images/gk+gl-banner.png
 node_modules/**
 out/**
 patches/**
 scripts/**
 src/**
 test/**
+walkthroughs/**
 **/*.fig
 **/*.pdn
 **/*.js.LICENSE.txt
@@ -23,6 +30,7 @@ test/**
 .eslintcache
 .eslintignore
 .eslintrc.json
+.eslintrc.browser.json
 .gitattributes
 .gitignore
 .gitignore-revs
@@ -30,10 +38,13 @@ test/**
 .prettierignore
 .prettierrc
 .yarnrc
+BACKERS.md
+CHANGELOG.md
 CODE_OF_CONDUCT.md
 CONTRIBUTING.md
-esbuild.js
+README.en.md
 README.insiders.md
+esbuild.js
 tsconfig*.json
 tsconfig*.tsbuildinfo
 webpack.config*.js
@@ -48,7 +59,11 @@ GITLENS_SUBSCRIPTION_ANALYSIS.md
 QUICK_REFERENCE.md
 SUBSCRIPTION_CODE_FLOW.md
 validate_json.py
+verify_nls.js
 *.vsix
 yarn.lock.bak
 tsconfig.tsbuildinfo
 tsconfig.browser.tsbuildinfo
+nul
+LICENSE.plus
+icons.fig

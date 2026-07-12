@@ -1,4 +1,4 @@
-import { version as codeVersion, env, ExtensionContext, extensions, window, workspace } from 'vscode';
+import { version as codeVersion, env, ExtensionContext, extensions, workspace } from 'vscode';
 import { isWeb } from '@env/platform';
 import { Api } from './api/api';
 import type { CreatePullRequestActionContext, GitLensApi, OpenPullRequestActionContext } from './api/gitlens';
@@ -11,7 +11,6 @@ import { GitUri } from './git/gitUri';
 import { GitBranch, GitCommit } from './git/models';
 import { Logger, LogLevel } from './logger';
 import { Messages } from './messages';
-import { registerPartnerActionRunners } from './partners';
 import { StorageKeys, SyncedStorageKeys } from './storage';
 import { executeCommand, registerCommands } from './system/command';
 import { setDefaultDateLocales } from './system/date';
@@ -111,10 +110,10 @@ export async function activate(context: ExtensionContext): Promise<GitLensApi | 
 	once(container.onReady)(() => {
 		context.subscriptions.push(...registerCommands(container));
 		registerBuiltInActionRunners(container);
-		registerPartnerActionRunners(context);
+		// Personal build: skip partner action runners (GitKraken/GitLive/etc.)
 
-		void showWelcomeOrWhatsNew(container, gitlensVersion, previousVersion);
-
+		// Personal build: never auto-open welcome / home marketing on install or upgrade.
+		// Users can still open Welcome/Settings via command palette.
 		void context.globalState.update(StorageKeys.Version, gitlensVersion);
 
 		// Only update our synced version if the new version is greater
@@ -181,7 +180,7 @@ function setKeysForSync(context: ExtensionContext, ...keys: (SyncedStorageKeys |
 function registerBuiltInActionRunners(container: Container): void {
 	container.context.subscriptions.push(
 		container.actionRunners.registerBuiltIn<CreatePullRequestActionContext>('createPullRequest', {
-			label: ctx => `Create Pull Request on ${ctx.remote?.provider?.name ?? 'Remote'}`,
+			label: ctx => `在 ${ctx.remote?.provider?.name ?? '远程'} 创建拉取请求`,
 			run: async ctx => {
 				if (ctx.type !== 'createPullRequest') return;
 
@@ -198,7 +197,7 @@ function registerBuiltInActionRunners(container: Container): void {
 			},
 		}),
 		container.actionRunners.registerBuiltIn<OpenPullRequestActionContext>('openPullRequest', {
-			label: ctx => `Open Pull Request on ${ctx.provider?.name ?? 'Remote'}`,
+			label: ctx => `在 ${ctx.provider?.name ?? '远程'} 打开拉取请求`,
 			run: async ctx => {
 				if (ctx.type !== 'openPullRequest') return;
 
@@ -210,78 +209,4 @@ function registerBuiltInActionRunners(container: Container): void {
 	);
 }
 
-async function showWelcomeOrWhatsNew(container: Container, version: string, previousVersion: string | undefined) {
-	if (previousVersion == null) {
-		Logger.log(`GitLens first-time install; window.focused=${window.state.focused}`);
 
-		void executeCommand(Commands.ShowHomeView);
-
-		if (container.config.showWelcomeOnInstall === false) return;
-
-		if (window.state.focused) {
-			await container.storage.delete(StorageKeys.PendingWelcomeOnFocus);
-			await executeCommand(Commands.ShowWelcomePage);
-		} else {
-			// Save pending on window getting focus
-			await container.storage.store(StorageKeys.PendingWelcomeOnFocus, true);
-			const disposable = window.onDidChangeWindowState(e => {
-				if (!e.focused) return;
-
-				disposable.dispose();
-
-				// If the window is now focused and we are pending the welcome, clear the pending state and show the welcome
-				if (container.storage.get(StorageKeys.PendingWelcomeOnFocus) === true) {
-					void container.storage.delete(StorageKeys.PendingWelcomeOnFocus);
-					if (container.config.showWelcomeOnInstall) {
-						void executeCommand(Commands.ShowWelcomePage);
-					}
-				}
-			});
-			container.context.subscriptions.push(disposable);
-		}
-
-		return;
-	}
-
-	if (previousVersion !== version) {
-		Logger.log(`GitLens upgraded from v${previousVersion} to v${version}; window.focused=${window.state.focused}`);
-	}
-
-	const [major, minor] = version.split('.').map(v => parseInt(v, 10));
-	const [prevMajor, prevMinor] = previousVersion.split('.').map(v => parseInt(v, 10));
-
-	// Don't notify on downgrades
-	if (major === prevMajor || major < prevMajor || (major === prevMajor && minor < prevMinor)) {
-		return;
-	}
-
-	if (major !== prevMajor) {
-		version = String(major);
-	}
-
-	void executeCommand(Commands.ShowHomeView);
-
-	if (container.config.showWhatsNewAfterUpgrades) {
-		if (window.state.focused) {
-			await container.storage.delete(StorageKeys.PendingWhatsNewOnFocus);
-			await Messages.showWhatsNewMessage(version);
-		} else {
-			// Save pending on window getting focus
-			await container.storage.store(StorageKeys.PendingWhatsNewOnFocus, true);
-			const disposable = window.onDidChangeWindowState(e => {
-				if (!e.focused) return;
-
-				disposable.dispose();
-
-				// If the window is now focused and we are pending the what's new, clear the pending state and show the what's new
-				if (container.storage.get(StorageKeys.PendingWhatsNewOnFocus) === true) {
-					void container.storage.delete(StorageKeys.PendingWhatsNewOnFocus);
-					if (container.config.showWhatsNewAfterUpgrades) {
-						void Messages.showWhatsNewMessage(version);
-					}
-				}
-			});
-			container.context.subscriptions.push(disposable);
-		}
-	}
-}

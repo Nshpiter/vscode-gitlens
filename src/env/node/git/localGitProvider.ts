@@ -2034,6 +2034,24 @@ export class LocalGitProvider implements GitProvider, Disposable {
 	}
 
 	@log()
+	/** Personal/official: copy commit as patch */
+	async getCommitPatch(repoPath: string, ref: string): Promise<string> {
+		return this.git.getCommitPatch(repoPath, ref);
+	}
+
+	/** Personal/official: copy working tree changes as patch */
+	async getWorkingTreePatch(
+		repoPath: string,
+		options?: { staged?: boolean | 'all'; paths?: string[] },
+	): Promise<string> {
+		return this.git.getWorkingTreePatch(repoPath, options);
+	}
+
+	/** Personal: soft-reset HEAD~1 (undo last commit, keep changes staged) */
+	async softResetHead(repoPath: string): Promise<void> {
+		await this.git.git({ cwd: repoPath }, 'reset', '--soft', 'HEAD~1');
+	}
+
 	async getLog(
 		repoPath: string,
 		options?: {
@@ -2054,9 +2072,12 @@ export class LocalGitProvider implements GitProvider, Disposable {
 		try {
 			// const parser = GitLogParser.defaultParser;
 
+			// Official GitLens (17.1+): delayLoadingFileDetails skips expensive per-commit file lists.
+			const includeFileDetails = !this.container.config.advanced.commits?.delayLoadingFileDetails;
 			const data = await this.git.log(repoPath, options?.ref, {
 				...options,
 				// args: parser.arguments,
+				includeFileDetails: includeFileDetails,
 				limit: limit,
 				merges: options?.merges == null ? true : options.merges,
 				ordering: options?.ordering ?? this.container.config.advanced.commitOrdering,

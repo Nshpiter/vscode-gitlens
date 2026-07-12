@@ -38,11 +38,8 @@ module.exports =
 			...env,
 		};
 
-		return [
-			getExtensionConfig('node', mode, env),
-			getExtensionConfig('webworker', mode, env),
-			getWebviewsConfig(mode, env),
-		];
+		// Personal desktop build: skip webworker/browser extension target.
+		return [getExtensionConfig('node', mode, env), getWebviewsConfig(mode, env)];
 	};
 
 /**

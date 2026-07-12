@@ -541,7 +541,7 @@ export class GitProviderService implements Disposable {
 	}
 
 	@debug()
-	private async accessCore(feature?: PlusFeatures, repoPath?: string | Uri): Promise<FeatureAccess> {
+	private async accessCore(_feature?: PlusFeatures, _repoPath?: string | Uri): Promise<FeatureAccess> {
 		const subscription = await this.getSubscription();
 		return { allowed: true, subscription: { current: subscription } };
 	}
@@ -1325,6 +1325,43 @@ export class GitProviderService implements Disposable {
 	): Promise<GitLog | undefined> {
 		const { provider, path } = this.getProvider(repoPath);
 		return provider.getLog(path, options);
+	}
+
+	/** Personal port of official "Copy Changes (Patch)" for a commit. */
+	@log()
+	getCommitPatch(repoPath: string | Uri, ref: string): Promise<string | undefined> {
+		const { provider, path } = this.getProvider(repoPath);
+		const p = provider as any;
+		if (typeof p.getCommitPatch === 'function') {
+			return Promise.resolve(p.getCommitPatch(path, ref));
+		}
+		return Promise.resolve(undefined);
+	}
+
+	/** Personal port of official WIP copy patch. */
+	@log()
+	getWorkingTreePatch(
+		repoPath: string | Uri,
+		options?: { staged?: boolean | 'all'; paths?: string[] },
+	): Promise<string | undefined> {
+		const { provider, path } = this.getProvider(repoPath);
+		const p = provider as any;
+		if (typeof p.getWorkingTreePatch === 'function') {
+			return Promise.resolve(p.getWorkingTreePatch(path, options));
+		}
+		return Promise.resolve(undefined);
+	}
+
+	/** Personal: soft undo last commit (keeps changes staged). */
+	@log()
+	async softResetHead(repoPath: string | Uri): Promise<boolean> {
+		const { provider, path } = this.getProvider(repoPath);
+		const p = provider as any;
+		if (typeof p.softResetHead === 'function') {
+			await p.softResetHead(path);
+			return true;
+		}
+		return false;
 	}
 
 	@log()

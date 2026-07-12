@@ -32,8 +32,8 @@ import {
 	ViewsConfigKeys,
 	WorktreesViewConfig,
 } from '../configuration';
-import { Container } from '../container';
 import { Commands } from '../constants';
+import { Container } from '../container';
 import { Logger } from '../logger';
 import { executeCommand } from '../system/command';
 import { debug, log } from '../system/decorators/log';
@@ -114,7 +114,12 @@ export abstract class ViewBase<
 		public readonly name: string,
 		public readonly container: Container,
 	) {
-		this.disposables.push(once(container.onReady)(this.onReady, this));
+		// Official pattern: Container.onReady re-fires if already ready; also handle isReady race.
+		if (container.isReady) {
+			queueMicrotask(() => this.onReady());
+		} else {
+			this.disposables.push(once(container.onReady)(this.onReady, this));
+		}
 
 		if (this.container.debugging || this.container.config.debug) {
 			function addDebuggingInfo(item: TreeItem, node: ViewNode, parent: ViewNode | undefined) {

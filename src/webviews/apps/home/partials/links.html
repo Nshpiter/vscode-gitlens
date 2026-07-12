@@ -2,52 +2,61 @@
 	<section>
 		<div class="links">
 			<div class="links__group">
-				<h4>%{home.links.getStarted}%</h4>
+				<h4>常用</h4>
 				<ul>
 					<li>
-						<a href="command:gitlens.getStarted" appearance="secondary">%{home.links.walkthrough}%</a>
+						<i class="codicon codicon-git-commit"></i>
+						<a href="command:gitlens.showCommitsView">提交历史</a>
 					</li>
 					<li>
-						<a href="command:gitlens.showWelcomePage?%22quick-setup%22"
-							appearance="secondary">%{home.links.quickSetup}%</a>
+						<i class="codicon codicon-history"></i>
+						<a href="command:gitlens.showFileHistoryView">文件历史</a>
 					</li>
 					<li>
-						<a href="command:gitlens.showSettingsPage"
-							appearance="secondary">%{home.links.settingsEditor}%</a>
+						<i class="codicon codicon-git-branch"></i>
+						<a href="command:gitlens.showBranchesView">分支</a>
 					</li>
 					<li>
-						<a href="command:gitlens.home.toggleWelcome">%{home.links.restoreWelcome}%</a>
+						<i class="codicon codicon-organization"></i>
+						<a href="command:gitlens.showContributorsView">贡献者</a>
+					</li>
+					<li>
+						<i class="codicon codicon-terminal-cmd"></i>
+						<a href="command:gitlens.gitCommands">Git 命令面板</a>
+					</li>
+					<li>
+						<i class="codicon codicon-graph-line"></i>
+						<a href="command:gitlens.showTimelinePage">当前文件可视化历史</a>
+					</li>
+					<li>
+						<i class="codicon codicon-search"></i>
+						<a href="command:gitlens.showSearchAndCompareView">搜索与比较</a>
+					</li>
+					<li>
+						<i class="codicon codicon-settings-gear"></i>
+						<a href="command:gitlens.showSettingsPage">设置</a>
+					</li>
+					<li>
+						<i class="codicon codicon-copy"></i>
+						<a href="command:gitlens.copyWorkingTreePatchToClipboard">复制工作区补丁</a>
+					</li>
+					<li>
+						<i class="codicon codicon-discard"></i>
+						<a href="command:gitlens.softUndoLastCommit">软撤销最近提交</a>
+					</li>
+					<li class="hidden">
+						<i class="codicon codicon-archive"></i>
+						<a href="command:gitlens.showStashesView">贮藏</a>
+						<span class="stash-badge" id="stash-indicator">0</span>
 					</li>
 				</ul>
 			</div>
 			<div class="links__group">
-				<h4>%{home.links.common}%</h4>
+				<h4>小提示</h4>
 				<ul>
-					<li>
-						<i class="codicon codicon-terminal-cmd"></i>
-						<a href="command:gitlens.gitCommands">%{command.gitCommands.title}%</a>
-					</li>
-					<li>
-						<i class="codicon codicon-history"></i>
-						<a href="command:gitlens.showFileHistoryView">%{command.showFileHistoryView.title}%</a>
-					</li>
-					<li>
-						<i class="codicon codicon-graph-line"></i>
-						<a href="command:gitlens.showTimelinePage">%{command.showTimelinePage.title}%</a>
-					</li>
-					<li>
-						<i class="codicon codicon-search"></i>
-						<a href="command:gitlens.showSearchAndCompareView">%{command.showSearchAndCompareView.title}%</a>
-					</li>
-					<li>
-						<i class="codicon codicon-source-control"></i>
-						<a href="command:gitlens.showWorktreesView">%{command.showWorktreesView.title}%</a>
-					</li>
-					<li class="hidden">
-						<i class="codicon codicon-archive"></i>
-						<a href="command:gitlens.showStashesView">%{home.links.stashes}%</a>
-						<span class="stash-badge" id="stash-indicator">0</span>
-					</li>
+					<li>行尾灰字 = 当前行追溯（悬停看详情）</li>
+					<li>单击提交 = 打开详情页看文件 diff</li>
+					<li>命令面板输入 <code>GitLens</code> 可搜全部命令</li>
 				</ul>
 			</div>
 		</div>

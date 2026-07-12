@@ -1,8 +1,17 @@
 /*global document*/
 import './commitDetails.scss';
-import { App } from '../shared/appBase';
 import type { CommitFileChange, State } from '../../commitDetails/protocol';
-import { CopyHashCommandType, NavigateCommandType, OpenFileDiffCommandType, RefreshCommandType } from '../../commitDetails/protocol';
+import {
+	CopyHashCommandType,
+	CopyMessageCommandType,
+	CopyPatchCommandType,
+	NavigateCommandType,
+	OpenFileDiffCommandType,
+	OpenWorkingFileCommandType,
+	RefreshCommandType,
+	RevealInExplorerCommandType,
+} from '../../commitDetails/protocol';
+import { App } from '../shared/appBase';
 
 function statusLabel(s: string): string {
 	switch (s) {
@@ -57,7 +66,7 @@ export class CommitDetailsApp extends App<State> {
 		const filesSection = document.getElementById('files-section')!;
 		const bodySection = document.getElementById('body')!;
 
-		if (!state || state.empty || !state.sha) {
+		if (state == null || state.empty === true || state.sha == null || state.sha.length === 0) {
 			empty.classList.remove('hidden');
 			return;
 		}
@@ -66,7 +75,6 @@ export class CommitDetailsApp extends App<State> {
 		filesSection.classList.remove('hidden');
 		document.getElementById('toolbar')!.classList.remove('hidden');
 
-		// Avatar
 		const avatar = document.getElementById('avatar') as HTMLImageElement;
 		if (state.avatarUrl) {
 			avatar.src = state.avatarUrl;
@@ -74,7 +82,6 @@ export class CommitDetailsApp extends App<State> {
 			avatar.style.display = 'none';
 		}
 
-		// Summary & meta
 		(document.getElementById('summary') as HTMLElement).textContent = state.summary || '(无提交信息)';
 		(document.getElementById('author') as HTMLElement).textContent = state.author;
 		const dateEl = document.getElementById('date') as HTMLElement;
@@ -85,49 +92,68 @@ export class CommitDetailsApp extends App<State> {
 		shaEl.textContent = state.shortSha;
 		shaEl.title = state.sha;
 
-		// Body
 		if (state.body && state.body.trim().length > 0) {
 			bodySection.classList.remove('hidden');
 			(document.getElementById('body-text') as HTMLElement).textContent = state.body;
 		}
 
-		// Remote link
 		if (state.remoteUrl) {
 			const link = document.getElementById('remote-link') as HTMLAnchorElement;
 			link.href = state.remoteUrl;
 			link.classList.remove('hidden');
 		}
 
-		// Stats
 		const filesCount = state.files.length;
 		(document.getElementById('files-count') as HTMLElement).textContent = `${filesCount} 个文件变更`;
-		if (state.stats) {
+		if (state.stats != null) {
 			const statsEl = document.getElementById('stats') as HTMLElement;
 			statsEl.innerHTML = `<span class="additions">+${state.stats.additions}</span> <span class="deletions">-${state.stats.deletions}</span>`;
 		}
 
-		// Files list
+		const prevBtn = document.getElementById('nav-prev') as HTMLButtonElement;
+		const nextBtn = document.getElementById('nav-next') as HTMLButtonElement;
+		if (state.hasPrev === false) prevBtn.disabled = true;
+		if (state.hasNext === false) nextBtn.disabled = true;
+
 		const list = document.getElementById('files-list') as HTMLElement;
 		list.innerHTML = state.files
 			.map(
 				(f: CommitFileChange, i) => `
-			<li class="file-item" data-index="${i}">
-				<span class="file-status" style="color:${statusColor(f.status)}" title="${escapeHtml(
-					statusLabel(f.status),
-				)}">${escapeHtml(statusLabel(f.status))}</span>
+			<li class="file-item" data-index="${i}" title="单击打开 diff">
+				<span class="file-status" style="color:${statusColor(f.status)}">${escapeHtml(statusLabel(f.status))}</span>
 				<span class="file-path" title="${escapeHtml(f.path)}">${escapeHtml(f.path)}</span>
-				<span class="file-stats"><span class="additions">+${f.additions}</span> <span class="deletions">-${f.deletions}</span></span>
+				<span class="file-stats"><span class="additions">+${f.additions}</span> <span class="deletions">-${
+					f.deletions
+				}</span></span>
+				<span class="file-actions">
+					<button type="button" class="file-action" data-act="open" title="打开工作区文件">打开</button>
+					<button type="button" class="file-action" data-act="reveal" title="在资源管理器中显示">定位</button>
+				</span>
 			</li>
 		`,
 			)
 			.join('');
 
 		list.addEventListener('click', e => {
-			const target = (e.target as HTMLElement).closest('.file-item') as HTMLElement;
-			if (target == null) return;
-			const idx = Number(target.dataset.index);
+			const target = e.target as HTMLElement;
+			const actionBtn = target.closest('.file-action');
+			const row = target.closest('.file-item');
+			if (!(row instanceof HTMLElement)) return;
+			const idx = Number(row.dataset.index);
 			const file = state.files[idx];
 			if (file == null) return;
+
+			if (actionBtn instanceof HTMLElement) {
+				e.stopPropagation();
+				const act = actionBtn.dataset.act;
+				if (act === 'open') {
+					this.sendCommand(OpenWorkingFileCommandType, { repoPath: file.repoPath, path: file.path });
+				} else if (act === 'reveal') {
+					this.sendCommand(RevealInExplorerCommandType, { repoPath: file.repoPath, path: file.path });
+				}
+				return;
+			}
+
 			this.sendCommand(OpenFileDiffCommandType, {
 				sha: file.sha,
 				repoPath: file.repoPath,
@@ -140,17 +166,24 @@ export class CommitDetailsApp extends App<State> {
 		copyBtn.addEventListener('click', () => {
 			this.sendCommand(CopyHashCommandType, { sha: state.sha });
 			copyBtn.textContent = '已复制';
-			setTimeout(() => (copyBtn.textContent = '复制'), 1200);
+			setTimeout(() => (copyBtn.textContent = '复制 SHA'), 1200);
 		});
 
-		document.getElementById('nav-prev')!.addEventListener('click', () => {
+		document.getElementById('copy-patch')!.addEventListener('click', () => {
+			this.sendCommand(CopyPatchCommandType, { sha: state.sha, repoPath: state.repoPath });
+		});
+		document.getElementById('copy-message')!.addEventListener('click', () => {
+			this.sendCommand(CopyMessageCommandType, { message: state.message });
+		});
+
+		prevBtn.addEventListener('click', () => {
 			this.sendCommand(NavigateCommandType, {
 				sha: state.sha,
 				repoPath: state.repoPath,
 				direction: 'prev',
 			});
 		});
-		document.getElementById('nav-next')!.addEventListener('click', () => {
+		nextBtn.addEventListener('click', () => {
 			this.sendCommand(NavigateCommandType, {
 				sha: state.sha,
 				repoPath: state.repoPath,

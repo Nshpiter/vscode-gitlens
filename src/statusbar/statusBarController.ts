@@ -266,7 +266,7 @@ export class StatusBarController implements Disposable {
 				tooltip = '点击查看文件历史';
 				break;
 			case StatusBarCommand.ToggleCodeLens:
-				tooltip = '点击切换 Git CodeLens';
+				tooltip = '点击切换 Git 代码透镜';
 				break;
 			case StatusBarCommand.ToggleFileBlame:
 				tooltip = '点击切换文件标注注释';

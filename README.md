@@ -1,11 +1,15 @@
 [English](./README.en.md) | 简体中文
 
+> **本仓库为个人精简版 GitLens**（publisher: `piter`）。  
+> 安装与用法见 **[USAGE.zh-CN.md](./USAGE.zh-CN.md)**。  
+> 特点：完整中文界面与命令、无账号/试用弹窗、大仓库延迟加载提交文件详情。
+
 <p align="center">
   <br />
   <a title="了解更多关于 GitLens 的信息" href="https://gitlens.amod.io"><img src="./images/docs/gitlens-logo-anybg.png" alt="GitLens Logo" /></a>
 </p>
 
-> GitLens **增强**了 VS Code 内部的 Git 功能。它通过 Git blame 注释和 CodeLens 帮助您一眼**可视化代码作者身份**，**无缝导航和探索** Git 仓库，通过丰富的可视化和强大的比较命令**获得有价值的洞察**，等等。
+> GitLens **增强**了 VS Code 内部的 Git 功能。它通过行追溯和 CodeLens 帮助您一眼**看清代码作者**，**浏览和探索** Git 仓库，通过可视化与比较命令**获得洞察**，等等。
 
 <p align="center">
   <br />

@@ -40,7 +40,7 @@ class NoActionRunnersQuickPickItem implements QuickPickItem {
 	public readonly runner: RegisteredActionRunner | undefined;
 
 	get label(): string {
-		return 'No actions were found';
+		return '未找到可用操作';
 	}
 
 	get detail(): string | undefined {
@@ -283,16 +283,16 @@ export class ActionRunners implements Disposable {
 						let placeholder;
 						switch (context.type) {
 							case 'createPullRequest':
-								title = 'Create Pull Request';
-								placeholder = 'Choose how to create a pull request';
+								title = '创建拉取请求';
+								placeholder = '选择如何创建拉取请求';
 								break;
 							case 'openPullRequest':
-								title = 'Open Pull Request';
-								placeholder = 'Choose how to open the pull request';
+								title = '打开拉取请求';
+								placeholder = '选择如何打开拉取请求';
 								break;
 							case 'hover.commands':
-								title = 'Need Help or Want to Collaborate?';
-								placeholder = 'Choose what you would like to do';
+								title = '需要帮助或协作？';
+								placeholder = '选择要执行的操作';
 								break;
 							default:
 								debugger;

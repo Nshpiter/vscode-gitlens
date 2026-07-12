@@ -337,6 +337,10 @@ export interface AdvancedConfig {
 	caching: {
 		enabled: boolean;
 	};
+	/** Ported from official GitLens 17.1+ — large-repo commit list performance. */
+	commits?: {
+		delayLoadingFileDetails?: boolean;
+	};
 	commitOrdering: 'date' | 'author-date' | 'topo' | null;
 	externalDiffTool: string | null;
 	externalDirectoryDiffTool: string | null;

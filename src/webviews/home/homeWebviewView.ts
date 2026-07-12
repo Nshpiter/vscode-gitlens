@@ -63,7 +63,8 @@ export class HomeWebviewView extends WebviewViewBase<State> {
 
 	private async getState(): Promise<State> {
 		return {
-			welcomeVisible: this.container.storage.get(SyncedStorageKeys.HomeViewWelcomeVisible, true),
+			// Personal build: skip marketing welcome panel by default
+			welcomeVisible: this.container.storage.get(SyncedStorageKeys.HomeViewWelcomeVisible, false),
 			operation: await this.getHomeOperationState(),
 			stashCount: await this.getStashCount(),
 		};

@@ -29,8 +29,6 @@ import { GitProviderService } from './git/gitProviderService';
 import { LineHoverController } from './hovers/lineHoverController';
 import { Keyboard } from './keyboard';
 import { Logger } from './logger';
-import { SubscriptionAuthenticationProvider } from './plus/subscription/authenticationProvider';
-import { ServerConnection } from './plus/subscription/serverConnection';
 import { SubscriptionService } from './plus/subscription/subscriptionService';
 import { GraphWebview } from './plus/webviews/graph/graphWebview';
 import { GraphWebviewView } from './plus/webviews/graph/graphWebviewView';
@@ -58,11 +56,11 @@ import { ViewCommands } from './views/viewCommands';
 import { ViewFileDecorationProvider } from './views/viewDecorationProvider';
 import { WorktreesView } from './views/worktreesView';
 import { VslsController } from './vsls/vsls';
+import { CommitDetailsWebview } from './webviews/commitDetails/commitDetailsWebview';
 import { HomeWebviewView } from './webviews/home/homeWebviewView';
 import { RebaseEditorProvider } from './webviews/rebase/rebaseEditor';
 import { SettingsWebview } from './webviews/settings/settingsWebview';
 import { WelcomeWebview } from './webviews/welcome/welcomeWebview';
-import { CommitDetailsWebview } from './webviews/commitDetails/commitDetailsWebview';
 
 export class Container {
 	static #instance: Container | undefined;
@@ -91,7 +89,16 @@ export class Container {
 	}
 
 	private _onReady: EventEmitter<void> = new EventEmitter<void>();
+	/**
+	 * Mirrors official GitLens Container.onReady: if already ready, fire on next tick
+	 * so late subscribers (lazy views) still initialize.
+	 */
 	get onReady(): Event<void> {
+		if (this._ready) {
+			const emitter = new EventEmitter<void>();
+			setTimeout(() => emitter.fire(), 0);
+			return emitter.event;
+		}
 		return this._onReady.event;
 	}
 
@@ -158,55 +165,75 @@ export class Container {
 		this._config = this.applyMode(config);
 
 		context.subscriptions.push((this._storage = new Storage(this._context)));
-
 		context.subscriptions.push(configuration.onWillChange(this.onConfigurationChanging, this));
 
-		const server = new ServerConnection(this);
-		context.subscriptions.push(server);
-		context.subscriptions.push(
-			(this._subscriptionAuthentication = new SubscriptionAuthenticationProvider(this, server)),
-		);
+		// Personal build: no GitKraken account/auth network stack.
 		context.subscriptions.push((this._subscription = new SubscriptionService(this)));
 
+		// Core git + tracking (always needed)
 		context.subscriptions.push((this._git = new GitProviderService(this)));
 		context.subscriptions.push(new GitFileSystemProvider(this));
-
 		context.subscriptions.push((this._actionRunners = new ActionRunners(this)));
 		context.subscriptions.push((this._tracker = new GitDocumentTracker(this)));
 		context.subscriptions.push((this._lineTracker = new GitLineTracker(this)));
 		context.subscriptions.push((this._keyboard = new Keyboard()));
+		// Live Share only matters if the extension is installed — keep constructor cheap.
 		context.subscriptions.push((this._vsls = new VslsController(this)));
 
+		// Editor-facing features (high frequency)
 		context.subscriptions.push((this._fileAnnotationController = new FileAnnotationController(this)));
 		context.subscriptions.push((this._lineAnnotationController = new LineAnnotationController(this)));
 		context.subscriptions.push((this._lineHoverController = new LineHoverController(this)));
 		context.subscriptions.push((this._statusBarController = new StatusBarController(this)));
 		context.subscriptions.push((this._codeLensController = new GitCodeLensController(this)));
 
-		context.subscriptions.push((this._graphWebview = new GraphWebview(this)));
-		context.subscriptions.push((this._settingsWebview = new SettingsWebview(this)));
-		context.subscriptions.push((this._timelineWebview = new TimelineWebview(this)));
-		context.subscriptions.push((this._welcomeWebview = new WelcomeWebview(this)));
+		// Always-useful personal features
 		context.subscriptions.push((this._commitDetailsWebview = new CommitDetailsWebview(this)));
-		context.subscriptions.push((this._rebaseEditor = new RebaseEditorProvider(this)));
-
 		context.subscriptions.push(new ViewFileDecorationProvider());
 
-		context.subscriptions.push((this._repositoriesView = new RepositoriesView(this)));
+		// Command-only panels (cheap: register show commands, open on demand)
+		context.subscriptions.push((this._settingsWebview = new SettingsWebview(this)));
+		context.subscriptions.push((this._welcomeWebview = new WelcomeWebview(this)));
+		context.subscriptions.push((this._timelineWebview = new TimelineWebview(this)));
+
+		// Daily-driver views: register immediately so the activity bar never errors.
 		context.subscriptions.push((this._commitsView = new CommitsView(this)));
 		context.subscriptions.push((this._fileHistoryView = new FileHistoryView(this)));
-		context.subscriptions.push((this._lineHistoryView = new LineHistoryView(this)));
 		context.subscriptions.push((this._branchesView = new BranchesView(this)));
-		context.subscriptions.push((this._remotesView = new RemotesView(this)));
-		context.subscriptions.push((this._stashesView = new StashesView(this)));
-		context.subscriptions.push((this._tagsView = new TagsView(this)));
-		context.subscriptions.push((this._worktreesView = new WorktreesView(this)));
 		context.subscriptions.push((this._contributorsView = new ContributorsView(this)));
-		context.subscriptions.push((this._searchAndCompareView = new SearchAndCompareView(this)));
-
-		context.subscriptions.push((this._graphView = new GraphWebviewView(this)));
 		context.subscriptions.push((this._homeView = new HomeWebviewView(this)));
-		context.subscriptions.push((this._timelineView = new TimelineWebviewView(this)));
+
+		// Cold views: still contributed (may be un-hidden by user) but defer init so
+		// activate() returns faster. Getters also create them on first access.
+		const deferColdViews = () => {
+			if (this._repositoriesView == null) {
+				context.subscriptions.push((this._repositoriesView = new RepositoriesView(this)));
+			}
+			if (this._lineHistoryView == null) {
+				context.subscriptions.push((this._lineHistoryView = new LineHistoryView(this)));
+			}
+			if (this._remotesView == null) {
+				context.subscriptions.push((this._remotesView = new RemotesView(this)));
+			}
+			if (this._stashesView == null) {
+				context.subscriptions.push((this._stashesView = new StashesView(this)));
+			}
+			if (this._tagsView == null) {
+				context.subscriptions.push((this._tagsView = new TagsView(this)));
+			}
+			if (this._searchAndCompareView == null) {
+				context.subscriptions.push((this._searchAndCompareView = new SearchAndCompareView(this)));
+			}
+			if (this._timelineView == null) {
+				context.subscriptions.push((this._timelineView = new TimelineWebviewView(this)));
+			}
+		};
+		// After first paint / idle — keep activate snappy on large multi-root workspaces.
+		const coldTimer = setTimeout(deferColdViews, 750);
+		context.subscriptions.push({ dispose: () => clearTimeout(coldTimer) });
+
+		// Rebase editor is custom editor contribution — must register for git-rebase-todo
+		context.subscriptions.push((this._rebaseEditor = new RebaseEditorProvider(this)));
 
 		if (config.terminalLinks.enabled) {
 			context.subscriptions.push((this._terminalLinks = new GitTerminalLinkProvider(this)));
@@ -225,6 +252,10 @@ export class Container {
 	}
 
 	private _ready: boolean = false;
+
+	get isReady(): boolean {
+		return this._ready;
+	}
 
 	async ready() {
 		if (this._ready) throw new Error('Container is already ready');
@@ -356,13 +387,19 @@ export class Container {
 		return this._fileHistoryView;
 	}
 
-	private _graphView: GraphWebviewView;
+	private _graphView: GraphWebviewView | undefined;
 	get graphView() {
+		if (this._graphView == null) {
+			this._context.subscriptions.push((this._graphView = new GraphWebviewView(this)));
+		}
 		return this._graphView;
 	}
 
-	private _graphWebview: GraphWebview;
+	private _graphWebview: GraphWebview | undefined;
 	get graphWebview() {
+		if (this._graphWebview == null) {
+			this._context.subscriptions.push((this._graphWebview = new GraphWebview(this)));
+		}
 		return this._graphWebview;
 	}
 
@@ -473,13 +510,11 @@ export class Container {
 		return this._subscription;
 	}
 
-	private _subscriptionAuthentication: SubscriptionAuthenticationProvider;
-	get subscriptionAuthentication() {
-		return this._subscriptionAuthentication;
-	}
-
-	private _settingsWebview: SettingsWebview;
+	private _settingsWebview: SettingsWebview | undefined;
 	get settingsWebview() {
+		if (this._settingsWebview == null) {
+			this._context.subscriptions.push((this._settingsWebview = new SettingsWebview(this)));
+		}
 		return this._settingsWebview;
 	}
 
@@ -516,13 +551,19 @@ export class Container {
 		return this._tagsView;
 	}
 
-	private _timelineView: TimelineWebviewView;
+	private _timelineView: TimelineWebviewView | undefined;
 	get timelineView() {
+		if (this._timelineView == null) {
+			this._context.subscriptions.push((this._timelineView = new TimelineWebviewView(this)));
+		}
 		return this._timelineView;
 	}
 
-	private _timelineWebview: TimelineWebview;
+	private _timelineWebview: TimelineWebview | undefined;
 	get timelineWebview() {
+		if (this._timelineWebview == null) {
+			this._context.subscriptions.push((this._timelineWebview = new TimelineWebview(this)));
+		}
 		return this._timelineWebview;
 	}
 
@@ -549,8 +590,11 @@ export class Container {
 		return this._vsls;
 	}
 
-	private _welcomeWebview: WelcomeWebview;
+	private _welcomeWebview: WelcomeWebview | undefined;
 	get welcomeWebview() {
+		if (this._welcomeWebview == null) {
+			this._context.subscriptions.push((this._welcomeWebview = new WelcomeWebview(this)));
+		}
 		return this._welcomeWebview;
 	}
 

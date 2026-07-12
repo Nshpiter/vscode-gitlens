@@ -683,6 +683,8 @@ export class Git {
 			all,
 			argsOrFormat,
 			authors,
+			// Ported from official GitLens: skip --name-status when file details can load later.
+			includeFileDetails = true,
 			limit,
 			merges,
 			ordering,
@@ -692,6 +694,7 @@ export class Git {
 			all?: boolean;
 			argsOrFormat?: string | string[];
 			authors?: GitUser[];
+			includeFileDetails?: boolean;
 			limit?: number;
 			merges?: boolean;
 			ordering?: string | null;
@@ -700,7 +703,10 @@ export class Git {
 		},
 	) {
 		if (argsOrFormat == null) {
-			argsOrFormat = ['--name-status', `--format=${GitLogParser.defaultFormat}`];
+			// Without --name-status, log lists are much cheaper on large histories (official 17.1+).
+			argsOrFormat = includeFileDetails
+				? ['--name-status', `--format=${GitLogParser.defaultFormat}`]
+				: [`--format=${GitLogParser.defaultFormat}`];
 		}
 
 		if (typeof argsOrFormat === 'string') {
@@ -1323,6 +1329,52 @@ export class Git {
 
 			return defaultExceptionHandler(ex, opts.cwd) as TOut;
 		}
+	}
+
+	/**
+	 * Ported from official GitLens "Copy Changes (Patch)" — full patch for a commit.
+	 * Uses `git format-patch -1 --stdout` for a proper mailable patch.
+	 */
+	async getCommitPatch(repoPath: string, ref: string): Promise<string> {
+		return this.git<string>(
+			{ cwd: repoPath, configs: ['-c', 'log.showSignature=false'] },
+			'format-patch',
+			'-1',
+			'--stdout',
+			ref,
+		);
+	}
+
+	/** Working-tree / index patch for uncommitted changes (official WIP copy patch). */
+	async getWorkingTreePatch(
+		repoPath: string,
+		options?: { staged?: boolean | 'all'; paths?: string[] },
+	): Promise<string> {
+		const staged = options?.staged ?? 'all';
+		const paths = options?.paths ?? [];
+		const parts: string[] = [];
+
+		if (staged === true || staged === 'all') {
+			const cached = await this.git<string>(
+				{ cwd: repoPath, errors: GitErrorHandling.Ignore },
+				'diff',
+				'--cached',
+				'--',
+				...paths,
+			);
+			if (cached?.trim()) parts.push(cached.trimEnd());
+		}
+		if (staged === false || staged === 'all') {
+			const unstaged = await this.git<string>(
+				{ cwd: repoPath, errors: GitErrorHandling.Ignore },
+				'diff',
+				'--',
+				...paths,
+			);
+			if (unstaged?.trim()) parts.push(unstaged.trimEnd());
+		}
+
+		return parts.join('\n\n');
 	}
 
 	show__diff(

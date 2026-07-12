@@ -6,6 +6,8 @@ export * from './commands/copyCurrentBranch';
 export * from './commands/copyCurrentBranchAndSha';
 export * from './commands/copyMessageToClipboard';
 export * from './commands/copyShaToClipboard';
+export * from './commands/copyPatchToClipboard';
+export * from './commands/softUndoCommit';
 export * from './commands/createPullRequestOnRemote';
 export * from './commands/openDirectoryCompare';
 export * from './commands/diffLineWithPrevious';

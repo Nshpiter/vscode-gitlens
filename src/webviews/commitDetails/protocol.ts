@@ -26,6 +26,9 @@ export interface State {
 	files: CommitFileChange[];
 	remoteUrl?: string;
 	empty?: boolean;
+	/** Whether prev/next navigation has more items */
+	hasPrev?: boolean;
+	hasNext?: boolean;
 }
 
 export interface OpenFileDiffParams {
@@ -57,3 +60,29 @@ export interface RefreshParams {
 }
 
 export const RefreshCommandType = new IpcCommandType<RefreshParams>('commitDetails/refresh');
+
+/** Official-inspired: copy full commit patch */
+export interface CopyPatchParams {
+	sha: string;
+	repoPath: string;
+}
+export const CopyPatchCommandType = new IpcCommandType<CopyPatchParams>('commitDetails/copyPatch');
+
+export interface CopyMessageParams {
+	message: string;
+}
+export const CopyMessageCommandType = new IpcCommandType<CopyMessageParams>('commitDetails/copyMessage');
+
+export interface OpenWorkingFileParams {
+	repoPath: string;
+	path: string;
+}
+export const OpenWorkingFileCommandType = new IpcCommandType<OpenWorkingFileParams>('commitDetails/openWorkingFile');
+
+export interface RevealInExplorerParams {
+	repoPath: string;
+	path: string;
+}
+export const RevealInExplorerCommandType = new IpcCommandType<RevealInExplorerParams>(
+	'commitDetails/revealInExplorer',
+);

@@ -18,10 +18,56 @@ body {
 
 .commit-details__toolbar {
 	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
 	gap: 8px;
 	margin-bottom: 16px;
 	padding-bottom: 12px;
 	border-bottom: 1px dashed var(--vscode-panel-border, rgba(128, 128, 128, 0.25));
+}
+
+.commit-details__toolbar-spacer {
+	flex: 1;
+	min-width: 8px;
+}
+
+.commit-details__btn:disabled {
+	opacity: 0.4;
+	cursor: default;
+}
+
+.commit-details__files-hint {
+	margin: 6px 0 0;
+	font-size: 0.75rem;
+	color: var(--vscode-descriptionForeground);
+	opacity: 0.8;
+}
+
+.file-actions {
+	display: flex;
+	gap: 4px;
+	opacity: 0;
+	transition: opacity 0.12s ease;
+}
+
+.file-item:hover .file-actions {
+	opacity: 1;
+}
+
+.file-action {
+	background: transparent;
+	border: 1px solid var(--vscode-panel-border, rgba(128, 128, 128, 0.35));
+	color: var(--vscode-descriptionForeground);
+	border-radius: 3px;
+	font-size: 0.7rem;
+	padding: 0 6px;
+	cursor: pointer;
+	line-height: 1.6;
+}
+
+.file-action:hover {
+	color: var(--vscode-foreground);
+	background: var(--vscode-toolbar-hoverBackground, rgba(128, 128, 128, 0.12));
 }
 
 .commit-details__empty {

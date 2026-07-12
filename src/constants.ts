@@ -161,6 +161,12 @@ export const enum Commands {
 	ShowBranchesView = 'gitlens.showBranchesView',
 	ShowCommitInView = 'gitlens.showCommitInView',
 	ShowCommitDetailsPage = 'gitlens.showCommitDetailsPage',
+	/** Personal/official: copy commit or WIP as unified patch */
+	CopyPatchToClipboard = 'gitlens.copyPatchToClipboard',
+	CopyWorkingTreePatchToClipboard = 'gitlens.copyWorkingTreePatchToClipboard',
+	/** Personal/official Graph-inspired: soft undo last commit */
+	SoftUndoLastCommit = 'gitlens.softUndoLastCommit',
+
 	ShowCommitsInView = 'gitlens.showCommitsInView',
 	ShowCommitsView = 'gitlens.showCommitsView',
 	ShowContributorsView = 'gitlens.showContributorsView',

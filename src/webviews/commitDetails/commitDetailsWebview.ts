@@ -1,14 +1,24 @@
-import { env, Uri } from 'vscode';
-import { Commands } from '../../constants';
+import { commands, env, Uri, window } from 'vscode';
+import { DiffWithPreviousCommandArgs } from '../../commands/diffWithPrevious';
+import { Commands, CoreCommands } from '../../constants';
 import type { Container } from '../../container';
 import { GitCommit } from '../../git/models';
 import { executeCommand } from '../../system/command';
-import { DiffWithPreviousCommandArgs } from '../../commands/diffWithPrevious';
-import { WebviewBase } from '../webviewBase';
+import { joinPaths } from '../../system/path';
 import type { IpcMessage } from '../protocol';
 import { onIpc } from '../protocol';
+import { WebviewBase } from '../webviewBase';
 import type { CommitFileChange, State } from './protocol';
-import { CopyHashCommandType, NavigateCommandType, OpenFileDiffCommandType, RefreshCommandType } from './protocol';
+import {
+	CopyHashCommandType,
+	CopyMessageCommandType,
+	CopyPatchCommandType,
+	NavigateCommandType,
+	OpenFileDiffCommandType,
+	OpenWorkingFileCommandType,
+	RefreshCommandType,
+	RevealInExplorerCommandType,
+} from './protocol';
 
 export class CommitDetailsWebview extends WebviewBase<State> {
 	private _pendingCommit: GitCommit | undefined;
@@ -19,7 +29,7 @@ export class CommitDetailsWebview extends WebviewBase<State> {
 			'gitlens.commitDetails',
 			'commitDetails.html',
 			'images/gitlens-icon.png',
-			'Commit Details',
+			'提交详情',
 			Commands.ShowCommitDetailsPage,
 		);
 	}
@@ -75,6 +85,7 @@ export class CommitDetailsWebview extends WebviewBase<State> {
 			return this.emptyState();
 		}
 
+		// Always ensure full details when opening panel (files load here if delayed in list)
 		if (commit.message == null || commit.files == null) {
 			await commit.ensureFullDetails();
 		}
@@ -117,6 +128,21 @@ export class CommitDetailsWebview extends WebviewBase<State> {
 			remoteUrl = undefined;
 		}
 
+		// Navigation availability (official-inspired back/forward awareness)
+		let hasPrev = false;
+		let hasNext = false;
+		try {
+			const log = await this.container.git.getLog(commit.repoPath, { limit: 200 });
+			if (log?.commits != null) {
+				const shas = Array.from(log.commits.keys());
+				const idx = shas.indexOf(commit.sha);
+				hasPrev = idx > 0;
+				hasNext = idx >= 0 && idx < shas.length - 1;
+			}
+		} catch {
+			// ignore
+		}
+
 		return {
 			sha: commit.sha,
 			shortSha: commit.shortSha,
@@ -141,9 +167,15 @@ export class CommitDetailsWebview extends WebviewBase<State> {
 									  (stats.changedFiles?.changed ?? 0) +
 									  (stats.changedFiles?.deleted ?? 0),
 					  }
-					: undefined,
+					: {
+							additions: files.reduce((s, f) => s + f.additions, 0),
+							deletions: files.reduce((s, f) => s + f.deletions, 0),
+							changedFiles: files.length,
+					  },
 			files: files,
 			remoteUrl: remoteUrl,
+			hasPrev: hasPrev,
+			hasNext: hasNext,
 		};
 	}
 
@@ -157,6 +189,28 @@ export class CommitDetailsWebview extends WebviewBase<State> {
 			case CopyHashCommandType.method:
 				onIpc(CopyHashCommandType, e, params => {
 					void env.clipboard.writeText(params.sha);
+					void window.setStatusBarMessage('已复制完整 SHA', 2000);
+				});
+				break;
+			case CopyPatchCommandType.method:
+				onIpc(CopyPatchCommandType, e, params => {
+					void this.copyPatch(params.sha, params.repoPath);
+				});
+				break;
+			case CopyMessageCommandType.method:
+				onIpc(CopyMessageCommandType, e, params => {
+					void env.clipboard.writeText(params.message);
+					void window.setStatusBarMessage('已复制提交说明', 2000);
+				});
+				break;
+			case OpenWorkingFileCommandType.method:
+				onIpc(OpenWorkingFileCommandType, e, params => {
+					void this.openWorkingFile(params.repoPath, params.path);
+				});
+				break;
+			case RevealInExplorerCommandType.method:
+				onIpc(RevealInExplorerCommandType, e, params => {
+					void this.revealInExplorer(params.repoPath, params.path);
 				});
 				break;
 			case NavigateCommandType.method:
@@ -169,6 +223,39 @@ export class CommitDetailsWebview extends WebviewBase<State> {
 					void this.refreshCommit(params.sha, params.repoPath);
 				});
 				break;
+		}
+	}
+
+	private async copyPatch(sha: string, repoPath: string): Promise<void> {
+		try {
+			const patch = await this.container.git.getCommitPatch(repoPath, sha);
+			if (patch == null || !patch.trim()) {
+				void window.showWarningMessage('该提交没有可复制的补丁。');
+				return;
+			}
+			await env.clipboard.writeText(patch);
+			void window.showInformationMessage('已复制提交补丁到剪贴板。');
+		} catch (ex) {
+			console.error('copyPatch failed', ex);
+			void window.showErrorMessage('复制补丁失败。');
+		}
+	}
+
+	private async openWorkingFile(repoPath: string, path: string): Promise<void> {
+		try {
+			const uri = Uri.file(joinPaths(repoPath, path));
+			await commands.executeCommand(CoreCommands.Open, uri);
+		} catch (ex) {
+			console.error('openWorkingFile failed', ex);
+		}
+	}
+
+	private async revealInExplorer(repoPath: string, path: string): Promise<void> {
+		try {
+			const uri = Uri.file(joinPaths(repoPath, path));
+			await commands.executeCommand('revealInExplorer', uri);
+		} catch (ex) {
+			console.error('revealInExplorer failed', ex);
 		}
 	}
 
@@ -209,7 +296,7 @@ export class CommitDetailsWebview extends WebviewBase<State> {
 
 			const args: DiffWithPreviousCommandArgs = {
 				commit: commit,
-				uri: Uri.file(`${repoPath}/${originalPath ?? path}`),
+				uri: Uri.file(joinPaths(repoPath, originalPath ?? path)),
 				line: 0,
 				showOptions: { preserveFocus: false, preview: true },
 			};

@@ -1,18 +1,23 @@
 <template id="welcome">
 	<section class="welcome">
-		<h3>%{home.welcome.title}%</h3>
-		<a class="link--preview" title="%{home.welcome.seeWhatsNew}%" href="command:gitlens.showWelcomePage">
-			<img class="image--preview" src="#{webroot}/media/gitlens-12-card.png" alt="%{home.welcome.whatsNew}%" />
-		</a>
+		<h3>GitLens 个人版 · 30 秒上手</h3>
 		<p>
-			%{home.welcome.description}%
+			<strong>1.</strong> 光标放在代码行 → 行尾显示「谁、何时、改了啥」<br />
+			<strong>2.</strong> 侧栏打开「提交」→ 点一条提交看详情和 diff<br />
+			<strong>3.</strong> 「文件历史」跟随当前文件，快速翻旧版本
 		</p>
-		<vscode-button data-action="command:gitlens.showWelcomePage">%{home.welcome.quickSetup}%</vscode-button>
-		<vscode-button data-action="command:gitlens.getStarted">%{home.welcome.getStarted}%</vscode-button>
+		<p class="welcome-note">
+			本版无账号、无试用弹窗。命令面板搜「GitLens」可找到全部功能。
+		</p>
+		<vscode-button data-action="command:gitlens.showCommitsView">打开提交历史</vscode-button>
+		<vscode-button data-action="command:gitlens.showFileHistoryView" appearance="secondary"
+			>打开文件历史</vscode-button
+		>
+		<vscode-button data-action="command:gitlens.showSettingsPage" appearance="secondary">打开设置</vscode-button>
 		<p>
-			%{home.welcome.setupDescription}%
+			<vscode-button data-action="command:gitlens.home.toggleWelcome" appearance="secondary"
+				>知道了，不再显示</vscode-button
+			>
 		</p>
-		<vscode-button data-action="command:gitlens.home.toggleWelcome"
-			appearance="secondary">%{home.welcome.dismiss}%</vscode-button>
 	</section>
 </template>
